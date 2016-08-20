@@ -87,3 +87,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+#drawml setting
+env
+
+#mac
+.DS_STORE
+.idea
