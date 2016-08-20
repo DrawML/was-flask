@@ -15,8 +15,10 @@
     * templates
         * module_name
 
-## install
+## Install and dependency
     virtualenv -p python3 env
     env/bin/pip3 install flask
     env/bin/pip3 install flask-sqlalchemy
     env/bin/pip3 install mysqlclient
+    env/bin/pip3 install rauth
+    
