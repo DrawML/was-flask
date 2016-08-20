@@ -1,24 +1,29 @@
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-app.config.from_object('config')
-
-"""
-	routing
-	import modules and components and
-	register blueprints
-"""
-# from app.mod_name.controllers import mod_name
-# app.register_blueprint(mod_name)
-# ..
+from app.database import db
+from flask import Flask
 
 
-# database
-db = SQLAlchemy(app)
-db.create_all()
+class Server(object):
+	def __init__(self):
+		self.app = Flask(__name__)
+		self.app.config.from_object('config')
+
+		"""
+			routing
+			import modules and components and
+			register blueprints
+		"""
+		from app.auth.controllers import module_auth as auth
+		from app.experiment.controllers import module_exp as exp
+		from app.data.controllers import module_data as data
+		self.app.register_blueprint(auth)
+		self.app.register_blueprint(exp)
+		self.app.register_blueprint(data)
+
+	def setup_database(self):
+		db.init_app(self.app)
+		with self.app.app_context():
+			db.create_all()
 
 
-@app.errorhandler(404)
-def not_found(error):
-	return render_template('404.html')
+server = Server()
+server.setup_database()
