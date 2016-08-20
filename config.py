@@ -32,3 +32,14 @@ CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
 SECRET_KEY = "secret"
+
+# Google auth
+GOOGLE_LOGIN_CLIENT_ID = "166774559697-1gchdfdv27lu9imof4dutsrhilpv7anm.apps.googleusercontent.com"
+GOOGLE_LOGIN_CLIENT_SECRET = "GoAPQxXJhFc-jkHHjaT6gaFS"
+
+OAUTH_CREDENTIALS={
+        'google': {
+            'id': GOOGLE_LOGIN_CLIENT_ID,
+            'secret': GOOGLE_LOGIN_CLIENT_SECRET
+        }
+}
