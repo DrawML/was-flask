@@ -90,6 +90,7 @@ ENV/
 
 #drawml setting
 env
+/config.py
 
 #mac
 .DS_STORE
