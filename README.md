@@ -2,6 +2,7 @@
  * python3
  * flask
  * [REST API wiki](https://github.com/DrawML/was-flask/wiki/REST-API)
+
 ## Directory stucture
 * app.py
 * config
