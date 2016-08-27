@@ -4,7 +4,9 @@
 
 ## Directory stucture
 * app.py
-* config.py
+* config
+    * app_config.py
+    * config_file.json
 * env
 * app
     * module_name
