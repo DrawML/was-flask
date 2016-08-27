@@ -20,5 +20,8 @@
     env/bin/pip3 install flask
     env/bin/pip3 install flask-sqlalchemy
     env/bin/pip3 install mysqlclient
-    env/bin/pip3 install rauth
-    
+    env/bin/pip3 install oauth2client
+
+
+### Reference
+* oauth2client : https://developers.google.com/api-client-library/python/auth/web-app
