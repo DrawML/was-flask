@@ -95,3 +95,5 @@ env
 #mac
 .DS_STORE
 .idea
+*.sql
+
