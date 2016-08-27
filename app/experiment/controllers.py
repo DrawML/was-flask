@@ -1,7 +1,9 @@
 from flask import Blueprint, request, current_app
+import json
 from sqlalchemy import exc
 from db_models import Experiment
 from database import db
+from app.experiment.models import exp_refiner
 
 module_exp = Blueprint('experiment',
                        __name__,
@@ -14,8 +16,10 @@ module_exp = Blueprint('experiment',
 @module_exp.route('/', defaults={'user_id': 'index'})
 def exp(user_id):
 	experiments = db.session.query(Experiment).filter(Experiment.user_id == user_id).all()
+	refined_exps = exp_refiner(experiments)
+	json.dumps(refined_exps.exps)
 	current_app.logger.info('exp for ' + user_id + ' : ' + str(len(experiments)))
-	return 'exp'
+	return json.dumps(refined_exps.exps)
 
 
 @module_exp.route('/create', methods=['GET'], endpoint='exp_create_get')
@@ -30,8 +34,8 @@ def exp_create_post():
 		exp_json = json_data['exp_data']
 		exp_data = Experiment(exp_json['name'],
 		                      exp_json['user_id'],
-		                      bytes(exp_json['xml'], 'utf-8'),
-		                      bytes(exp_json['drawing'], 'utf-8'),
+		                      exp_json['xml'].encode(),
+		                      exp_json['drawing'].encode(),
 		                      exp_json['input'])
 	except KeyError as e:
 		current_app.logger.error(e)

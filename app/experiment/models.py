@@ -1,16 +1,23 @@
-from database import db, Base
+import json
 
 
-class Experiment(Base):
-	_tablename = 'experiment'
-	user    = db.Column(db.VARCHAR(45), nullable=False)
-	drawing = db.Column(db.BLOB)
-	xml     = db.Column(db.BLOB)
-	input   = db.Column(db.INT)
+class exp_refiner(json.JSONEncoder):
+	def __init__(self, exps):
+		self.exps = []
+		for exp in exps:
+			temp = self.exp_to_dict(exp)
+			self.exps.append(temp)
 
-	def __init__(self, user, drawing, xml, input):
-		self.user = user
-		self.drawing = drawing
-		self.xml = xml
-		self.input = input
+	def exp_to_dict(self, exp):
+		exp_dict = dict(
+			id=exp.id,
+			date_modified=str(exp.date_modified),
+			date_created=str(exp.date_created),
+			user_id=exp.user_id,
+			name=exp.name,
+			xml=exp.xml.decode(),
+			drawing=exp.drawing.decode(),
+			input=exp.input
+		)
+		return exp_dict
 
