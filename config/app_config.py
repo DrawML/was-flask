@@ -33,6 +33,3 @@ CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
 SECRET_KEY = "secret"
-
-# Google auth
-GOOGLE_CLIENT_SECRET = {"web":{"client_id":"166774559697-1gchdfdv27lu9imof4dutsrhilpv7anm.apps.googleusercontent.com","project_id":"drawml-140913","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://accounts.google.com/o/oauth2/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"GoAPQxXJhFc-jkHHjaT6gaFS"}}
