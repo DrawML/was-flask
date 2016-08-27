@@ -14,7 +14,6 @@ module_exp = Blueprint('experiment',
 @module_exp.route('/', defaults={'user_id': 'index'})
 def exp(user_id):
 	experiments = db.session.query(Experiment).filter(Experiment.user_id == user_id).all()
-	# experiments = Experiment.query.filter(Experiment.user_id == user_id).all()
 	current_app.logger.info('exp for ' + user_id + ' : ' + str(len(experiments)))
 	return 'exp'
 
@@ -27,12 +26,17 @@ def exp_create_get():
 @module_exp.route('/create', methods=['POST'], endpoint='exp_create_post')
 def exp_create_post():
 	json_data = request.get_json()
-	exp_json = json_data['exp_data']
-	exp_data = Experiment(exp_json['name'],
-	                      exp_json['user_id'],
-	                      bytes(exp_json['xml'], 'utf-8'),
-	                      bytes(exp_json['drawing'], 'utf-8'),
-	                      exp_json['input'])
+	try:
+		exp_json = json_data['exp_data']
+		exp_data = Experiment(exp_json['name'],
+		                      exp_json['user_id'],
+		                      bytes(exp_json['xml'], 'utf-8'),
+		                      bytes(exp_json['drawing'], 'utf-8'),
+		                      exp_json['input'])
+	except KeyError as e:
+		current_app.logger.error(e)
+		return 'json key error'
+
 	try:
 		experiments = db.session.query(Experiment) \
 			.filter(Experiment.user_id == exp_data.user_id,
