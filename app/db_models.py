@@ -13,9 +13,10 @@ class Base(db.Model):
 
 
 class User(Base):
-	__tablename__ = 'user'
-	user_id        = db.Column(db.VARCHAR(64), nullable=False)
-	pw            = db.Column(db.VARCHAR(64))
+	__tablename__   = 'user'
+	__table_args__  = {'extend_existing': True}
+	user_id         = db.Column(db.VARCHAR(64), nullable=False)
+	pw              = db.Column(db.VARCHAR(64))
 
 	def __init__(self, userid, pw):
 		self.user_id = userid
@@ -26,12 +27,13 @@ class User(Base):
 
 
 class Experiment(Base):
-	__tablename__ = 'experiment'
-	name = db.Column(db.VARCHAR(45), primary_key=True)
-	user_id = db.Column(db.VARCHAR(45), db.ForeignKey('user.id'), primary_key=True)
-	xml = db.Column(db.BLOB)
-	drawing = db.Column(db.BLOB)
-	input = db.Column(db.Integer)
+	__tablename__   = 'experiment'
+	__table_args__  = {'extend_existing': True}
+	name            = db.Column(db.VARCHAR(45), primary_key=True)
+	user_id         = db.Column(db.VARCHAR(45), db.ForeignKey('user.id'), primary_key=True)
+	xml             = db.Column(db.BLOB)
+	drawing         = db.Column(db.BLOB)
+	input           = db.Column(db.Integer)
 
 	def __init__(self, name, user_id, xml, drawing, input):
 		super()
@@ -42,7 +44,7 @@ class Experiment(Base):
 		self.input = input
 
 	def __repr__(self):
-		return '<Experiment %r>' % (self.user)
+		return '<Experiment %r %r>' % (self.user_id, self.name)
 
 	def to_dict(self):
 		return {
@@ -52,16 +54,3 @@ class Experiment(Base):
 			Experiment.drawing: self.drawing,
 			Experiment.input: self.input
 		}
-
-
-class Test(db.Model):
-	__tablename__ = 'test'
-	idtest = db.Column(db.Integer, autoincrement=True, primary_key=True)
-	text = db.Column(db.VARCHAR(45))
-
-	def __init__(self, text):
-		self.text = text
-
-	def __repr__(self):
-		return '<Test %r>' % (self.user)
-

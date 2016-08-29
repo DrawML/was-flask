@@ -1,5 +1,5 @@
 import json
-
+from app.db_models import Experiment
 
 class exp_refiner(json.JSONEncoder):
 	def __init__(self, exps):
@@ -20,4 +20,19 @@ class exp_refiner(json.JSONEncoder):
 			input=exp.input
 		)
 		return exp_dict
+
+
+class exp_json_parser():
+	@staticmethod
+	def parse_post(json):
+		try:
+			exp_json = json['exp_data']
+			exp_data = Experiment(exp_json['name'],
+		                          exp_json['user_id'],
+		                          exp_json['xml'].encode(),
+		                          exp_json['drawing'].encode(),
+		                          exp_json['input'])
+		except KeyError as e:
+			return e
+		return exp_data
 

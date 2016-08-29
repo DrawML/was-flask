@@ -1,9 +1,10 @@
 from flask import Blueprint, request, current_app
 import json
 from sqlalchemy import exc
-from db_models import Experiment
-from database import db
-from app.experiment.models import exp_refiner
+from app.db_models import Experiment
+from app.database import db
+from app.experiment.models import exp_refiner, exp_json_parser
+
 
 module_exp = Blueprint('experiment',
                        __name__,
@@ -12,9 +13,9 @@ module_exp = Blueprint('experiment',
                        template_folder='templates/experiment')
 
 
-@module_exp.route('/<user_id>', methods=['GET', 'POST'], endpoint='exp')
+@module_exp.route('/<user_id>', methods=['GET', 'POST'], endpoint='user_all_exp')
 @module_exp.route('/', defaults={'user_id': 'index'})
-def exp(user_id):
+def user_all_exp(user_id):
 	experiments = db.session.query(Experiment).filter(Experiment.user_id == user_id).all()
 	refined_exps = exp_refiner(experiments)
 	json.dumps(refined_exps.exps)
@@ -22,23 +23,23 @@ def exp(user_id):
 	return json.dumps(refined_exps.exps)
 
 
-@module_exp.route('/create', methods=['GET'], endpoint='exp_create_get')
-def exp_create_get():
-	return 'create'
+@module_exp.route('/<user_id>/<exp_name>', methods=['GET', 'POST'], endpoint='user_exp')
+@module_exp.route('/', defaults={'user_id': 'index', 'exp_name': ''})
+def user_exp(user_id, exp_name):
+	experiments = db.session.query(Experiment).\
+		filter(Experiment.user_id == user_id, Experiment.name == exp_name).all()
+	refined_exps = exp_refiner(experiments)
+	json.dumps(refined_exps.exps)
+	current_app.logger.info('exp for ' + user_id + ' : ' + str(len(experiments)))
+	return json.dumps(refined_exps.exps)
 
 
-@module_exp.route('/create', methods=['POST'], endpoint='exp_create_post')
-def exp_create_post():
+@module_exp.route('/', methods=['POST'], endpoint='exp_create')
+def exp_create():
 	json_data = request.get_json()
-	try:
-		exp_json = json_data['exp_data']
-		exp_data = Experiment(exp_json['name'],
-		                      exp_json['user_id'],
-		                      exp_json['xml'].encode(),
-		                      exp_json['drawing'].encode(),
-		                      exp_json['input'])
-	except KeyError as e:
-		current_app.logger.error(e)
+	exp_data = exp_json_parser.parse_post(json_data)
+	if type(exp_data) != Experiment:
+		current_app.logger.error(exp_data)
 		return 'json key error'
 
 	try:
@@ -63,16 +64,21 @@ def exp_create_post():
 	return 'created'
 
 
-@module_exp.route('/update', methods=['POST'], endpoint='exp_update_post')
-def exp_update_post():
+@module_exp.route('/', methods=['PUT'], endpoint='exp_update')
+def exp_update():
 	json_data = request.get_json()
-	exp_json = json_data['exp_data']
-	exp_name = json_data['exp_name']
-	exp_data = Experiment(exp_json['name'],
-	                      exp_json['user_id'],
-	                      bytes(exp_json['xml'], 'utf-8'),
-	                      bytes(exp_json['drawing'], 'utf-8'),
-	                      exp_json['input'])
+
+	try:
+		exp_json = json_data['exp_data']
+		exp_name = json_data['exp_name']
+		exp_data = Experiment(exp_json['name'],
+		                      exp_json['user_id'],
+		                      exp_json['xml'].encode(),
+		                      exp_json['drawing'].encode(),
+		                      exp_json['input'])
+	except KeyError as e:
+		current_app.logger.error(e)
+		return 'json key error'
 	updated = db.session.query(Experiment)\
 		.filter(Experiment.user_id == exp_data.user_id, Experiment.name == exp_name)\
 		.update(exp_data.to_dict(), synchronize_session=False)
@@ -81,7 +87,7 @@ def exp_update_post():
 	return 'updated'
 
 
-@module_exp.route('/delete', methods=['GET', 'POST'], endpoint='exp_delete')
+@module_exp.route('/', methods=['DELETE'], endpoint='exp_delete')
 def exp_delete():
 	json_data = request.get_json()
 	exp_json = json_data['exp_data']
