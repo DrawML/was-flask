@@ -1,7 +1,8 @@
 import json
 from app.db_models import Experiment
 
-class exp_refiner(json.JSONEncoder):
+
+class Refiner(json.JSONEncoder):
 	def __init__(self, exps):
 		self.exps = []
 		for exp in exps:
@@ -22,7 +23,7 @@ class exp_refiner(json.JSONEncoder):
 		return exp_dict
 
 
-class exp_json_parser():
+class JsonParser():
 	@staticmethod
 	def parse_post(json):
 		try:

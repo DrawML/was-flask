@@ -3,7 +3,7 @@ import json
 from sqlalchemy import exc
 from app.db_models import Experiment
 from app.database import db
-from app.experiment.models import exp_refiner, exp_json_parser
+from app.experiment.models import Refiner, JsonParser
 
 
 module_exp = Blueprint('experiment',
@@ -17,7 +17,7 @@ module_exp = Blueprint('experiment',
 @module_exp.route('/', defaults={'user_id': 'index'})
 def user_all_exp(user_id):
 	experiments = db.session.query(Experiment).filter(Experiment.user_id == user_id).all()
-	refined_exps = exp_refiner(experiments)
+	refined_exps = Refiner(experiments)
 	json.dumps(refined_exps.exps)
 	current_app.logger.info('exp for ' + user_id + ' : ' + str(len(experiments)))
 	return json.dumps(refined_exps.exps)
@@ -28,7 +28,7 @@ def user_all_exp(user_id):
 def user_exp(user_id, exp_name):
 	experiments = db.session.query(Experiment).\
 		filter(Experiment.user_id == user_id, Experiment.name == exp_name).all()
-	refined_exps = exp_refiner(experiments)
+	refined_exps = Refiner(experiments)
 	json.dumps(refined_exps.exps)
 	current_app.logger.info('exp for ' + user_id + ' : ' + str(len(experiments)))
 	return json.dumps(refined_exps.exps)
@@ -37,7 +37,7 @@ def user_exp(user_id, exp_name):
 @module_exp.route('/', methods=['POST'], endpoint='exp_create')
 def exp_create():
 	json_data = request.get_json()
-	exp_data = exp_json_parser.parse_post(json_data)
+	exp_data = JsonParser.parse_post(json_data)
 	if type(exp_data) != Experiment:
 		current_app.logger.error(exp_data)
 		return 'json key error'
