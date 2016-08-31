@@ -34,3 +34,7 @@ CSRF_SESSION_KEY = "secret"
 # Secret key for signing cookies
 SECRET_KEY = "secret"
 SESSION_COOKIE_NAME = 'drawml_flask_session'
+
+
+# file upload
+UPLOAD_FOLDER = '/data'

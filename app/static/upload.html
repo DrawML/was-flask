@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>upload</title>
+    <style>
+        .bar {
+            height: 18px;
+            background: green;
+        }
+    </style>
+</head>
+<body>
+<div id="progress">
+    <div class="bar" style="width: 0%;"></div>
+</div>
+<input id="fileupload" type="file" name="files[]" data-url="upload" multiple>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/javascripts/vendor/jquery.ui.widget.js"></script>
+<script src="/static/javascripts/jquery.iframe-transport.js"></script>
+<script src="/static/javascripts/jquery.fileupload.js"></script>
+<script>
+    /*
+$(function () {
+    $('#fileupload').fileupload({
+        url: '/data/uploads/',
+        dataType: 'json',
+        sequentialUploads: true,
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .bar').css(
+                'width',
+                progress + '%'
+            );
+        },
+        add: function (e, data) {
+            data.context = $('<button/>').text('Upload')
+                .appendTo(document.body)
+                .click(function () {
+                    data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+                    data.submit();
+                });
+        },
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo(document.body);
+            });
+        }
+    });
+});
+*/
+    $('#fileupload').fileupload({
+        url: '/uploads/',
+        sequentialUploads: true,
+        done: function (e, data) {
+            console.log("uploaded: " + data.files[0].name)
+        },
+        maxChunkSize: 1000000 // 1 MB
+    });
+</script>
+</body>
+</html>
