@@ -3,7 +3,7 @@ import json
 from sqlalchemy import exc
 from app.db_models import Experiment
 from app.database import db
-from app.experiment.models import Refiner, JsonParser
+from app.experiment.models import Refiner, JsonParser, TFConverter
 
 
 module_exp = Blueprint('experiment',
@@ -64,13 +64,13 @@ def exp_create():
 	return 'created'
 
 
-@module_exp.route('/', methods=['PUT'], endpoint='exp_update')
-def exp_update():
+@module_exp.route('/<user_id>/<exp_name>', methods=['PATCH'], endpoint='exp_update')
+@module_exp.route('/<user_id>/<exp_name>', defaults={'user_id': 'index', 'exp_name': ''})
+def exp_update(user_id, exp_name):
 	json_data = request.get_json()
 
 	try:
 		exp_json = json_data['exp_data']
-		exp_name = json_data['exp_name']
 		exp_data = Experiment(exp_json['name'],
 		                      exp_json['user_id'],
 		                      exp_json['xml'].encode(),
@@ -80,27 +80,30 @@ def exp_update():
 		current_app.logger.error(e)
 		return 'json key error'
 	updated = db.session.query(Experiment)\
-		.filter(Experiment.user_id == exp_data.user_id, Experiment.name == exp_name)\
+		.filter(Experiment.user_id == user_id, Experiment.name == exp_name)\
 		.update(exp_data.to_dict(), synchronize_session=False)
 	db.session.commit()
 	current_app.logger.info(str(updated) + ' columns updated : ' + exp_data.name + ' ' + exp_data.user_id)
 	return 'updated'
 
 
-@module_exp.route('/', methods=['DELETE'], endpoint='exp_delete')
-def exp_delete():
-	json_data = request.get_json()
-	exp_json = json_data['exp_data']
+@module_exp.route('/<user_id>/<exp_name>', methods=['DELETE'], endpoint='exp_delete')
+@module_exp.route('/<user_id>/<exp_name>', defaults={'user_id': 'index', 'exp_name': ''})
+def exp_delete(user_id, exp_name):
 	deleted = db.session.query(Experiment) \
-		.filter(Experiment.user_id == exp_json['user_id'], Experiment.name == exp_json['name']) \
+		.filter(Experiment.user_id == user_id, Experiment.name == exp_name) \
 		.delete(synchronize_session=False)
 	db.session.commit()
-	current_app.logger.info(str(deleted) + ' columns deleted : ' + exp_json['name'] + ' ' + exp_json['user_id'])
+	current_app.logger.info(str(deleted) + ' columns deleted : ' + user_id + ' ' + exp_name)
 	return 'delete'
 
 
-@module_exp.route('/run', methods=['GET', 'POST'], endpoint='exp_run')
+@module_exp.route('/run', methods=['POST'], endpoint='exp_run')
 def exp_run():
+	xml = request.data.decode()
+	tf_converter = TFConverter(xml)
+	tf_converter.process_data()
+	tf_converter.generate_object_code()
 	return 'run'
 
 
