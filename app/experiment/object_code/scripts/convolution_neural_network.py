@@ -1,14 +1,12 @@
-from jinja2 import Environment, FileSystemLoader
 import xml.etree.ElementTree as et
-import os
-import sys
-from code_generator import code_generator
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, os.pardir))
+from flask import current_app
+from code_generator import TemplateError, get_template, parse_xml, \
+	process_data, make_initializer, make_activation_function, make_optimizer, \
+	bind_common_variables, make_pooling, bind_padding
 
 
 def bind_variables(xml_info: dict, template_variables: dict):
-	code_generator.bind_common_variables(xml_info, template_variables)
+	bind_common_variables(xml_info, template_variables)
 
 	template_variables['dropout_conv'] = xml_info['model_dropout_conv']
 	template_variables['dropout_hidden'] = xml_info['model_dropout_hidden']
@@ -33,17 +31,17 @@ def bind_variables(xml_info: dict, template_variables: dict):
 		if xml_info[num + '_layer_type'] == 'convolution':
 			layer['type'] = 'conv'
 
-			activ_func = code_generator.make_activation_function(xml_info[num + '_activation_type'])
+			activ_func = make_activation_function(xml_info[num + '_activation_type'])
 			layer['activ_func'] = activ_func
 			layer['activ_strides_v'] = int(xml_info[num + '_activation_strides_vertical'])
 			layer['activ_strides_h'] = int(xml_info[num + '_activation_strides_horizontal'])
-			layer['activ_padding'] = code_generator.bind_padding(xml_info[num + '_activation_padding'])
+			layer['activ_padding'] = bind_padding(xml_info[num + '_activation_padding'])
 
-			pooling = code_generator.make_pooling(xml_info[num + '_pooling_type'])
+			pooling = make_pooling(xml_info[num + '_pooling_type'])
 			layer['pooling'] = pooling
 			layer['pooling_strides_v'] = int(xml_info[num + '_pooling_strides_vertical'])
 			layer['pooling_strides_h'] = int(xml_info[num + '_pooling_strides_horizontal'])
-			layer['pooling_padding'] = code_generator.bind_padding(xml_info[num + '_pooling_padding'])
+			layer['pooling_padding'] = bind_padding(xml_info[num + '_pooling_padding'])
 
 			layer['input_x'] = int(xml_info[num + '_layer_input_x'])
 			layer['input_y'] = int(xml_info[num + '_layer_input_y'])
@@ -53,7 +51,7 @@ def bind_variables(xml_info: dict, template_variables: dict):
 		elif xml_info[num + '_layer_type'] == 'none' or xml_info[num + '_layer_type'] == 'out':
 			layer['type'] = xml_info[num + '_layer_type']
 
-			activ_func = code_generator.make_activation_function(xml_info[num + '_layer_activation'])
+			activ_func = make_activation_function(xml_info[num + '_layer_activation'])
 			layer['activ_func'] = activ_func
 			layer['input'] = int(xml_info[num + '_layer_input'])
 			layer['output'] = int(xml_info[num + '_layer_output'])
@@ -64,26 +62,22 @@ def bind_variables(xml_info: dict, template_variables: dict):
 
 
 def make_code(root: et.Element):
-	j2_env = Environment(loader=FileSystemLoader(PARENT_DIR),
-	                     trim_blocks=True)
 	try:
-		template = j2_env.get_template("./Template Files/template_" + root.find("model").find("type").text + ".py")
-	except:
-		print("template error")
-		sys.exit(2)
-
+		template = get_template(root.find("model").find("type").text)
+	except TemplateError as e:
+		current_app.logger.err(e)
+		return
 	xml_info = dict()
-	code_generator.parse_xml("", root, root, xml_info)
+	parse_xml("", root, root, xml_info)
 
 	template_variables = dict()
 
 	bind_variables(xml_info, template_variables)
-	code_generator.process_data(xml_info, template_variables)
-	code_generator.make_optimizer(xml_info, template_variables)
-	code_generator.make_initializer(xml_info, template_variables)
+	process_data(xml_info, template_variables)
+	make_optimizer(xml_info, template_variables)
+	make_initializer(xml_info, template_variables)
 
-	output_file = open(PARENT_DIR+"/Samples/output.py", "w")
+	output_file = open(current_app.config['OUTPUT_PATH'], "w")
 	output_file.write(template.render(template_variables))
 	output_file.close()
 
-	print("Code is generated")

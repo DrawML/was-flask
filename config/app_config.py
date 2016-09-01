@@ -38,3 +38,4 @@ SESSION_COOKIE_NAME = 'drawml_flask_session'
 
 # file upload
 UPLOAD_FOLDER = '/data'
+OUTPUT_PATH = '/Users/chan/test/output.py'

@@ -104,6 +104,7 @@ def exp_run():
 	tf_converter = TFConverter(xml)
 	tf_converter.process_data()
 	tf_converter.generate_object_code()
+	current_app.logger.info("Code was generated")
 	return 'run'
 
 

@@ -1,36 +1,30 @@
-from jinja2 import Environment, FileSystemLoader
 import xml.etree.ElementTree as et
-import os
-import sys
-from code_generator import code_generator
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, os.pardir))
+from flask import current_app
+from code_generator import TemplateError, get_template, parse_xml, \
+	process_data, make_initializer, make_optimizer, \
+	bind_common_variables
 
 
 def bind_variables(xml_info: dict, template_variables: dict):
-	code_generator.bind_common_variables(xml_info, template_variables)
+	bind_common_variables(xml_info, template_variables)
 
 
 def make_code(root: et.Element):
-	j2_env = Environment(loader=FileSystemLoader(PARENT_DIR),
-	                     trim_blocks=True)
 	try:
-		template = j2_env.get_template("./Template Files/template_" + root.find("model").find("type").text + ".py")
-	except:
-		print("template error")
-		sys.exit(2)
-
+		template = get_template(root.find("model").find("type").text)
+	except TemplateError as e:
+		current_app.logger.err(e)
+		return
 	xml_info = dict()
-	code_generator.parse_xml("", root, root, xml_info)
+	parse_xml("", root, root, xml_info)
 
 	template_variables = dict()
-	code_generator.process_data(xml_info, template_variables)
+	process_data(xml_info, template_variables)
 	bind_variables(xml_info, template_variables)
-	code_generator.make_optimizer(xml_info, template_variables)
-	code_generator.make_initializer(xml_info, template_variables)
+	make_optimizer(xml_info, template_variables)
+	make_initializer(xml_info, template_variables)
 
-	output_file = open(PARENT_DIR+"/Samples/output.py", "w")
+	output_file = open(current_app.config['OUTPUT_PATH'], "w")
 	output_file.write(template.render(template_variables))
 	output_file.close()
 
-	print("Code is generated")
