@@ -3,7 +3,7 @@ import json
 from sqlalchemy import exc
 from app.db_models import Experiment
 from app.database import db
-from app.experiment.models import Refiner, JsonParser, TFConverter
+from app.experiment.models import Refiner, JsonParser, TFConverter, TaskRunner
 
 
 module_exp = Blueprint('experiment',
@@ -103,8 +103,13 @@ def exp_run():
 	xml = request.data.decode()
 	tf_converter = TFConverter(xml)
 	tf_converter.process_data()
-	tf_converter.generate_object_code()
+	obj_code = tf_converter.generate_object_code()
 	current_app.logger.info("Code was generated")
+
+	tf_converter.run_obj_code(obj_code)
+	# tr = TaskRunner(obj_code)
+	# ..............
+
 	return 'run'
 
 

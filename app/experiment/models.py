@@ -4,6 +4,12 @@ import xml.etree.ElementTree as Et
 from app.db_models import Experiment
 
 
+class TaskRunner:
+	def __init__(self, obj_code):
+		""" This class will be changed"""
+		print(obj_code)
+
+
 class ExperimentError(Exception):
 	pass
 
@@ -11,6 +17,7 @@ class ExperimentError(Exception):
 class TFConverter:
 	"""This code is NOT considered about exception"""
 	SCRIPT_MODULE = 'app.experiment.object_code.scripts'
+
 	def __init__(self, xml):
 		if os.path.isfile(xml) is True:
 			xml_tree = Et.parse(xml)
@@ -22,17 +29,25 @@ class TFConverter:
 		if self.root.tag != "experiment":
 			raise ExperimentError()
 
-	def process_data(self):
-		"""data process module will be here"""
-		pass
-
 	def generate_object_code(self):
 		# have to consider about exception
 		model_type = self.root.find("model").find("type").text
 		script_module = __import__(self.SCRIPT_MODULE, globals(),
 		                           locals(), [model_type], 0)
 		object_script = getattr(script_module, model_type)
-		object_script.make_code(self.root)
+		return object_script.make_code(self.root)
+
+	def run_obj_code(self, obj_code):
+		"""This function just for test object code"""
+		OUTPUT_PATH = '/Users/chan/test/output.py'
+		output_file = open(OUTPUT_PATH, "w")
+		output_file.write(obj_code)
+		output_file.close()
+
+
+	def process_data(self):
+		"""data process module will be here"""
+		pass
 
 
 class Refiner(json.JSONEncoder):
