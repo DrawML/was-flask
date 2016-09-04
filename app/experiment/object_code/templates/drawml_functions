@@ -1,0 +1,45 @@
+SAVE_PATH = '/Users/chan/test/trained_model'
+
+def load_input():
+	argc = len(sys.argv)
+	if argc < 2:
+		print('No input argument')
+		sys.exit(2)
+
+	file_path = sys.argv[1]
+	if os.path.isfile(file_path) is False:
+		print('No such file or directory', file_path)
+		sys.exit(2)
+
+	x = np.genfromtxt(file_path, max_rows=1)
+	raw_data = np.genfromtxt(file_path, dtype='float32', skip_header=1)
+
+	feature_size    = int(x[0])
+	label_size      = int(x[1])
+
+	x_data = raw_data[:, 0:feature_size]
+	y_data = raw_data[:, feature_size:feature_size+label_size]
+
+	return x_data, y_data, x_data, y_data, x_data, y_data
+
+
+def make_optimizer():
+	optimizer_module = {{optimizer_module}}
+	optimizer_name   = {{optimizer_name}}
+	optimizer_params = {{optimizer_params}}
+	return getattr(optimizer_module, optimizer_name)(**optimizer_params)
+
+
+def save_model(sess, path):
+	saver = tf.train.Saver()
+	saver.save(sess, path)
+
+
+def restore_model(sess, path):
+	saver = tf.train.Saver()
+	saver.restore(sess, path)
+
+
+def load_train_data():
+	data = {X: x_train, Y: y_train}
+	return data

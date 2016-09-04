@@ -12,11 +12,11 @@ PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, os.pardir))
 
 
 def get_template(model_type: str):
-	j2_env = Environment(loader=FileSystemLoader(PARENT_DIR),
+	j2_env = Environment(loader=FileSystemLoader(PARENT_DIR + '/templates'),
 	                     trim_blocks=True)
 	template = None
 	try:
-		template = j2_env.get_template("./templates/template_" + model_type + ".py")
+		template = j2_env.get_template("/template_" + model_type)
 	except:
 		raise TemplateError
 	finally:
@@ -152,7 +152,7 @@ def make_optimizer(xml_info: dict, template_variables: dict):
 		if "optimizer_name" in xml_info:
 			params["name"] = xml_info["optimizer_name"]
 		template_variables["optimizer_module"] = "tf.train"
-		template_variables["optimizer_name"] = "'AdadeltaOptimizer'"
+		template_variables["optimizer_name"] = "'AdamOptimizer'"
 		template_variables["optimizer_params"] = params
 
 	elif opt_name == "ftrl":

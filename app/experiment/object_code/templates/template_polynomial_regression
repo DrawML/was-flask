@@ -1,0 +1,57 @@
+"""
+DrawML
+Linear regression template file
+Templates will be changed by appropriate value
+
+There is some issues in input data
+and maybe save model
+"""
+import tensorflow as tf
+import numpy as np
+import sys
+import os
+
+training_epoch = {{training_epoch}}
+
+{% include 'drawml_functions' %}
+
+
+
+def make_model(X, W):
+	return tf.matmul(X, tf.transpose(W))
+
+
+def cost_function(hypothesis, Y):
+	return tf.reduce_mean(tf.square(hypothesis - Y))
+
+
+def init_weights():
+	weight_init_module = {{init_module}}
+	weight_params      = {{init_params}}
+
+	weight_params['shape'] = [1, len(x_train[0])]
+
+	weight = tf.Variable(weight_init_module(**weight_params))
+	return weight
+
+
+x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
+
+X = tf.placeholder(tf.float32)     # X = tf.placeholder(tf.float32, [None, 784])
+Y = tf.placeholder(tf.float32)     # Y = tf.placeholder(tf.float32, [None, 10])
+
+W = init_weights()
+hypothesis = make_model(X, W)
+
+cost = cost_function(hypothesis, Y)
+optimizer = make_optimizer()
+train = optimizer.minimize(cost)
+
+with tf.Session() as sess:
+	init = tf.initialize_all_variables()
+	sess.run(init)
+	train_data = load_train_data()
+	for _ in range(training_epoch):
+		sess.run(train, feed_dict=train_data)
+		# some logging codes will be added...
+	save_model(sess, SAVE_PATH)

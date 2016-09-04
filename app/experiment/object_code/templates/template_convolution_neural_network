@@ -7,6 +7,8 @@ and maybe save model
 """
 import tensorflow as tf
 import numpy as np
+import sys
+import os
 
 training_epoch = {{training_epoch}}
 dropout_conv   = {{dropout_conv}}
@@ -15,23 +17,8 @@ x_vertical     = {{x_vertical}}
 x_horizontal   = {{x_horizontal}}
 y_size         = {{y_size}}
 
+{% include 'drawml_functions' %}
 
-def load_input():
-	raw_data = np.loadtxt('data.txt', unpack=True, dtype='float32')
-	raw_data = raw_data.T
-	row = len(raw_data)
-	col = len(raw_data[0])
-
-	x_data = np.ones([row, col])
-	x_data[:, 1:col] = raw_data[:, 0:col - 1]
-	y_data = raw_data[:, col - 1:col]
-
-	return x_data, y_data, x_data, y_data, x_data, y_data
-
-
-def load_train_data():
-	data = {X: x_train, Y: y_train}
-	return data
 
 
 def no_module(param):
@@ -96,12 +83,6 @@ def make_model(X, W):
 def cost_function(hypothesis, Y):
 	return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(hypothesis, Y))
 
-def make_optimizer():
-	optimizer_module = {{optimizer_module}}
-	optimizer_name   = {{optimizer_name}}
-	optimizer_params = {{optimizer_params}}
-	return getattr(optimizer_module, optimizer_name)(**optimizer_params)
-
 
 def init_weights():
 	W = {}
@@ -124,13 +105,6 @@ def init_weights():
 	{% endfor %}
 
 	return W
-
-
-def save_model():
-	# save model
-	save_path = "/" """" *This will be filled at .exe step """
-	saver = tf.train.Saver()
-	saver.save(save_path=save_path)
 
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
@@ -159,4 +133,4 @@ with tf.Session() as sess:
 	for _ in range(training_epoch):
 		sess.run(train, feed_dict=train_data)
 		# some logging codes will be added...
-	save_model()
+	save_model(sess, SAVE_PATH)

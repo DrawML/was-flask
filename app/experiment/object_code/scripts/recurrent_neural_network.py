@@ -44,6 +44,4 @@ def make_code(root: et.Element):
 	process_data(xml_info, template_variables)
 	make_optimizer(xml_info, template_variables)
 
-	output_file = open(current_app.config['OUTPUT_PATH'], "w")
-	output_file.write(template.render(template_variables))
-	output_file.close()
+	return template.render(template_variables)

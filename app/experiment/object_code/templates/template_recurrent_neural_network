@@ -7,6 +7,8 @@ and maybe save model
 """
 import tensorflow as tf
 import numpy as np
+import sys
+import os
 
 training_epoch  = {{training_epoch}}
 x_vertical      = {{x_vertical}}
@@ -18,22 +20,8 @@ time_step_size  = {{time_step_size}}
 layer_size      = {{layer_size}}
 
 
-def load_input():
-	raw_data = np.loadtxt('data.txt', unpack=True, dtype='float32')
-	raw_data = raw_data.T
-	row = len(raw_data)
-	col = len(raw_data[0])
+{% include 'drawml_functions' %}
 
-	x_data = np.ones([row, col])
-	x_data[:, 1:col] = raw_data[:, 0:col - 1]
-	y_data = raw_data[:, col - 1:col]
-
-	return x_data, y_data, x_data, y_data, x_data, y_data
-
-
-def load_train_data(start, end):
-	data = {X: x_train[start:end], Y: y_train[start:end]}
-	return data
 
 
 def make_model(rnn_size: int, layer_size: int, batch_size:int, time_step_size: int):
@@ -70,20 +58,6 @@ def cost_function(logits, targets, weights, batch_size):
 	return cost
 
 
-def make_optimizer():
-	optimizer_module = {{optimizer_module}}
-	optimizer_name   = {{optimizer_name}}
-	optimizer_params = {{optimizer_params}}
-	return getattr(optimizer_module, optimizer_name)(**optimizer_params)
-
-
-def save_model():
-	# save model
-	save_path = "/" """" *This will be filled at .exe step """
-	saver = tf.train.Saver()
-	saver.save(save_path=save_path)
-
-
 x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
 
 x_train = x_train.reshape(-1, x_vertical, x_horizontal, 1)
@@ -108,4 +82,4 @@ with tf.Session() as sess:
 		print("step ", _ , " accuracy ", accuracy)
 
 	# some logging codes will be added...
-	save_model()
+	save_model(sess, SAVE_PATH)
