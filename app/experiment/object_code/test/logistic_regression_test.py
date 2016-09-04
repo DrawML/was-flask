@@ -4,6 +4,8 @@ Logistic regression template file
 
 There is some issues in input data
 and maybe save model
+
+test with mnist
 """
 import tensorflow as tf
 import numpy as np

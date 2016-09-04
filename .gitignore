@@ -96,4 +96,5 @@ env
 .DS_STORE
 .idea
 *.sql
+/**/*/mnist*.txt
 
