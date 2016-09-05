@@ -14,27 +14,37 @@ class ExperimentError(Exception):
 	pass
 
 
+class XMLTree:
+	def __init__(self, xml):
+		if os.path.isfile(xml) is True:
+			self.xml_tree = Et.parse(xml)
+			self.xml_tree.getroot()
+		else:
+			self.xml_tree = Et.fromstring(xml)
+		self.root = self.xml_tree
+		if self.root.tag != "experiment":
+			raise ExperimentError()
+
+
+class DataProcessor:
+	def __init__(self, xml):
+		self.root = XMLTree(xml).root
+		self.processing = self.root.find('data_processing').find('something.....')
+
+
 class TFConverter:
 	"""This code is NOT considered about exception"""
 	SCRIPT_MODULE = 'app.experiment.object_code.scripts'
 
 	def __init__(self, xml):
-		if os.path.isfile(xml) is True:
-			xml_tree = Et.parse(xml)
-			xml_tree.getroot()
-		else:
-			xml_tree = Et.fromstring(xml)
-
-		self.root = xml_tree
-		if self.root.tag != "experiment":
-			raise ExperimentError()
+		self.root = XMLTree(xml).root
+		self.model_type = self.root.find("model").find("type").text
 
 	def generate_object_code(self):
 		# have to consider about exception
-		model_type = self.root.find("model").find("type").text
 		script_module = __import__(self.SCRIPT_MODULE, globals(),
-		                           locals(), [model_type], 0)
-		object_script = getattr(script_module, model_type)
+		                           locals(), [self.model_type], 0)
+		object_script = getattr(script_module, self.model_type)
 		return object_script.make_code(self.root)
 
 	def run_obj_code(self, obj_code):
@@ -45,13 +55,9 @@ class TFConverter:
 		output_file.close()
 
 
-	def process_data(self):
-		"""data process module will be here"""
-		pass
-
-
 class Refiner(json.JSONEncoder):
 	def __init__(self, exps):
+		super().__init__()
 		self.exps = []
 		for exp in exps:
 			temp = self.exp_to_dict(exp)

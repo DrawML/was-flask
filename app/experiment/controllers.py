@@ -3,7 +3,8 @@ import json
 from sqlalchemy import exc
 from app.db_models import Experiment
 from app.database import db
-from app.experiment.models import Refiner, JsonParser, TFConverter, TaskRunner
+from app.experiment.models import Refiner, JsonParser, \
+	TFConverter, TaskRunner, ExperimentError, DataProcessor
 
 
 module_exp = Blueprint('experiment',
@@ -101,12 +102,25 @@ def exp_delete(user_id, exp_name):
 @module_exp.route('/run', methods=['POST'], endpoint='exp_run')
 def exp_run():
 	xml = request.data.decode()
-	tf_converter = TFConverter(xml)
-	tf_converter.process_data()
-	obj_code = tf_converter.generate_object_code()
-	current_app.logger.info("Code was generated")
 
-	tf_converter.run_obj_code(obj_code)
+	try:
+		data_processor = DataProcessor(xml)
+	except ExperimentError:
+		current_app.logger.error("Invalid XML form")
+		return "invalid XML form"
+	except AttributeError:
+		current_app.logger.info("No data processing in XML")
+
+	try:
+		tf_converter = TFConverter(xml)
+		obj_code = tf_converter.generate_object_code()
+		current_app.logger.info("Code was generated")
+		tf_converter.run_obj_code(obj_code)
+	except ExperimentError:
+		current_app.logger.error("Invalid XML form")
+		return "invalid XML form"
+	except AttributeError:
+		current_app.logger.info("No model in XML")
 	# tr = TaskRunner(obj_code)
 	# ..............
 
