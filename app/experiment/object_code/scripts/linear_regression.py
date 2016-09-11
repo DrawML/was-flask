@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as et
 from flask import current_app
-from code_generator import TemplateError, get_template, \
-    parse_xml, process_data, make_initializer, make_optimizer, \
+from app.experiment.object_code.scripts.code_generator import TemplateError, \
+    get_template, parse_xml, process_data, make_initializer, make_optimizer, \
     bind_common_variables
 
 
