@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, \
-	g, redirect, url_for
+    g, redirect, url_for
 
 module_auth = Blueprint('auth',
                         __name__,
@@ -10,12 +10,12 @@ module_auth = Blueprint('auth',
 
 @module_auth.route('/oauth2callback', methods=['GET', 'POST'], endpoint='auth_oauth2callback')
 def auth_oauth2callback():
-	return 'oauth2callback'
+    return 'oauth2callback'
 
 
 @module_auth.route('/signin/', methods=['GET', 'POST'], endpoint='auth_signin')
 def auth_signin():
-	return 'hello'
+    return 'hello'
 
 
 @module_auth.route('/login', methods=['GET', 'POST'], endpoint='auth_login')

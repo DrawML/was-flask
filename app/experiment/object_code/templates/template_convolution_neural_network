@@ -22,89 +22,89 @@ y_size         = {{y_size}}
 
 
 def no_module(param):
-	return param
+    return param
 
 def make_module(src: str):
-	module = no_module
-	if src == 'none':
-		return module
+    module = no_module
+    if src == 'none':
+        return module
 
-	src_split = src.split('.')
-	for i in range(len(src_split)):
-		if i == 0:
-			module = globals()[src_split[i]]
-		else:
-			module = getattr(module, src_split[i])
-	return module
+    src_split = src.split('.')
+    for i in range(len(src_split)):
+        if i == 0:
+            module = globals()[src_split[i]]
+        else:
+            module = getattr(module, src_split[i])
+    return module
 
 
 def make_model(X, W):
-	prev_layer = X
+    prev_layer = X
 
-	{% for layer in layers %}
-	{% if layer.type == 'conv' %}
+    {% for layer in layers %}
+    {% if layer.type == 'conv' %}
 
-	activ_func = {{layer.activ_func}}
-	pooling = {{layer.pooling}}
+    activ_func = {{layer.activ_func}}
+    pooling = {{layer.pooling}}
 
-	l = tf.nn.conv2d(prev_layer, W['w{{layer.num}}'],
-	             strides=[1, {{layer.activ_strides_v}}, {{layer.activ_strides_h}}, 1],
-	             padding={{layer.activ_padding}})
-	l = activ_func(l)
-	l = pooling(l, ksize=[1, {{layer.pooling_strides_v}}, {{layer.pooling_strides_v}}, 1],
-	            strides=[1, {{layer.pooling_strides_v}}, {{layer.pooling_strides_v}}, 1],
-	            padding={{layer.pooling_padding}})
-	l = tf.nn.dropout(l, p_keep_conv)
-	prev_layer = l
-	{% endif %}
-	{% if layer.type == 'none' %}
+    l = tf.nn.conv2d(prev_layer, W['w{{layer.num}}'],
+                 strides=[1, {{layer.activ_strides_v}}, {{layer.activ_strides_h}}, 1],
+                 padding={{layer.activ_padding}})
+    l = activ_func(l)
+    l = pooling(l, ksize=[1, {{layer.pooling_strides_v}}, {{layer.pooling_strides_v}}, 1],
+                strides=[1, {{layer.pooling_strides_v}}, {{layer.pooling_strides_v}}, 1],
+                padding={{layer.pooling_padding}})
+    l = tf.nn.dropout(l, p_keep_conv)
+    prev_layer = l
+    {% endif %}
+    {% if layer.type == 'none' %}
 
-	weight = W['w{{layer.num}}']
-	prev_layer = tf.reshape(prev_layer, [-1, weight.get_shape().as_list()[0]])
-	activ_func = {{layer.activ_func}}
-	l = activ_func(tf.matmul(prev_layer, weight))
-	l = tf.nn.dropout(l, p_keep_hidden)
-	prev_layer = l
-	{% endif %}
-	{% if layer.type == 'out' %}
+    weight = W['w{{layer.num}}']
+    prev_layer = tf.reshape(prev_layer, [-1, weight.get_shape().as_list()[0]])
+    activ_func = {{layer.activ_func}}
+    l = activ_func(tf.matmul(prev_layer, weight))
+    l = tf.nn.dropout(l, p_keep_hidden)
+    prev_layer = l
+    {% endif %}
+    {% if layer.type == 'out' %}
 
-	weight = W['w{{layer.num}}']
-	prev_layer = tf.reshape(prev_layer, [-1, weight.get_shape().as_list()[0]])
-	activ_func = {{layer.activ_func}}
-	l = activ_func(tf.matmul(prev_layer, weight))
-	prev_layer = l
-	{% endif %}
-	{% endfor %}
+    weight = W['w{{layer.num}}']
+    prev_layer = tf.reshape(prev_layer, [-1, weight.get_shape().as_list()[0]])
+    activ_func = {{layer.activ_func}}
+    l = activ_func(tf.matmul(prev_layer, weight))
+    prev_layer = l
+    {% endif %}
+    {% endfor %}
 
-	model = prev_layer
-	return model
+    model = prev_layer
+    return model
 
 
 def cost_function(hypothesis, Y):
-	return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(hypothesis, Y))
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(hypothesis, Y))
 
 
 def init_weights():
-	W = {}
-	weight_init_module = {{init_module}}
-	weight_params = {{init_params}}
-	layers = {{layers}}
-	{% for layer in layers %}
-	{% if layer.type == 'conv' %}
+    W = {}
+    weight_init_module = {{init_module}}
+    weight_params = {{init_params}}
+    layers = {{layers}}
+    {% for layer in layers %}
+    {% if layer.type == 'conv' %}
 
-	shape = [{{layer.input_x}}, {{layer.input_y}}, {{layer.input_z}}, {{layer.output}}]
-	weight_params['shape'] = shape
-	W['w{{layer.num}}'] = tf.Variable(weight_init_module(**weight_params))
-	{% endif %}
-	{% if layer.type == 'none' or layer.type == 'out' %}
+    shape = [{{layer.input_x}}, {{layer.input_y}}, {{layer.input_z}}, {{layer.output}}]
+    weight_params['shape'] = shape
+    W['w{{layer.num}}'] = tf.Variable(weight_init_module(**weight_params))
+    {% endif %}
+    {% if layer.type == 'none' or layer.type == 'out' %}
 
-	shape = [{{layer.input}}, {{layer.output}}]
-	weight_params['shape'] = shape
-	W['w{{layer.num}}'] = tf.Variable(weight_init_module(**weight_params))
-	{% endif %}
-	{% endfor %}
+    shape = [{{layer.input}}, {{layer.output}}]
+    weight_params['shape'] = shape
+    W['w{{layer.num}}'] = tf.Variable(weight_init_module(**weight_params))
+    {% endif %}
+    {% endfor %}
 
-	return W
+    return W
 
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
@@ -127,10 +127,10 @@ train = optimizer.minimize(cost)
 predict = tf.argmax(hypothesis, 1)
 
 with tf.Session() as sess:
-	init = tf.initialize_all_variables()
-	sess.run(init)
-	train_data = load_train_data()
-	for _ in range(training_epoch):
-		sess.run(train, feed_dict=train_data)
-		# some logging codes will be added...
-	save_model(sess, SAVE_PATH)
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    train_data = load_train_data()
+    for _ in range(training_epoch):
+        sess.run(train, feed_dict=train_data)
+        # some logging codes will be added...
+    save_model(sess, SAVE_PATH)

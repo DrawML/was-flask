@@ -18,26 +18,26 @@ training_epoch = {{training_epoch}}
 
 
 def make_model(X, W):
-	reg_enable = {{reg_enable}}
-	reg_lambda = {{reg_lambda}}
-	model = tf.matmul(X, tf.transpose(W))
-	if reg_enable is True:
-		model += (reg_lambda / 2) * tf.reduce_mean(tf.reduce_sum(tf.square(W)))
-	return model
+    reg_enable = {{reg_enable}}
+    reg_lambda = {{reg_lambda}}
+    model = tf.matmul(X, tf.transpose(W))
+    if reg_enable is True:
+        model += (reg_lambda / 2) * tf.reduce_mean(tf.reduce_sum(tf.square(W)))
+    return model
 
 
 def cost_function(hypothesis, Y):
-	return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(hypothesis, Y))
+    return tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(hypothesis, Y))
 
 
 def init_weights():
-	weight_init_module = {{init_module}}
-	weight_params      = {{init_params}}
+    weight_init_module = {{init_module}}
+    weight_params      = {{init_params}}
 
-	weight_params['shape'] = [1, len(x_train[0])]
+    weight_params['shape'] = [1, len(x_train[0])]
 
-	weight = tf.Variable(weight_init_module(**weight_params))
-	return weight
+    weight = tf.Variable(weight_init_module(**weight_params))
+    return weight
 
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
@@ -54,11 +54,11 @@ train = optimizer.minimize(cost)
 predict = tf.argmax(hypothesis, 1)
 
 with tf.Session() as sess:
-	init = tf.initialize_all_variables()
-	sess.run(init)
-	train_data = load_train_data()
-	for _ in range(training_epoch):
-		sess.run(train, feed_dict=train_data)
-		# some logging codes will be added...
-		# print(sess.run(cost, feed_dict=train_data))
-	save_model(sess, SAVE_PATH)
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    train_data = load_train_data()
+    for _ in range(training_epoch):
+        sess.run(train, feed_dict=train_data)
+        # some logging codes will be added...
+        # print(sess.run(cost, feed_dict=train_data))
+    save_model(sess, SAVE_PATH)

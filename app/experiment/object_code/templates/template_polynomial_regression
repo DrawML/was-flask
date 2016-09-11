@@ -18,21 +18,21 @@ training_epoch = {{training_epoch}}
 
 
 def make_model(X, W):
-	return tf.matmul(X, tf.transpose(W))
+    return tf.matmul(X, tf.transpose(W))
 
 
 def cost_function(hypothesis, Y):
-	return tf.reduce_mean(tf.square(hypothesis - Y))
+    return tf.reduce_mean(tf.square(hypothesis - Y))
 
 
 def init_weights():
-	weight_init_module = {{init_module}}
-	weight_params      = {{init_params}}
+    weight_init_module = {{init_module}}
+    weight_params      = {{init_params}}
 
-	weight_params['shape'] = [1, len(x_train[0])]
+    weight_params['shape'] = [1, len(x_train[0])]
 
-	weight = tf.Variable(weight_init_module(**weight_params))
-	return weight
+    weight = tf.Variable(weight_init_module(**weight_params))
+    return weight
 
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
@@ -48,10 +48,10 @@ optimizer = make_optimizer()
 train = optimizer.minimize(cost)
 
 with tf.Session() as sess:
-	init = tf.initialize_all_variables()
-	sess.run(init)
-	train_data = load_train_data()
-	for _ in range(training_epoch):
-		sess.run(train, feed_dict=train_data)
-		# some logging codes will be added...
-	save_model(sess, SAVE_PATH)
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    train_data = load_train_data()
+    for _ in range(training_epoch):
+        sess.run(train, feed_dict=train_data)
+        # some logging codes will be added...
+    save_model(sess, SAVE_PATH)
