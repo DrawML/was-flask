@@ -1,8 +1,8 @@
 import xml.etree.ElementTree as et
 from flask import current_app
-from code_generator import TemplateError, get_template, parse_xml, \
-    process_data, make_initializer, make_activation_function, make_optimizer, \
-    bind_common_variables, make_pooling, bind_padding
+from app.experiment.object_code.scripts.code_generator import TemplateError, \
+    get_template, parse_xml, process_data, make_initializer, make_activation_function, \
+    make_optimizer, bind_common_variables, make_pooling, bind_padding
 
 
 def bind_variables(xml_info: dict, template_variables: dict):
