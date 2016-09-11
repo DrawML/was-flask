@@ -106,12 +106,12 @@ def exp_run():
     try:
         data_processor = DataProcessor(xml)
         obj_code = data_processor.generate_object_code()
+        data_processor.run_obj_code(obj_code)
     except ExperimentError:
         current_app.logger.error("Invalid XML form")
         return "invalid XML form"
     except AttributeError:
         current_app.logger.info("No data processing in XML")
-
     try:
         tf_converter = TFConverter(xml)
         obj_code = tf_converter.generate_object_code()
@@ -124,7 +124,6 @@ def exp_run():
         current_app.logger.info("No model in XML")
     # tr = TaskRunner(obj_code)
     # ..............
-
     return 'run'
 
 
