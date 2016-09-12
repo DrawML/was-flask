@@ -46,7 +46,15 @@ def make_code(root: et.Element):
     parse_xml("", root.find("data_processing"), root.find("data_processing"), xml_info)
     parse_xml("", root.find("input"), root.find("input"), xml_info)
 
+    require = None
+    if root.find('model') is not None:
+        if root.find('model').find('data') is not None:
+            require = root.find("model").find("data").text
+        else:
+            raise Exception("Invalid XML")
+
     template_variables = dict()
+    template_variables['require'] = require
     bind_variables(xml_info, template_variables)
     make_processing(xml_info, template_variables)
 

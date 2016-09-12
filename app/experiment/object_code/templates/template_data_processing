@@ -12,6 +12,7 @@ import sys
 import os
 
 file_ids = {{file_ids}}
+require = "{{require}}"
 
 
 def load_input():
@@ -52,6 +53,12 @@ def transpose(data):
     result = tf.transpose(data)
     return result.eval(session=tf.Session())
 
+
+def save_require(name):
+    if name == require:
+        # save files[name] ...
+        # and throw information about file
+
 files = load_input()
 
 {% for unit in processing %}
@@ -63,12 +70,14 @@ for data in unit_data:
     input_data.append(files[data])
 unit_name = "{{unit.name}}"
 files[unit_name] = concat(input_data, unit_shape)
+save_require(unit_name)
 
 {% endif %}
 {% if unit.type == 'transpose' %}
 unit_data = {{unit.data}}
 unit_name = "{{unit.name}}"
 files[unit_name] = transpose(files[unit_data[0]])
+save_require(unit_name)
 
 {% endif %}
 {% endfor %}

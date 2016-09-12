@@ -38,7 +38,7 @@ class DataProcessor:
 
     def run_obj_code(self, obj_code):
         """This function just for test object code"""
-        OUTPUT_PATH = '/Users/chan/test/output.py'
+        OUTPUT_PATH = '/Users/chan/test/output_data.py'
         output_file = open(OUTPUT_PATH, "w")
         output_file.write(obj_code)
         output_file.close()

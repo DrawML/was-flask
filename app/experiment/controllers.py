@@ -116,6 +116,9 @@ def exp_run():
         return "Template Error"
     except AttributeError:
         current_app.logger.info("No data processing in XML")
+    except Exception as e:
+        current_app.logger.error(e)
+        return "Unexpected Error"
 
     # run data processing
     # if error occur while processing : return error
@@ -133,6 +136,9 @@ def exp_run():
         return "Template Error"
     except AttributeError:
         current_app.logger.info("No model in XML")
+    except Exception as e:
+        current_app.logger.error(e)
+        return "Unexpected Error"
 
     # tr = TaskRunner(obj_code)
     # ..............
