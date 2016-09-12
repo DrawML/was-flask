@@ -1,8 +1,7 @@
 import xml.etree.ElementTree as et
-from flask import current_app
-from app.experiment.object_code.scripts.code_generator import TemplateError, \
-    get_template, parse_xml, process_data, make_initializer, make_optimizer, \
-    bind_common_variables
+from jinja2.exceptions import TemplateError
+from app.experiment.object_code.scripts.code_generator import get_template, \
+    parse_xml, process_data, make_initializer, make_optimizer, bind_common_variables
 
 
 def bind_variables(xml_info: dict, template_variables: dict):
@@ -13,8 +12,7 @@ def make_code(root: et.Element):
     try:
         template = get_template(root.find("model").find("type").text)
     except TemplateError as e:
-        current_app.logger.err(e)
-        return
+        raise e
 
     xml_info = dict()
     parse_xml("", root, root, xml_info)

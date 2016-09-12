@@ -14,13 +14,8 @@ PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, os.pardir))
 def get_template(model_type: str):
     j2_env = Environment(loader=FileSystemLoader(PARENT_DIR + '/templates'),
                          trim_blocks=True)
-    template = None
-    try:
-        template = j2_env.get_template("/template_" + model_type)
-    except:
-        raise TemplateError
-    finally:
-        return template
+    template = j2_env.get_template("/template_" + model_type)
+    return template
 
 
 def bind_common_variables(xml_info: dict, template_variables: dict):

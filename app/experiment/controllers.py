@@ -1,5 +1,6 @@
 from flask import Blueprint, request, current_app
 import json
+from jinja2.exceptions import TemplateError
 from sqlalchemy import exc
 from app.db_models import Experiment
 from app.database import db
@@ -110,8 +111,15 @@ def exp_run():
     except ExperimentError:
         current_app.logger.error("Invalid XML form")
         return "invalid XML form"
+    except TemplateError as e:
+        current_app.logger.error(e)
+        return "Template Error"
     except AttributeError:
         current_app.logger.info("No data processing in XML")
+
+    # run data processing
+    # if error occur while processing : return error
+
     try:
         tf_converter = TFConverter(xml)
         obj_code = tf_converter.generate_object_code()
@@ -120,8 +128,12 @@ def exp_run():
     except ExperimentError:
         current_app.logger.error("Invalid XML form")
         return "invalid XML form"
+    except TemplateError as e:
+        current_app.logger.error(e)
+        return "Template Error"
     except AttributeError:
         current_app.logger.info("No model in XML")
+
     # tr = TaskRunner(obj_code)
     # ..............
     return 'run'
