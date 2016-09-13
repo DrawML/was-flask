@@ -4,7 +4,7 @@ from code_generator import get_template, parse_xml
 
 
 def bind_variables(xml_info, template_variable):
-    ids = xml_info['input_id']
+    ids = xml_info['input_data']
     ids.replace(' ', '')
     template_variable['file_ids'] = ids.split(',')
 
