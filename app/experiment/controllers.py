@@ -121,6 +121,7 @@ def exp_run():
         return "Unexpected Error"
 
     # run data processing
+    # we should pass data id argument to taskrunner
     # if error occur while processing : return error
 
     try:
@@ -140,6 +141,7 @@ def exp_run():
         current_app.logger.error(e)
         return "Unexpected Error"
 
+    # we should pass data id argument to taskrunner
     # tr = TaskRunner(obj_code)
     # ..............
     return 'run'

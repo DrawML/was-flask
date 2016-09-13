@@ -35,9 +35,6 @@ def process_data(xml_info: dict, template_variables: dict):
         data processing code...
     """
 
-    # template_variables["x_data"] = xml_info["x_data"]
-    # template_variables["y_data"] = xml_info["y_data"]
-
 
 def make_initializer(xml_info: dict, template_variables: dict):
     initializer_type = xml_info["initializer_type"]
