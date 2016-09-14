@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="user_id" name="user_id" class="input-xlarge"
+            placeholder="Enter Username" required>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+          <input type="password" id="pw" name="pw" class="input-xlarge"
+            placeholder="Enter Password" required>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-success">Signin</button>
+        </div>
+    </div>
+  </form>
+{% endblock %}

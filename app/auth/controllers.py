@@ -1,34 +1,45 @@
 from flask import Blueprint, render_template, \
-    g, redirect, url_for
+    redirect, url_for, request, current_app, flash
+from flask_login import login_user, logout_user
+from app.db_models import User
+from app.database import db
 
 module_auth = Blueprint('auth',
                         __name__,
                         url_prefix='/auth',
                         static_folder='/static/auth',
-                        template_folder='templates/auth')
+                        template_folder='templates')
 
 
-@module_auth.route('/oauth2callback', methods=['GET', 'POST'], endpoint='auth_oauth2callback')
-def auth_oauth2callback():
-    return 'oauth2callback'
+@module_auth.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('auth/register.html')
+    user = User(request.form['user_id'], request.form['pw'])
+    db.session.add(user)
+    db.session.commit()
+    current_app.logger.info('User successfully registered')
+    return redirect(url_for('auth.signin'))
 
 
-@module_auth.route('/signin/', methods=['GET', 'POST'], endpoint='auth_signin')
-def auth_signin():
-    return 'hello'
+@module_auth.route('/signin', methods=['GET', 'POST'])
+def signin():
+    if request.method == 'GET':
+        return render_template('auth/signin.html')
+    user_id = request.form["user_id"]
+    pw = request.form['pw']
+    remember_me = False
+    if 'remember_me' in request.form:
+        remember_me = True
+    registered_user = User.query.filter_by(user_id=user_id, pw=pw).first()
+    if registered_user is None:
+        flash('Username or Password is invalid', 'error')
+        return redirect(url_for('auth.signin'))
+    login_user(registered_user, remember=remember_me)
+    return redirect(request.args.get('next') or url_for('index.root'))
 
 
-@module_auth.route('/login', methods=['GET', 'POST'], endpoint='auth_login')
-def auth_login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    return render_template('login.html',
-                           title='Sign In')
-
-
-@module_auth.route('/logout', methods=['GET', 'POST'], endpoint='auth_logout')
-def auth_logout():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    return render_template('login.html',
-                           title='Sign In')
+@module_auth.route('/signout')
+def signout():
+    logout_user()
+    return redirect(url_for('index.root'))

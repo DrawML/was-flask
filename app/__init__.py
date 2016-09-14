@@ -1,12 +1,19 @@
-from app.database import db
-from flask import Flask
+from flask import Flask, g
+from flask_login import current_user
 from config import app_config
+from session import SQLAlchemySessionInterface
+from app.database import db
+from app.manager import login_manager
+
 
 class Server(object):
     def __init__(self):
         self.app = Flask(__name__, static_url_path='/static')
         self.app.config.from_object(app_config)
 
+        @self.app.before_request
+        def before_request():
+            g.user = current_user
         """
             routing
             import modules and components and
@@ -30,8 +37,13 @@ class Server(object):
         def shutdown_session(exception=None):
             db.session.remove()
 
+    def setup_session(self):
+        self.app.session_interface = SQLAlchemySessionInterface()
 
-
+    def setup_login_manager(self):
+        login_manager.init_app(self.app)
+        login_manager.login_view = 'auth.signin'
 
 server = Server()
 server.setup_database()
+server.setup_login_manager()

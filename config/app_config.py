@@ -4,6 +4,7 @@ PORT = 5000
 
 # Define the application directory
 import os
+from datetime import timedelta
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database - we are working with
@@ -34,7 +35,7 @@ CSRF_SESSION_KEY = "secret"
 # Secret key for signing cookies
 SECRET_KEY = "secret"
 SESSION_COOKIE_NAME = 'drawml_flask_session'
-
+PERMANENT_SESSION_LIFETIME = timedelta(31)
 
 # file upload
 UPLOAD_FOLDER = '/data'

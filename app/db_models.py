@@ -22,15 +22,27 @@ class User(Base):
         self.user_id = userid
         self.pw = pw
 
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
+
     def __repr__(self):
-        return '<User %r>' % self.name
+        return '<User %r>' % self.user_id
 
 
 class Experiment(Base):
     __tablename__   = 'experiment'
     __table_args__  = {'extend_existing': True}
     name            = db.Column(db.VARCHAR(45), primary_key=True)
-    user_id         = db.Column(db.VARCHAR(45), db.ForeignKey('user.id'), primary_key=True)
+    user_id         = db.Column(db.VARCHAR(45), db.ForeignKey('user.user.id'), primary_key=True)
     xml             = db.Column(db.BLOB)
     drawing         = db.Column(db.BLOB)
     input           = db.Column(db.Integer)
