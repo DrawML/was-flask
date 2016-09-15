@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container">
+    <h2>Experiments</h2>
+    <table class="table table-hover">
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Date</th>
+      </tr>
+      {%- for experiment in experiments %}
+      <tr>
+        <td>{{experiment.id}}</td>
+        <td><a href="/experiments/{{ experiment.id }}">{{ experiment.name }}</a></td>
+        <td>{{ experiment.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {%- endfor %}
+    </table>
+    <p>
+      <a href="{{ url_for('index.root') }}" class="btn btn-large btn-primary">New Experiment</a>
+</div>
+{% endblock %}

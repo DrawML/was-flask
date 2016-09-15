@@ -1,4 +1,5 @@
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, render_template, g
+from flask_login import login_required
 import json
 from jinja2.exceptions import TemplateError
 from sqlalchemy import exc
@@ -10,36 +11,41 @@ from app.experiment.models import Refiner, JsonParser, \
 
 module_exp = Blueprint('experiment',
                        __name__,
-                       url_prefix='/experiment',
-                       static_folder='/static/experiment',
-                       template_folder='templates/experiment')
+                       url_prefix='/experiments',
+                       static_folder='/static/experiments',
+                       template_folder='templates/experiments')
 
 
-@module_exp.route('/<user_id>', methods=['GET', 'POST'], endpoint='user_all_exp')
-@module_exp.route('/', defaults={'user_id': 'index'})
-def user_all_exp(user_id):
+@module_exp.route('/', methods=['GET'], endpoint='get_all_exp')
+@login_required
+def get_all_exp():
+    return render_template('/experiment/list.html',
+                           experiments=Experiment.query.
+                           filter_by(user_id=g.user.id).order_by(Experiment.date_modified.desc()).all())
+    """
     experiments = db.session.query(Experiment).filter(Experiment.user_id == user_id).all()
     refined_exps = Refiner(experiments)
     json.dumps(refined_exps.exps)
     current_app.logger.info('exp for ' + user_id + ' : ' + str(len(experiments)))
     return json.dumps(refined_exps.exps)
+    """
 
 
-@module_exp.route('/<user_id>/<exp_name>', methods=['GET', 'POST'], endpoint='user_exp')
-@module_exp.route('/', defaults={'user_id': 'index', 'exp_name': ''})
-def user_exp(user_id, exp_name):
-    experiments = db.session.query(Experiment).\
-        filter(Experiment.user_id == user_id, Experiment.name == exp_name).all()
-    refined_exps = Refiner(experiments)
-    json.dumps(refined_exps.exps)
-    current_app.logger.info('exp for ' + user_id + ' : ' + str(len(experiments)))
+@module_exp.route('/<exp_id>', methods=['GET', 'POST'], endpoint='get_exp')
+@login_required
+def get_exp(exp_id):
+    # experiment = Experiment.query.get(int(exp_id))
+    experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).all()
+    refined_exps = Refiner(experiment)
+    current_app.logger.info('GET exp <%r>', refined_exps.exps[0]['name'])
     return json.dumps(refined_exps.exps)
 
 
 @module_exp.route('/', methods=['POST'], endpoint='exp_create')
+@login_required
 def exp_create():
     json_data = request.get_json()
-    exp_data = JsonParser.parse_post(json_data)
+    exp_data = JsonParser.parse_post(json_data, g.user.id)
     if type(exp_data) != Experiment:
         current_app.logger.error(exp_data)
         return 'json key error'
@@ -62,45 +68,51 @@ def exp_create():
         db.session.rollback()
         current_app.logger.error(e)
         return 'create error'
-    current_app.logger.info('exp_data created :' + exp_data.name + ' ' + exp_data.user_id)
+    current_app.logger.info('exp_data created :' + exp_data.name + ' ' + exp_data.user.user_id)
     return 'created'
 
 
-@module_exp.route('/<user_id>/<exp_name>', methods=['PATCH'], endpoint='exp_update')
-@module_exp.route('/<user_id>/<exp_name>', defaults={'user_id': 'index', 'exp_name': ''})
-def exp_update(user_id, exp_name):
+@module_exp.route('/<exp_id>', methods=['PATCH'], endpoint='exp_update')
+@login_required
+def exp_update(exp_id):
     json_data = request.get_json()
+    exp_data = JsonParser.parse_post(json_data, g.user.id)
+    if type(exp_data) != Experiment:
+        current_app.logger.error(exp_data)
+        return 'json key error'
 
     try:
-        exp_json = json_data['exp_data']
-        exp_data = Experiment(exp_json['name'],
-                              exp_json['user_id'],
-                              exp_json['xml'].encode(),
-                              exp_json['drawing'].encode(),
-                              exp_json['input'])
-    except KeyError as e:
+        experiments = db.session.query(Experiment) \
+            .filter(Experiment.user_id == exp_data.user_id,
+                    Experiment.name == exp_data.name).all()
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
         current_app.logger.error(e)
-        return 'json key error'
+        return 'read error'
+    if len(experiments) > 0:
+        return 'duplicated exp name'
+
     updated = db.session.query(Experiment)\
-        .filter(Experiment.user_id == user_id, Experiment.name == exp_name)\
+        .filter(Experiment.id == exp_id)\
         .update(exp_data.to_dict(), synchronize_session=False)
     db.session.commit()
-    current_app.logger.info(str(updated) + ' columns updated : ' + exp_data.name + ' ' + exp_data.user_id)
+    current_app.logger.info(str(updated) + ' columns updated : ' + exp_data.name)
     return 'updated'
 
 
-@module_exp.route('/<user_id>/<exp_name>', methods=['DELETE'], endpoint='exp_delete')
-@module_exp.route('/<user_id>/<exp_name>', defaults={'user_id': 'index', 'exp_name': ''})
-def exp_delete(user_id, exp_name):
+@module_exp.route('/<exp_id>', methods=['DELETE'], endpoint='exp_delete')
+@login_required
+def exp_delete(exp_id):
     deleted = db.session.query(Experiment) \
-        .filter(Experiment.user_id == user_id, Experiment.name == exp_name) \
+        .filter(Experiment.id == exp_id) \
         .delete(synchronize_session=False)
     db.session.commit()
-    current_app.logger.info(str(deleted) + ' columns deleted : ' + user_id + ' ' + exp_name)
+    current_app.logger.info(str(deleted) + ' columns deleted : ' + exp_id)
     return 'delete'
 
 
 @module_exp.route('/run', methods=['POST'], endpoint='exp_run')
+@login_required
 def exp_run():
     xml = request.data.decode()
 
@@ -148,5 +160,6 @@ def exp_run():
 
 
 @module_exp.route('/stop', methods=['GET', 'POST'], endpoint='exp_stop')
+@login_required
 def exp_stop():
     return 'stop'

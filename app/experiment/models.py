@@ -3,6 +3,7 @@ import os
 import xml.etree.ElementTree as Et
 from app.db_models import Experiment
 import app.experiment.object_code.scripts.data_process as data_process
+import pickle
 
 
 class TaskRunner:
@@ -91,13 +92,13 @@ class Refiner(json.JSONEncoder):
 
 class JsonParser:
     @staticmethod
-    def parse_post(json):
+    def parse_post(json, user_id):
         try:
             exp_json = json['exp_data']
             exp_data = Experiment(exp_json['name'],
-                                  exp_json['user_id'],
-                                  exp_json['xml'].encode(),
-                                  exp_json['drawing'].encode(),
+                                  user_id,
+                                  pickle.dumps(exp_json['xml']),
+                                  pickle.dumps(exp_json['drawing']),
                                   exp_json['input'])
         except KeyError as e:
             return e

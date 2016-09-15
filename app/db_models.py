@@ -17,6 +17,7 @@ class User(Base):
     __table_args__  = {'extend_existing': True}
     user_id         = db.Column(db.VARCHAR(64), nullable=False)
     pw              = db.Column(db.VARCHAR(64))
+    experiments     = db.relationship('Experiment', backref='user', lazy='dynamic')
 
     def __init__(self, userid, pw):
         self.user_id = userid
@@ -42,7 +43,7 @@ class Experiment(Base):
     __tablename__   = 'experiment'
     __table_args__  = {'extend_existing': True}
     name            = db.Column(db.VARCHAR(45), primary_key=True)
-    user_id         = db.Column(db.VARCHAR(45), db.ForeignKey('user.user.id'), primary_key=True)
+    user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     xml             = db.Column(db.BLOB)
     drawing         = db.Column(db.BLOB)
     input           = db.Column(db.Integer)
