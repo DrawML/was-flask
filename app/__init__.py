@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask, g, render_template
 from flask_login import current_user
 from config import app_config
 from session import SQLAlchemySessionInterface
@@ -14,6 +14,10 @@ class Server(object):
         @self.app.before_request
         def before_request():
             g.user = current_user
+
+        @self.app.errorhandler(404)
+        def not_found(error):
+            return render_template('404.html')
         """
             routing
             import modules and components and
