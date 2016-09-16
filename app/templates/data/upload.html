@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="progress">
+    <div class="bar" style="width: 0%;"></div>
+</div>
+<input id="fileupload" type="file" name="file" data-url="upload" multiple>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/javascripts/vendor/jquery.ui.widget.js"></script>
+<script src="/static/javascripts/jquery.iframe-transport.js"></script>
+<script src="/static/javascripts/jquery.fileupload.js"></script>
+<script>
+    /*
+$(function () {
+    $('#fileupload').fileupload({
+        url: '/data/uploads/',
+        dataType: 'json',
+        sequentialUploads: true,
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .bar').css(
+                'width',
+                progress + '%'
+            );
+        },
+        add: function (e, data) {
+            data.context = $('<button/>').text('Upload')
+                .appendTo(document.body)
+                .click(function () {
+                    data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+                    data.submit();
+                });
+        },
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo(document.body);
+            });
+        }
+    });
+});
+*/
+    $('#fileupload').fileupload({maxChunkSize: 10000000}) // 10 MB
+        .on('fileuploaddone', function (e, data) {
+            alert('Uploading Complete');
+        })
+        .on('fileuploadfail', function (e, data) {
+            $.ajax({
+                url: data.id,
+                dataType: 'json',
+                data: {file: data.files[0].name},
+                type: 'DELETE'
+            });
+            alert('Uploading Fail');
+        })
+        .on('fileuploadchunksend', function (e, data) {})
+        .on('fileuploadchunkdone', function (e, data) {})
+        .on('fileuploadchunkfail', function (e, data) {})
+        .on('fileuploadchunkalways', function (e, data) {});
+</script>
+{% endblock %}

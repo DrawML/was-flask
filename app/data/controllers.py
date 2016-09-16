@@ -1,4 +1,5 @@
-from flask import Blueprint, current_app, request, jsonify
+from flask import Blueprint, request, jsonify, \
+    render_template, Response
 import os
 
 module_data = Blueprint('data',
@@ -10,41 +11,40 @@ module_data = Blueprint('data',
 
 @module_data.route('/upload', methods=['GET'], endpoint='data_upload')
 def data_upload_get():
-    return current_app.send_static_file('upload.html')
-    return 'upload'
+    return render_template('data/upload.html')
 
 
 @module_data.route('/upload', methods=['POST'], endpoint='data_upload_post')
 def data_upload_post():
-    files = request.files
+    param = request.files
+    if (param is None) or (param['file'] is None):
+        res = Response()
+        res.status_code(400)
+        res.data('Error, No parameter')
+        return res
 
-    # assuming only one file is passed in the request
-    # key = files.keys()[0]
-    key = files.keys()
-    print(key)
-    print(files[key])
-    value = files[key]  # this is a Werkzeug FileStorage object
-    print(value)
-    filename = value.filename
+    file = param['file']
+    FILE_SAVE_PATH = '/Users/chan/test/'
+    filename = file.filename
+    filepath = FILE_SAVE_PATH + filename
 
     if 'Content-Range' in request.headers:
         # extract starting byte from Content-Range header string
         range_str = request.headers['Content-Range']
         start_bytes = int(range_str.split(' ')[1].split('-')[0])
-
         # append chunk to the file on disk, or create new
-        with open(filename, 'a') as f:
+        with open(filepath, 'ab') as f:
             f.seek(start_bytes)
-            f.write(value.stream.read())
+            f.write(file.stream.read())
 
     else:
         # this is not a chunked request, so just save the whole file
-        value.save(filename)
+        file.save(filepath)
 
     # send response with appropriate mime type header
-    return jsonify({"name": value.filename,
-                    "size": os.path.getsize(filename),
-                    "url": 'uploads/' + value.filename,
+    return jsonify({"name": file.filename,
+                    "size": os.path.getsize(filepath),
+                    "url": 'uploads/' + file.filename,
                     "thumbnail_url": None,
                     "delete_url": None,
                     "delete_type": None})
