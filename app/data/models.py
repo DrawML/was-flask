@@ -13,3 +13,13 @@ class DataChecker:
         if len(query_data) > 0:
             return True
         return False
+
+
+class DataFetcher:
+    def __init__(self, did):
+        self.did = did
+
+    def get_data(self):
+        query_data = db.session.query(Data). \
+            filter(Data.id == self.did).all()
+        return query_data

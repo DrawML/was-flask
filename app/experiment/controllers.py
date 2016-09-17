@@ -31,7 +31,7 @@ def get_all_exp():
     """
 
 
-@module_exp.route('/<exp_id>', methods=['GET', 'POST'], endpoint='get_exp')
+@module_exp.route('/<exp_id>', methods=['GET'], endpoint='get_exp')
 @login_required
 def get_exp(exp_id):
     # experiment = Experiment.query.get(int(exp_id))

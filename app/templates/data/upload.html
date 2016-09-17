@@ -3,7 +3,7 @@
 <div id="progress">
     <div class="bar" style="width: 0%;"></div>
 </div>
-<input id="fileupload" type="file" name="file" data-url="upload" multiple>
+<input id="fileupload" type="file" name="file" data-url="/data" multiple>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/static/javascripts/vendor/jquery.ui.widget.js"></script>
 <script src="/static/javascripts/jquery.iframe-transport.js"></script>
@@ -40,10 +40,7 @@ $(function () {
 */
     $('#fileupload').fileupload({
         maxChunkSize: 10000000, // 10 MB
-        beforeSend: function(xhr, setting) {
-            console.log(setting);
-//            xhr.setRequestHeader('X-FileName', file.name);
-        }
+        method:'POST'
     })
         .on('fileuploaddone', function (e, data) {
             alert('Uploading Complete');

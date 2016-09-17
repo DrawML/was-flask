@@ -5,8 +5,9 @@ from flask_login import login_required
 from app.database import db
 from app.db_models import Data
 from app.response import ErrorResponse
-from app.data.models import DataChecker
+from app.data.models import DataChecker, DataFetcher
 import os
+import json
 
 module_data = Blueprint('data',
                         __name__,
@@ -14,14 +15,32 @@ module_data = Blueprint('data',
                         static_folder='/static/data',
                         template_folder='templates/data')
 
+FILE_SAVE_PATH = '/Users/chan/test/'
 
-@module_data.route('/upload', methods=['GET'], endpoint='data_upload')
+
+@module_data.route('/upload', methods=['GET'], endpoint='data_upload_page')
 @login_required
-def data_upload_get():
+def data_upload_page():
     return render_template('data/upload.html')
 
 
-@module_data.route('/upload', methods=['POST'], endpoint='data_upload_post')
+@module_data.route('', methods=['GET'], endpoint='data_get_all')
+@login_required
+def data_get_all():
+    user_id = g.user.id
+    data_set = db.session.query(Data).filter(Data.user_id == user_id).all()
+    return json.dumps(data_set)     # in progress
+
+
+@module_data.route('/<data_id>', methods=['GET'], endpoint='data_get')
+@login_required
+def data_get(data_id):
+    user_id = g.user.id
+    return jsonify(db.session.query(Data).filter(Data.user_id == user_id, Data.id == data_id).all())
+    # in progress
+
+
+@module_data.route('', methods=['POST'], endpoint='data_upload_post')
 @login_required
 def data_upload_post():
     param = request.files
@@ -32,7 +51,6 @@ def data_upload_post():
         return res
 
     file = param['file']
-    FILE_SAVE_PATH = '/Users/chan/test/'
     user_id = g.user.id
     filename = file.filename
     filepath = FILE_SAVE_PATH + str(user_id) + '-' + filename
@@ -65,8 +83,7 @@ def data_upload_post():
         # this is not a chunked request, so just save the whole file
         data_checker = DataChecker(user_id=user_id, filename=filename)
         if data_checker.exist():
-            res = ErrorResponse(400, 'Error, File already exist')
-            return res
+            return ErrorResponse(400, 'Error, File already exist')
         new_data = Data(name=filename, user_id=user_id, path=filepath)
         try:
             db.session.add(new_data)
@@ -74,8 +91,7 @@ def data_upload_post():
         except SQLAlchemyError as e:
             db.session.rollback()
             current_app.logger.error(e)
-            res = ErrorResponse(500, 'Error, Database internal error')
-            return res
+            return ErrorResponse(500, 'Error, Database internal error')
         current_app.logger.info('exp_data created :' + str(new_data))
         file.save(filepath)
 
@@ -88,13 +104,62 @@ def data_upload_post():
                     "delete_type": None})
 
 
-@module_data.route('/update', methods=['GET', 'POST'], endpoint='data_update')
+@module_data.route('/<data_id>', methods=['PATCH'], endpoint='data_update')
 @login_required
-def data_update():
+def data_update(data_id):
+    data_checker = DataFetcher(data_id)
+    query_data = data_checker.get_data()
+    if len(query_data) <= 0:
+        res = ErrorResponse(400, 'Error, File does not exist')
+        return res
+
+    user_id = g.user.id
+    json_data = request.get_json()
+    raw = json_data['data']
+    new_name = raw['name']
+    new_path = FILE_SAVE_PATH + str(user_id) + '-' + new_name
+    data_checker = DataChecker(user_id=user_id, filename=new_name)
+    if data_checker.exist():
+        return ErrorResponse(400, 'Error, File already exist')
+
+    file_path = query_data[0].path
+    try:
+        os.rename(file_path, new_path)
+    except Exception as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Server Error')
+
+    updated_data = Data(name=new_name, user_id=user_id, path=new_path)
+    try:
+        db_result = db.session.query(Data) \
+            .filter(Data.id == data_id) \
+            .update(updated_data.to_dict(), synchronize_session=False)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        os.rename(new_path, file_path)
+        db.session.rollback()
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    current_app.logger.info('Data updated ' + str(db_result))
     return 'update'
 
 
-@module_data.route('/delete', methods=['GET', 'POST'], endpoint='data_delete')
+@module_data.route('/<data_id>', methods=['DELETE'], endpoint='data_delete')
 @login_required
-def data_delete():
+def data_delete(data_id):
+    data_checker = DataFetcher(data_id)
+    query_data = data_checker.get_data()
+    if len(query_data) <= 0:
+        res = ErrorResponse(400, 'Error, File does not exist')
+        return res
+    try:
+        deleted = db.session.query(Data) \
+            .filter(Data.id == data_id) \
+            .delete(synchronize_session=False)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    current_app.logger('Data removed ' + str(deleted))
     return 'delete'

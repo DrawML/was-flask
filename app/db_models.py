@@ -86,6 +86,13 @@ class Data(Base):
     def __repr__(self):
         return '<Data %r %r>' % (self.user.user_id, self.name)
 
+    def to_dict(self):
+        return {
+            Data.name:    self.name,
+            Data.user_id: self.user_id,
+            Data.path:     self.path
+        }
+
 
 class FlaskSession(Base):
     __tablename__ = 'session'
