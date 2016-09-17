@@ -38,7 +38,13 @@ $(function () {
     });
 });
 */
-    $('#fileupload').fileupload({maxChunkSize: 10000000}) // 10 MB
+    $('#fileupload').fileupload({
+        maxChunkSize: 10000000, // 10 MB
+        beforeSend: function(xhr, setting) {
+            console.log(setting);
+//            xhr.setRequestHeader('X-FileName', file.name);
+        }
+    })
         .on('fileuploaddone', function (e, data) {
             alert('Uploading Complete');
         })

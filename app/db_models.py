@@ -18,6 +18,7 @@ class User(Base):
     user_id         = db.Column(db.VARCHAR(64), nullable=False)
     pw              = db.Column(db.VARCHAR(64))
     experiments     = db.relationship('Experiment', backref='user', lazy='dynamic')
+    data            = db.relationship('Data', backref='user', lazy='dynamic')
 
     def __init__(self, userid, pw):
         self.user_id = userid
@@ -57,7 +58,7 @@ class Experiment(Base):
         self.input      = input
 
     def __repr__(self):
-        return '<Experiment %r %r>' % (self.user_id, self.name)
+        return '<Experiment %r %r>' % (self.user.user_id, self.name)
 
     def to_dict(self):
         return {
@@ -69,7 +70,24 @@ class Experiment(Base):
         }
 
 
-class FlaskSession():
+class Data(Base):
+    __tablename__   = 'data'
+    __table_args__  = {'extend_existing': True}
+    name            = db.Column(db.VARCHAR(45), primary_key=True)
+    user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    path            = db.Column(db.VARCHAR(255))
+
+    def __init__(self, name, user_id, path):
+        super()
+        self.name       = name
+        self.user_id    = user_id
+        self.path       = path
+
+    def __repr__(self):
+        return '<Data %r %r>' % (self.user.user_id, self.name)
+
+
+class FlaskSession(Base):
     __tablename__ = 'session'
     __table_args__ = {'extend_existing': True}
     sid     = db.Column(db.VARCHAR(45), primary_key=True)

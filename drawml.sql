@@ -27,7 +27,7 @@ CREATE TABLE `drawml`.`data` (
   `date_created` DATETIME NULL,
   `date_modified` DATETIME NULL,
   `name` VARCHAR(45) NOT NULL,
-  `path` VARCHAR(45) NOT NULL,
+  `path` VARCHAR(255) NOT NULL,
   `user_id` INTEGER NOT NULL,
   PRIMARY KEY (`user_id`, `name`),
   FOREIGN KEY user(user_id) REFERENCES user(id) ON DELETE CASCADE,
