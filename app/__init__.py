@@ -1,7 +1,7 @@
 from flask import Flask, g, render_template
 from flask_login import current_user
 from config import app_config
-from session import SQLAlchemySessionInterface
+from app.session import SQLAlchemySessionInterface
 from app.database import db
 from app.manager import login_manager
 
