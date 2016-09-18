@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as et
 from jinja2.exceptions import TemplateError
-from code_generator import get_template, parse_xml
+from app.experiment.object_code.scripts.code_generator \
+    import get_template, parse_xml
 
 
 def bind_variables(xml_info, template_variable):
