@@ -38,5 +38,7 @@ This version is OS X, CPU only, python3.5.2
     $ env/bin/pip3 install --upgrade $TF_BINARY_URL
 
 
+###Run
+    app.py
 ### Reference
 
