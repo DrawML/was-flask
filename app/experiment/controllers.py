@@ -2,7 +2,7 @@ from flask import Blueprint, request, current_app, render_template, g
 from flask_login import login_required
 import json
 from jinja2.exceptions import TemplateError
-from sqlalchemy import exc
+from sqlalchemy.exc import SQLAlchemyError
 from app.db_models import Experiment
 from app.database import db
 from app.experiment.models import Refiner, JsonParser, \
@@ -34,10 +34,15 @@ def get_all_exp():
 @module_exp.route('/<exp_id>', methods=['GET'], endpoint='get_exp')
 @login_required
 def get_exp(exp_id):
-    # experiment = Experiment.query.get(int(exp_id))
-    experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).all()
+    try:
+        experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if experiment is None:
+        return ErrorResponse(400, 'Bad Request, No data')
     refined_exps = Refiner(experiment)
-    current_app.logger.info('GET exp <%r>', refined_exps.exps[0]['name'])
+    current_app.logger.info('GET exp <%r>', refined_exps.exps['name'])
     return json.dumps(refined_exps.exps)
 
 
@@ -54,7 +59,7 @@ def exp_create():
         experiments = db.session.query(Experiment) \
             .filter(Experiment.user_id == exp_data.user_id,
                     Experiment.name == exp_data.name).all()
-    except exc.SQLAlchemyError as e:
+    except SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
         return ErrorResponse(500, 'Error, Database Internal Error')
@@ -64,7 +69,7 @@ def exp_create():
     try:
         db.session.add(exp_data)
         db.session.commit()
-    except exc.SQLAlchemyError as e:
+    except SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
         return ErrorResponse(500, 'Error, Database Internal Error')
@@ -85,28 +90,38 @@ def exp_update(exp_id):
         experiments = db.session.query(Experiment) \
             .filter(Experiment.user_id == exp_data.user_id,
                     Experiment.name == exp_data.name).all()
-    except exc.SQLAlchemyError as e:
+    except SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
         return ErrorResponse(500, 'Error, Database Internal Error')
     if len(experiments) > 0:
         return ErrorResponse(400, 'Experiment name is Duplicated')
 
-    updated = db.session.query(Experiment)\
-        .filter(Experiment.id == exp_id)\
-        .update(exp_data.to_dict(), synchronize_session=False)
-    db.session.commit()
-    current_app.logger.info(str(updated) + ' columns updated : ' + exp_data.name)
+    try:
+        updated = db.session.query(Experiment)\
+            .filter(Experiment.id == exp_id)\
+            .update(exp_data.to_dict(), synchronize_session=False)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Error, Database Internal Error')
+    current_app.logger.info(str(updated) + ' columns updated : ' + str(exp_data))
     return 'updated'
 
 
 @module_exp.route('/<exp_id>', methods=['DELETE'], endpoint='exp_delete')
 @login_required
 def exp_delete(exp_id):
-    deleted = db.session.query(Experiment) \
-        .filter(Experiment.id == exp_id) \
-        .delete(synchronize_session=False)
-    db.session.commit()
+    try:
+        deleted = db.session.query(Experiment) \
+            .filter(Experiment.id == exp_id) \
+            .delete(synchronize_session=False)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Error, Database Internal Error')
     current_app.logger.info(str(deleted) + ' columns deleted : ' + exp_id)
     return 'delete'
 

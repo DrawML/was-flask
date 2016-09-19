@@ -71,10 +71,13 @@ class TFConverter:
 class Refiner(json.JSONEncoder):
     def __init__(self, exps):
         super().__init__()
-        self.exps = []
-        for exp in exps:
-            temp = self.exp_to_dict(exp)
-            self.exps.append(temp)
+        if type(exps) is not list:
+            self.exps = self.exp_to_dict(exps)
+        else:
+            self.exps = []
+            for exp in exps:
+                temp = self.exp_to_dict(exp)
+                self.exps.append(temp)
 
     def exp_to_dict(self, exp):
         exp_dict = dict(
