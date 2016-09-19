@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, \
     redirect, url_for, request, current_app, flash
 from flask_login import login_user, logout_user
+from sqlalchemy.exc import SQLAlchemyError
 from app.db_models import User
 from app.database import db
 
@@ -16,9 +17,24 @@ def register():
     if request.method == 'GET':
         return render_template('auth/register.html')
     user = User(request.form['user_id'], request.form['pw'])
-    db.session.add(user)
-    db.session.commit()
-    current_app.logger.info('User successfully registered')
+    try:
+        duplicate = db.session.query(User).filter(User.user_id == user.user_id).all()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        flash('Internal Server Error', 'error')
+        return render_template('auth/register.html')
+    if len(duplicate) > 0:
+        flash('User id ' + user.user_id + ' is duplicated', 'error')
+        return render_template('auth/register.html')
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        current_app.logger.error(e)
+        flash('Internal Server Error', 'error')
+        return render_template('auth/register.html')
+    current_app.logger.info('User ' + str(user) + ' successfully registered')
     return redirect(url_for('auth.signin'))
 
 
