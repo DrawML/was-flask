@@ -7,7 +7,7 @@ from app.db_models import Experiment
 from app.database import db
 from app.experiment.models import Refiner, JsonParser, \
     TFConverter, TaskRunner, ExperimentError, DataProcessor
-
+from app.response import ErrorResponse
 
 module_exp = Blueprint('experiment',
                        __name__,
@@ -48,7 +48,7 @@ def exp_create():
     exp_data = JsonParser.parse_post(json_data, g.user.id)
     if type(exp_data) != Experiment:
         current_app.logger.error(exp_data)
-        return 'json key error'
+        return ErrorResponse(400, 'Json key Error')
 
     try:
         experiments = db.session.query(Experiment) \
@@ -57,9 +57,9 @@ def exp_create():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
-        return 'create error'
+        return ErrorResponse(500, 'Error, Database Internal Error')
     if len(experiments) > 0:
-        return 'duplicated exp name'
+        return ErrorResponse(400, 'Experiment name is Duplicated')
 
     try:
         db.session.add(exp_data)
@@ -67,7 +67,7 @@ def exp_create():
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
-        return 'create error'
+        return ErrorResponse(500, 'Error, Database Internal Error')
     current_app.logger.info('exp_data created :' + exp_data.name + ' ' + exp_data.user.user_id)
     return 'created'
 
@@ -79,7 +79,7 @@ def exp_update(exp_id):
     exp_data = JsonParser.parse_post(json_data, g.user.id)
     if type(exp_data) != Experiment:
         current_app.logger.error(exp_data)
-        return 'json key error'
+        return ErrorResponse(400, 'Json key Error')
 
     try:
         experiments = db.session.query(Experiment) \
@@ -88,9 +88,9 @@ def exp_update(exp_id):
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
-        return 'read error'
+        return ErrorResponse(500, 'Error, Database Internal Error')
     if len(experiments) > 0:
-        return 'duplicated exp name'
+        return ErrorResponse(400, 'Experiment name is Duplicated')
 
     updated = db.session.query(Experiment)\
         .filter(Experiment.id == exp_id)\
@@ -121,16 +121,16 @@ def exp_run():
         obj_code = data_processor.generate_object_code()
         data_processor.run_obj_code(obj_code)
     except ExperimentError:
-        current_app.logger.error("Invalid XML form")
-        return "invalid XML form"
+        current_app.logger.error('Invalid XML form')
+        return ErrorResponse(400, 'Invalid XML form')
     except TemplateError as e:
         current_app.logger.error(e)
-        return "Template Error"
+        return ErrorResponse(500, 'Internal Server Error, Template Error')
     except AttributeError:
-        current_app.logger.info("No data processing in XML")
+        current_app.logger.info('No data processing in XML')
     except Exception as e:
         current_app.logger.error(e)
-        return "Unexpected Error"
+        return ErrorResponse(500, 'Unexpected Error')
 
     # run data processing
     # we should pass data id argument to taskrunner
@@ -139,19 +139,19 @@ def exp_run():
     try:
         tf_converter = TFConverter(xml)
         obj_code = tf_converter.generate_object_code()
-        current_app.logger.info("Code was generated")
+        current_app.logger.info('Code was generated')
         tf_converter.run_obj_code(obj_code)
     except ExperimentError:
-        current_app.logger.error("Invalid XML form")
-        return "invalid XML form"
+        current_app.logger.error('Invalid XML form')
+        return ErrorResponse(400, 'Invalid XML form')
     except TemplateError as e:
         current_app.logger.error(e)
-        return "Template Error"
+        return ErrorResponse(500, 'Internal Server Error, Template Error')
     except AttributeError:
-        current_app.logger.info("No model in XML")
+        current_app.logger.info('No model in XML')
     except Exception as e:
         current_app.logger.error(e)
-        return "Unexpected Error"
+        return ErrorResponse(500, 'Unexpected Error')
 
     # we should pass data id argument to taskrunner
     # tr = TaskRunner(obj_code)

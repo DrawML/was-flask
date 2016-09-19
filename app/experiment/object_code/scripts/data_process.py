@@ -21,17 +21,29 @@ def make_processing(xml_info, template_variable):
     size = int(xml_info['data_processing_size'])
     template_variable['processing_size'] = size
 
+    columns = xml_info['input_col']
+    columns = columns.replace(' ', '')
+    columns = columns.split(',')
+    columns = [int(i) for i in columns]
+    total_col = 0
+    for col in columns:
+        total_col += col
+    template_variable['columns'] = columns
+
+
     processing = []
 
     for i in range(size):
         unit = {}
         key, p_type = find_key(i+1, xml_info)
+
         unit['type'] = p_type
+
         data_str = xml_info[key]
         data_str = data_str.replace(' ', '')
         unit['data'] = data_str.split(',')
-        col = int(xml_info['input_x']) + int(xml_info['input_y'])
-        unit['shape'] = [-1, col]
+
+        unit['shape'] = [-1, total_col]
         unit['name'] = 'seq' + str(i+1)
         processing.append(unit)
 

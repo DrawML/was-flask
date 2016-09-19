@@ -11,8 +11,9 @@ import numpy as np
 import sys
 import os
 
+columns  = {{columns}}
 file_ids = {{file_ids}}
-require = "{{require}}"
+require  = "{{require}}"
 
 
 def load_input():
@@ -28,7 +29,7 @@ def load_input():
         if os.path.isfile(file_path) is False:
             print('No such file or directory', file_path)
             sys.exit(2)
-        file = np.genfromtxt(file_path, dtype='float32'l)
+        file = np.genfromtxt(file_path, dtype='float32')
         files[file_ids[i]] = file
     return files
 
@@ -55,9 +56,16 @@ def transpose(data):
 
 
 def save_require(name):
-    if name == require:
-        # save files[name] ...
-        # and throw information about file
+    if name != require:
+        return
+    with open('/file/path/here', 'ab') as f:
+        for num in columns:
+            f.write((str(num) + ' ').encode())
+        f.write(b'\n')
+        np.savetxt(f, files[name], delimiter=' ')
+
+    # save files[name] ...
+    # and throw information about file
 
 files = load_input()
 
