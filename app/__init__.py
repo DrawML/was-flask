@@ -1,5 +1,8 @@
 from flask import Flask, g, render_template
 from flask_login import current_user
+
+from app.dist_task.src.dist_system.client import Client
+from app.dist_task.src.dist_system.result_receiver import ResultReceiverAddress
 from config import app_config
 from app.session import SQLAlchemySessionInterface
 from app.database import db
@@ -18,6 +21,7 @@ class Server(object):
         @self.app.errorhandler(404)
         def not_found(error):
             return render_template('404.html')
+
         """
             routing
             import modules and components and
@@ -31,6 +35,13 @@ class Server(object):
         self.app.register_blueprint(auth)
         self.app.register_blueprint(exp)
         self.app.register_blueprint(data)
+
+        self.client = Client(self.app.config['MASTER_ADDR'],
+                             self.app.config['RESULT_ROUTER_PROTOCOL'] + '://*:' + self.app.config[
+                                 'RESULT_ROUTER_PORT'],
+                             ResultReceiverAddress(self.app.config['RESULT_ROUTER_PROTOCOL'],
+                                                   self.app.config['RESULT_ROUTER_ADDR'],
+                                                   int(self.app.config['RESULT_ROUTER_PORT'])))
 
     def setup_database(self):
         db.init_app(self.app)
@@ -48,32 +59,11 @@ class Server(object):
         login_manager.init_app(self.app)
         login_manager.login_view = 'auth.signin'
 
+    def setup_dist_client(self):
+        self.client.start()
+
+
 server = Server()
 server.setup_database()
 server.setup_login_manager()
-
-''' Example
-from app.dist-task.src.dist_system.client import Client
-
-
-client = Client(current_app.config['MASTER_ADDR'],
-                current_app.config['RESULT_ROUTER_ADDR'],
-                current_app.config['RESULT_RECEIVER_ADDRESS'])
-client.start()
-
-
-def run_experiment():
-    task_job_dict = dict()
-    task_job_dict['object_code'] = object_code
-    task_job_dict['data_file_token'] = data_file_id
-
-    def _callback(status: str, error_code: str=None):
-        now_user_id = current_app.session.user_id
-
-        if status == 'complete':
-            pass
-        elif status == 'fail':
-            pass
-
-    client.request(_, Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, _callback)
-'''
+server.setup_dist_client()

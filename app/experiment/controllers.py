@@ -9,6 +9,8 @@ from app.experiment.models import Refiner, JsonParser, \
     TFConverter, TaskRunner, ExperimentError, DataProcessor
 from app.response import ErrorResponse
 
+from app.dist_task.src.dist_system.client import Client
+
 module_exp = Blueprint('experiment',
                        __name__,
                        url_prefix='/experiments',
@@ -171,6 +173,33 @@ def exp_run():
     # we should pass data id argument to taskrunner
     # tr = TaskRunner(obj_code)
     # ..............
+
+    input_path = 'app/experiment/object_code/test/linear_regression_input.txt'
+
+    def get_dummy_input(input_path: str):
+        with open(input_path, 'r', encoding='utf-8') as f:
+            return f.read()
+
+    task_job_dict = dict()
+    task_job_dict['object_code'] = obj_code
+    task_job_dict['data_file_token'] = get_dummy_input(input_path)
+
+    # status : ["complete", "fail"]
+    # error_code : * str
+    def _callback(status: str, error_code: str=None):
+        print('[run_experiment] ', 'callbacked! ')
+        now_user_id = g.user.id
+
+        if status == 'complete':
+            print("[%d] callback is called with 'complete'" % now_user_id)
+        elif status == 'fail':
+            print("[%d] callback is called with 'fail'" % now_user_id)
+            print("Error : ", error_code)
+
+    print('[run_experiment] ', 'request! before')
+    Client().request(Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, _callback)
+    print('[run_experiment] ', 'request! after')
+
     return 'run'
 
 

@@ -39,3 +39,9 @@ PERMANENT_SESSION_LIFETIME = timedelta(31)
 
 # file upload
 UPLOAD_FOLDER = '/data'
+
+# Setup configure for distribution module
+MASTER_ADDR = 'tcp://*.*.*.*:16000'
+RESULT_ROUTER_PROTOCOL = 'tcp'
+RESULT_ROUTER_ADDR = '*.*.*.*'
+RESULT_ROUTER_PORT = '15000'
