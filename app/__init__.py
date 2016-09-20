@@ -51,3 +51,29 @@ class Server(object):
 server = Server()
 server.setup_database()
 server.setup_login_manager()
+
+''' Example
+from app.dist-task.src.dist_system.client import Client
+
+
+client = Client(current_app.config['MASTER_ADDR'],
+                current_app.config['RESULT_ROUTER_ADDR'],
+                current_app.config['RESULT_RECEIVER_ADDRESS'])
+client.start()
+
+
+def run_experiment():
+    task_job_dict = dict()
+    task_job_dict['object_code'] = object_code
+    task_job_dict['data_file_token'] = data_file_id
+
+    def _callback(status: str, error_code: str=None):
+        now_user_id = current_app.session.user_id
+
+        if status == 'complete':
+            pass
+        elif status == 'fail':
+            pass
+
+    client.request(_, Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, _callback)
+'''
