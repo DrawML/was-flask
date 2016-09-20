@@ -1,3 +1,3 @@
 [submodule "app/dist-task"]
-	path = app/dist-task
+	path = app/dist_task
 	url = git@github.com:DrawML/dist-task.git
