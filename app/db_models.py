@@ -16,7 +16,7 @@ class User(Base):
     __tablename__   = 'user'
     __table_args__  = {'extend_existing': True}
     user_id         = db.Column(db.VARCHAR(64), nullable=False)
-    pw              = db.Column(db.VARCHAR(64))
+    pw              = db.Column(db.VARCHAR(64), nullable=False)
     experiments     = db.relationship('Experiment', backref='user', lazy='dynamic')
     data            = db.relationship('Data', backref='user', lazy='dynamic')
 

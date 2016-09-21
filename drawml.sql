@@ -1,17 +1,17 @@
 CREATE TABLE `drawml`.`user` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
-  `date_created` DATETIME NULL,
-  `date_modified` DATETIME NULL,
-  `user_id` VARCHAR(45) NOT NULL,
-  `pw` VARCHAR(45) NOT NULL,
+  `date_created` DATETIME DEFAULT NOW(),
+  `date_modified` DATETIME DEFAULT NOW(),
+  `user_id` VARCHAR(64) NOT NULL,
+  `pw` VARCHAR(64) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   UNIQUE INDEX `user_id_name_UNIQUE` (`user_id` ASC));
 
 CREATE TABLE `drawml`.`experiment` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
-  `date_created` DATETIME NULL,
-  `date_modified` DATETIME NULL,
+  `date_created` DATETIME DEFAULT NOW(),
+  `date_modified` DATETIME DEFAULT NOW(),
   `name` VARCHAR(45) NOT NULL,
   `user_id` INTEGER NOT NULL,
   `xml` BLOB NULL,
@@ -24,8 +24,8 @@ CREATE TABLE `drawml`.`experiment` (
 
 CREATE TABLE `drawml`.`data` (
   `id` MEDIUMINT NOT NULL AUTO_INCREMENT,
-  `date_created` DATETIME NULL,
-  `date_modified` DATETIME NULL,
+  `date_created` DATETIME DEFAULT NOW(),
+  `date_modified` DATETIME DEFAULT NOW(),
   `name` VARCHAR(45) NOT NULL,
   `path` VARCHAR(255) NOT NULL,
   `user_id` INTEGER NOT NULL,
