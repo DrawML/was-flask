@@ -2,7 +2,7 @@ import xml.etree.ElementTree as et
 from jinja2.exceptions import TemplateError
 from app.experiment.object_code.scripts.code_generator import get_template, \
     parse_xml, process_data, make_initializer, make_activation_function, \
-    make_optimizer, bind_common_variables, make_pooling, bind_padding
+    make_optimizer, bind_common_variables, make_pooling, bind_padding, get_input_shape
 
 
 def bind_variables(xml_info: dict, template_variables: dict):
@@ -11,13 +11,13 @@ def bind_variables(xml_info: dict, template_variables: dict):
     template_variables['dropout_conv'] = xml_info['model_dropout_conv']
     template_variables['dropout_hidden'] = xml_info['model_dropout_hidden']
 
-    x_shape = xml_info['input_x']
-    x_shape.replace(' ', '')
-    x_ver = int(x_shape.split(',')[0])
-    x_hor = int(x_shape.split(',')[1])
-    template_variables['x_vertical'] = x_ver
-    template_variables['x_horizontal'] = x_hor
-    template_variables['y_size'] = int(xml_info['input_y'])
+    shapes = get_input_shape(xml_info, template_variables)
+
+    x_shape = shapes[0]
+    y_shape = shapes[1]
+    template_variables['x_vertical'] = x_shape[0]
+    template_variables['x_horizontal'] = x_shape[1]
+    template_variables['y_size'] = y_shape[0]
 
     layer_size = int(xml_info['layer_set_size'])
     template_variables['layer_size'] = layer_size

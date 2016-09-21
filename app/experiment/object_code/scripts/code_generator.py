@@ -1,6 +1,7 @@
 import os
 import xml.etree.ElementTree as et
 from jinja2 import Environment, FileSystemLoader
+import ast
 
 
 class TemplateError(Exception):
@@ -225,3 +226,10 @@ def parse_xml(element_id: str, parent: et.Element, node: et.Element,
     for child in node:
         parse_xml(element_id, node, child, xml_info)
     element_id = ""
+
+
+def get_input_shape(xml_info: dict, template_variables: dict):
+    shapes = xml_info['input_shape']
+    shapes = ast.literal_eval(shapes)
+    template_variables['shapes'] = shapes
+    return shapes

@@ -1,10 +1,10 @@
 import xml.etree.ElementTree as et
 from jinja2.exceptions import TemplateError
 from app.experiment.object_code.scripts.code_generator \
-    import get_template, parse_xml
+    import get_template, parse_xml, get_input_shape
 
 
-def bind_variables(xml_info, template_variable):
+def bind_variables(xml_info: dict, template_variable: dict):
     ids = xml_info['input_data']
     ids.replace(' ', '')
     template_variable['file_ids'] = ids.split(',')
@@ -17,19 +17,19 @@ def find_key(num: int, xml: dict):
         return str(num) + '_transpose_data', 'transpose'
 
 
-def make_processing(xml_info, template_variable):
+def make_processing(xml_info: dict, template_variables: dict):
     size = int(xml_info['data_processing_size'])
-    template_variable['processing_size'] = size
+    template_variables['processing_size'] = size
 
-    columns = xml_info['input_col']
-    columns = columns.replace(' ', '')
-    columns = columns.split(',')
-    columns = [int(i) for i in columns]
+    shapes = get_input_shape(xml_info, template_variables)
     total_col = 0
-    for col in columns:
-        total_col += col
-    template_variable['columns'] = columns
-
+    for shape in shapes:
+        if len(shape) == 0:
+            continue
+        num = 1
+        for n in shape:
+            num *= n
+        total_col += num
 
     processing = []
 
@@ -47,7 +47,7 @@ def make_processing(xml_info, template_variable):
         unit['name'] = 'seq' + str(i+1)
         processing.append(unit)
 
-    template_variable['processing'] = processing
+    template_variables['processing'] = processing
 
 
 def make_code(root: et.Element):
