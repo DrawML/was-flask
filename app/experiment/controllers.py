@@ -184,20 +184,31 @@ def exp_run():
     task_job_dict['object_code'] = obj_code
     task_job_dict['data_file_token'] = get_dummy_input(input_path)
 
-    # status : ["complete", "fail"]
-    # error_code : * str
-    def _callback(status: str, error_code: str=None):
-        print('[run_experiment] ', 'callbacked! ')
+    # TensorFlowTaskResult
+    # <status>
+    #   - ["success", "error"]: str
+    # <body>
+    #   - dict      when "success",
+    #       { "stdout", "stderr", "result_file_token" }
+    #   - str       when "error"
+    def create_callback():
         now_user_id = g.user.id
 
-        if status == 'complete':
-            print("[%d] callback is called with 'complete'" % now_user_id)
-        elif status == 'fail':
-            print("[%d] callback is called with 'fail'" % now_user_id)
-            print("Error : ", error_code)
+        def _callback(status: str, body: dict=None):
+            print('[run_experiment] ', 'callbacked! ')
+
+            if status == 'success':
+                print("[%d] callback is called with 'complete'" % now_user_id)
+            elif status == 'error':
+                print("[%d] callback is called with 'fail'" % now_user_id)
+
+            if body is not None:
+                print(body['stderr'])
+
+        return _callback
 
     print('[run_experiment] ', 'request! before')
-    Client().request(Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, _callback)
+    Client().request(Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, create_callback())
     print('[run_experiment] ', 'request! after')
 
     return 'run'
