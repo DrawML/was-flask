@@ -42,7 +42,7 @@ def init_weights():
 x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
 
 {% raw %}
-with tf.device({{device}}):
+with tf.device("{{device}}"):
 {% endraw %}
     X = tf.placeholder(tf.float32, [None, len(x_train[0])])
     Y = tf.placeholder(tf.float32, [None, len(y_train[0])])

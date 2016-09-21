@@ -61,7 +61,7 @@ def cost_function(logits, targets, weights, batch_size):
 x_train, y_train, x_valid, y_valid, x_test, y_test = load_input()
 
 {% raw %}
-with tf.device({{device}}):
+with tf.device("{{device}}"):
 {% endraw %}
     x_train = x_train.reshape(-1, x_vertical, x_horizontal, 1)
     x_test  = x_test.reshape(-1, x_vertical, x_horizontal, 1)
