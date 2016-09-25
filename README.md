@@ -20,17 +20,14 @@
 
 ## Install and dependency
 ####Requirements
-Flask(0.11.1)
-Flask-SQLAlchemy(2.1)
-mysqlclient(1.3.7)
-oauth2client(3.0.0)
-
     virtualenv -p python3 env
     env/bin/pip3 install -r requirements.txt
 
 ####Dependency
 Mysql Ver 14.14 Distrib 5.7.9
+
 Redis-server Ver 3.2.2
+
 Protobuf Ver 3.0.0
 
 ###Tensorflow
@@ -44,6 +41,7 @@ This version is OS X, CPU only, python3.5.2
 
 
 ###Run
+    cd was-flask
     app.py
 ### Reference
 
