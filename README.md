@@ -28,6 +28,11 @@ oauth2client(3.0.0)
     virtualenv -p python3 env
     env/bin/pip3 install -r requirements.txt
 
+####Dependency
+Mysql Ver 14.14 Distrib 5.7.9
+Redis-server Ver 3.2.2
+Protobuf Ver 3.0.0
+
 ###Tensorflow
 ######https://www.tensorflow.org/versions/r0.10/get_started/os_setup.html#pip-installation
 This version is OS X, CPU only, python3.5.2
