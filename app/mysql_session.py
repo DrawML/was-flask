@@ -5,9 +5,9 @@ from flask.sessions import SessionInterface, SessionMixin
 from app.mysql import db
 from app.mysql_models import FlaskSession
 
+"""currently NOT used"""
 
 class SQLAlchemySession(CallbackDict, SessionMixin):
-
     def __init__(self, initial=None, sid=None, new=False):
         def on_update(self):
             self.modified = True

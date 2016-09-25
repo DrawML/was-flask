@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, \
-    redirect, url_for, request, current_app, flash
+from flask import Blueprint, render_template, make_response, \
+    redirect, url_for, request, current_app, flash, session
 from flask_login import login_user, logout_user
 from sqlalchemy.exc import SQLAlchemyError
 from app.mysql_models import User
@@ -57,5 +57,6 @@ def signin():
 
 @module_auth.route('/signout')
 def signout():
+    session.clear()
     logout_user()
     return redirect(url_for('index.root'))

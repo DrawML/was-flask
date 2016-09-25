@@ -7,6 +7,8 @@ from config import app_config
 from app.mysql_session import SQLAlchemySessionInterface
 from app.mysql import db
 from app.manager import login_manager
+from app.redis_session import RedisSessionInterface
+from app.redis import redis_cache
 
 
 class Server(object):
@@ -53,7 +55,8 @@ class Server(object):
             db.session.remove()
 
     def setup_session(self):
-        self.app.session_interface = SQLAlchemySessionInterface()
+        # self.app.session_interface = SQLAlchemySessionInterface()
+        self.app.session_interface = RedisSessionInterface()
 
     def setup_login_manager(self):
         login_manager.init_app(self.app)

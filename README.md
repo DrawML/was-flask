@@ -42,6 +42,8 @@ This version is OS X, CPU only, python3.5.2
 
 ###Run
     cd was-flask
+    mysql.server start
+    redis-server 
     app.py
 ### Reference
 
