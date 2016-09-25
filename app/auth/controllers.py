@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, \
     redirect, url_for, request, current_app, flash
 from flask_login import login_user, logout_user
 from sqlalchemy.exc import SQLAlchemyError
-from app.db_models import User
-from app.database import db
+from app.mysql_models import User
+from app.mysql import db
 
 module_auth = Blueprint('auth',
                         __name__,

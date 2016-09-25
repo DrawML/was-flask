@@ -1,7 +1,7 @@
 import json
 import os
 import xml.etree.ElementTree as Et
-from app.db_models import Experiment
+from app.mysql_models import Experiment
 import app.experiment.object_code.scripts.data_process as data_process
 import pickle
 

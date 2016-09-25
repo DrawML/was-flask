@@ -1,5 +1,5 @@
-from app.db_models import Data
-from app.database import db
+from app.mysql_models import Data
+from app.mysql import db
 
 
 class DataChecker:

@@ -2,8 +2,8 @@ from flask import Blueprint, request, jsonify, \
     render_template, Response, g, current_app
 from sqlalchemy.exc import SQLAlchemyError
 from flask_login import login_required
-from app.database import db
-from app.db_models import Data
+from app.mysql import db
+from app.mysql_models import Data
 from app.response import ErrorResponse
 from app.data.models import DataChecker, DataFetcher
 import os

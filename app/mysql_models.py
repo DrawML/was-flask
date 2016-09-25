@@ -1,4 +1,4 @@
-from app.database import db
+from app.mysql import db
 import datetime
 # Base = declarative_base()
 

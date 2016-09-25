@@ -2,8 +2,8 @@ from werkzeug.datastructures import CallbackDict
 from uuid import uuid4
 import pickle
 from flask.sessions import SessionInterface, SessionMixin
-from app.database import db
-from app.db_models import FlaskSession
+from app.mysql import db
+from app.mysql_models import FlaskSession
 
 
 class SQLAlchemySession(CallbackDict, SessionMixin):

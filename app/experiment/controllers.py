@@ -3,8 +3,8 @@ from flask_login import login_required
 import json
 from jinja2.exceptions import TemplateError
 from sqlalchemy.exc import SQLAlchemyError
-from app.db_models import Experiment
-from app.database import db
+from app.mysql_models import Experiment
+from app.mysql import db
 from app.experiment.models import Refiner, JsonParser, \
     TFConverter, TaskRunner, ExperimentError, DataProcessor
 from app.response import ErrorResponse

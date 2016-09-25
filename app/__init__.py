@@ -4,8 +4,8 @@ from flask_login import current_user
 from app.dist_task.src.dist_system.client import Client
 from app.dist_task.src.dist_system.result_receiver import ResultReceiverAddress
 from config import app_config
-from app.session import SQLAlchemySessionInterface
-from app.database import db
+from app.mysql_session import SQLAlchemySessionInterface
+from app.mysql import db
 from app.manager import login_manager
 
 

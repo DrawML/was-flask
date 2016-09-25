@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, \
     redirect, url_for, g
-from app.db_models import Experiment
+from app.mysql_models import Experiment
 from flask_login import login_required
 
 module_index = Blueprint('index',
