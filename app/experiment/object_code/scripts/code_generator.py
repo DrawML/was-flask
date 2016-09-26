@@ -33,8 +33,9 @@ def bind_common_variables(xml_info: dict, template_variables: dict):
 
 def process_data(xml_info: dict, template_variables: dict):
     """
-        data processing code...
+        get data in model tag
     """
+    return xml_info['model_data']
 
 
 def make_initializer(xml_info: dict, template_variables: dict):

@@ -17,9 +17,9 @@ def make_code(root: et.Element):
     parse_xml("", root, root, xml_info)
 
     template_variables = dict()
-    process_data(xml_info, template_variables)
+    data = process_data(xml_info, template_variables)
     bind_variables(xml_info, template_variables)
     make_optimizer(xml_info, template_variables)
     make_initializer(xml_info, template_variables)
 
-    return template.render(template_variables)
+    return template.render(template_variables), data

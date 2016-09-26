@@ -37,8 +37,8 @@ def make_code(root: et.Element):
     template_variables = dict()
 
     bind_variables(xml_info, template_variables)
-    process_data(xml_info, template_variables)
+    data = process_data(xml_info, template_variables)
     make_optimizer(xml_info, template_variables)
     make_initializer(xml_info, template_variables)
 
-    return template.render(template_variables)
+    return template.render(template_variables), data

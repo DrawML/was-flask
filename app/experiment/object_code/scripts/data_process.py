@@ -8,6 +8,7 @@ def bind_variables(xml_info: dict, template_variable: dict):
     ids = xml_info['input_data']
     ids.replace(' ', '')
     template_variable['file_ids'] = ids.split(',')
+    return ids
 
 
 def find_key(num: int, xml: dict):
@@ -68,7 +69,7 @@ def make_code(root: et.Element):
 
     template_variables = dict()
     template_variables['require'] = require
-    bind_variables(xml_info, template_variables)
+    data_files = bind_variables(xml_info, template_variables)
     make_processing(xml_info, template_variables)
 
-    return template.render(template_variables)
+    return template.render(template_variables), data_files

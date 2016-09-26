@@ -97,3 +97,5 @@ env
 .idea
 /**/*/mnist*.txt
 
+#redis
+dump.rdb

@@ -4,12 +4,61 @@ import xml.etree.ElementTree as Et
 from app.mysql_models import Experiment
 import app.experiment.object_code.scripts.data_process as data_process
 import pickle
+from app.dist_task.src.dist_system.client import Client
+from app.redis import redis_cache, RedisKeyMaker
 
 
 class TaskRunner:
-    def __init__(self, obj_code):
+    def __init__(self, key, obj_type, data_files, obj_code):
         """ This class will be changed"""
-        print(obj_code)
+        self.key = key
+        self.data_files = data_files
+        self.obj_code = obj_code
+        self.type = obj_type
+        return
+
+    def run(self):
+        if self.type == RedisKeyMaker.MODEL_TRAINING:
+            input_path = '/Users/chan/PycharmProjects/DrawML_WAS/app/experiment/object_code/test/linear_regression_input.txt'
+
+            def get_dummy_input(input_path: str):
+                with open(input_path, 'r', encoding='utf-8') as f:
+                    return f.read()
+
+            task_job_dict = dict()
+            task_job_dict['object_code'] = self.obj_code
+            task_job_dict['data_file_token'] = get_dummy_input(input_path)
+
+            # TensorFlowTaskResult
+            # <status>
+            #   - ["success", "error"]: str
+            # <body>
+            #   - dict      when "success",
+            #       { "stdout", "stderr", "result_file_token" }
+            #   - str       when "error"
+            def create_callback():
+                key = self.key
+
+                def _callback(status: str, body: dict = None):
+                    value = redis_cache.get(key)
+
+                    print('[run_experiment] ', 'callbacked! ')
+
+                    if status == 'success':
+                        print("[%d] callback is called with 'complete'" % key)
+                        redis_cache.set(key, 'done')
+                    elif status == 'error':
+                        print("[%d] callback is called with 'fail'" % key)
+                        redis_cache.set(key, 'done')
+                    if body is not None:
+                        print(body['stderr'])
+
+                return _callback
+
+            print('[run_experiment] ', 'request! before')
+            Client().request(Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, create_callback())
+            print('[run_experiment] ', 'request! after')
+            return
 
 
 class ExperimentError(Exception):
