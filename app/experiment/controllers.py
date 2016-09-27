@@ -182,14 +182,6 @@ def exp_run(exp_id):
 
     return 'run'
 
-"""
-    ToDoZZ
-    add exp_id to Client request
-    edit redis_cache modules
-    edit callback (success, fail, cancel)
-    edit redis_cache update
-"""
-
 
 @module_exp.route('/<exp_id>/stop', methods=['GET', 'POST'], endpoint='exp_stop')
 @login_required
