@@ -5,60 +5,106 @@ from app.mysql_models import Experiment
 import app.experiment.object_code.scripts.data_process as data_process
 import pickle
 from app.dist_task.src.dist_system.client import Client
-from app.redis import redis_cache, RedisKeyMaker
+from app.redis import redis_cache
 
 
 class TaskRunner:
-    def __init__(self, key, obj_type, data_files, obj_code):
-        """ This class will be changed"""
-        self.key = key
-        self.data_files = data_files
-        self.obj_code = obj_code
-        self.type = obj_type
-        return
+    def __init__(self, data_obj_code, data_input_files, data_key,
+                 model_obj_code, model_input_file, model_key):
+        self.data_obj_code      = data_obj_code
+        self.data_input_files   = data_input_files
+        self.data_key           = data_key,
+        self.model_obj_code     = model_obj_code
+        self.model_input_file   = model_input_file
+        self.model_key          = model_key
+        self.valid              = True
+        self.entry_arguments    = None
+        self.config()
 
-    def run(self):
-        if self.type == RedisKeyMaker.MODEL_TRAINING:
-            input_path = '/Users/chan/PycharmProjects/DrawML_WAS/app/experiment/object_code/test/linear_regression_input.txt'
+    def config(self):
+        check_data  = (self.data_obj_code is not None and  self.data_input_files is not None)
+        check_model = (self.model_obj_code is not None and self.model_input_files is not None)
+        if not check_data and not check_model:
+            self.valid = False
+            return
+
+        if check_model:
+            # Gonna be changed to 'model_input_file'
+            input_path = 'app/experiment/object_code/test/linear_regression_input.txt'
 
             def get_dummy_input(input_path: str):
                 with open(input_path, 'r', encoding='utf-8') as f:
                     return f.read()
 
-            task_job_dict = dict()
-            task_job_dict['object_code'] = self.obj_code
-            task_job_dict['data_file_token'] = get_dummy_input(input_path)
+            tensorflow_task_job_dict = dict()
+            tensorflow_task_job_dict['data_file_token'] = get_dummy_input(input_path)
+            tensorflow_task_job_dict['object_code'] = self.model_obj_code
 
-            # TensorFlowTaskResult
-            # <status>
-            #   - ["success", "error"]: str
-            # <body>
-            #   - dict      when "success",
-            #       { "stdout", "stderr", "result_file_token" }
-            #   - str       when "error"
-            def create_callback():
-                key = self.key
+            self.entry_arguments = dict(
+                experiment_id=self.model_key,
+                task_type=Client.TaskType.TYPE_TENSORFLOW_TASK,
+                task_job_dict=tensorflow_task_job_dict,
+                callback=self.create_callback(self.model_key, self.entry_arguments)
+            )
 
-                def _callback(status: str, body: dict = None):
-                    value = redis_cache.get(key)
+        if check_data:
+            data_processing_task_job_dict = dict()
+            data_processing_task_job_dict['data_file_num'] = 2
+            data_processing_task_job_dict['data_file_token_list'] = self.data_input_files
+            data_processing_task_job_dict['object_code'] = self.data_obj_code
 
-                    print('[run_experiment] ', 'callbacked! ')
+            self.entry_arguments = dict(
+                experiment_id=self.model_key,
+                task_type=Client.TaskType.TYPE_DATA_PROCESSING_TASK,
+                task_job_dict=data_processing_task_job_dict,
+                callback=self.create_callback(self.data_key, self.entry_arguments)
+            )
 
-                    if status == 'success':
-                        print("[%d] callback is called with 'complete'" % key)
-                        redis_cache.set(key, 'done')
-                    elif status == 'error':
-                        print("[%d] callback is called with 'fail'" % key)
-                        redis_cache.set(key, 'done')
-                    if body is not None:
-                        print(body['stderr'])
+        return
 
-                return _callback
+    @staticmethod
+    def create_callback(task_key, task_args):
+        """
+        # # Callback parameter
+        # <status>
+        #   - ["success", "error", "cancel"]: str
+        # <body>
+        #   - dict      when "success",
+        #       { "stdout", "stderr", "result_file_token" }
+        #   - str       when "error"
+        #   - None      when "cancel"
+        """
+        key = task_key
+        if task_args is not None:
+            next_arguments = task_args
 
-            print('[run_experiment] ', 'request! before')
-            Client().request(Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, create_callback())
-            print('[run_experiment] ', 'request! after')
-            return
+        def _callback(status: str, body=None):
+            print('[run_experiment] ', 'callbacked! ')
+
+            if status == 'success':
+                redis_cache.set(key, 'success')
+                print("[%d] callback is called with 'success'" % key)
+            elif status == 'error':
+                redis_cache.set(key, 'fail')
+                print("[%d] callback is called with 'fail'" % key)
+            elif status == 'cancel':
+                Client().request_cancel(key)
+                redis_cache.set(key, 'cancel')
+                print("[%d] callback is called with 'cancel1'" % key)
+
+            if body is not None:
+                print(body['stderr'])
+
+            if next_arguments:
+                Client().request_task(next_arguments)
+
+        return _callback
+
+    def run(self):
+        if self.valid is False:
+            return self.valid
+        Client().request_task(self.entry_arguments)
+        return self.valid
 
 
 class ExperimentError(Exception):

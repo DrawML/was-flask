@@ -1,4 +1,4 @@
-from flask import Blueprint, request, current_app, render_template, g
+from flask import Blueprint, request, current_app, render_template, g, session
 from flask_login import login_required
 import json
 from jinja2.exceptions import TemplateError
@@ -8,8 +8,7 @@ from app.mysql import db
 from app.experiment.models import Refiner, JsonParser, \
     TFConverter, TaskRunner, ExperimentError, DataProcessor
 from app.response import ErrorResponse
-
-from app.dist_task.src.dist_system.client import Client
+from app.redis import redis_cache, RedisKeyMaker
 
 module_exp = Blueprint('experiment',
                        __name__,
@@ -128,15 +127,17 @@ def exp_delete(exp_id):
     return 'delete'
 
 
-@module_exp.route('/run', methods=['POST'], endpoint='exp_run')
+@module_exp.route('/<exp_id>/run', methods=['POST'], endpoint='exp_run')
 @login_required
-def exp_run():
+def exp_run(exp_id):
     xml = request.data.decode()
 
+    data_obj_code = None
+    data_input_files = None
     try:
         data_processor = DataProcessor(xml)
-        obj_code = data_processor.generate_object_code()
-        data_processor.run_obj_code(obj_code)
+        data_obj_code, data_input_files = data_processor.generate_object_code()
+        # data_processor.run_obj_code(data_obj_code)
     except ExperimentError:
         current_app.logger.error('Invalid XML form')
         return ErrorResponse(400, 'Invalid XML form')
@@ -149,15 +150,15 @@ def exp_run():
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
-    # run data processing
-    # we should pass data id argument to taskrunner
-    # if error occur while processing : return error
-
+    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                      type=RedisKeyMaker.DATA_PROCESSING)
+    model_obj_code = None
+    model_input_file = None
     try:
         tf_converter = TFConverter(xml)
-        obj_code = tf_converter.generate_object_code()
+        model_obj_code, model_input_file = tf_converter.generate_object_code()
         current_app.logger.info('Code was generated')
-        tf_converter.run_obj_code(obj_code)
+        # tf_converter.run_obj_code(obj_code)
     except ExperimentError:
         current_app.logger.error('Invalid XML form')
         return ErrorResponse(400, 'Invalid XML form')
@@ -170,51 +171,33 @@ def exp_run():
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
-    # we should pass data id argument to taskrunner
-    # tr = TaskRunner(obj_code)
-    # ..............
-
-    input_path = 'app/experiment/object_code/test/linear_regression_input.txt'
-
-    def get_dummy_input(input_path: str):
-        with open(input_path, 'r', encoding='utf-8') as f:
-            return f.read()
-
-    task_job_dict = dict()
-    task_job_dict['object_code'] = obj_code
-    task_job_dict['data_file_token'] = get_dummy_input(input_path)
-
-    # TensorFlowTaskResult
-    # <status>
-    #   - ["success", "error"]: str
-    # <body>
-    #   - dict      when "success",
-    #       { "stdout", "stderr", "result_file_token" }
-    #   - str       when "error"
-    def create_callback():
-        now_user_id = g.user.id
-
-        def _callback(status: str, body: dict=None):
-            print('[run_experiment] ', 'callbacked! ')
-
-            if status == 'success':
-                print("[%d] callback is called with 'complete'" % now_user_id)
-            elif status == 'error':
-                print("[%d] callback is called with 'fail'" % now_user_id)
-
-            if body is not None:
-                print(body['stderr'])
-
-        return _callback
-
-    print('[run_experiment] ', 'request! before')
-    Client().request(Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, create_callback())
-    print('[run_experiment] ', 'request! after')
+    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                       type=RedisKeyMaker.MODEL_TRAINING)
+    TaskRunner(data_obj_code=data_obj_code,
+               data_input_files=data_input_files,
+               data_key=data_key,
+               model_obj_code=model_obj_code,
+               model_input_file=model_input_file,
+               model_key=model_key).run()
 
     return 'run'
 
+"""
+    ToDoZZ
+    add exp_id to Client request
+    edit redis_cache modules
+    edit callback (success, fail, cancel)
+    edit redis_cache update
+"""
 
-@module_exp.route('/stop', methods=['GET', 'POST'], endpoint='exp_stop')
+
+@module_exp.route('/<exp_id>/stop', methods=['GET', 'POST'], endpoint='exp_stop')
 @login_required
-def exp_stop():
+def exp_stop(exp_id):
     return 'stop'
+
+
+@module_exp.route('/<exp_id>/status', methods=['GET'], endpoint='exp_status')
+@login_required
+def exp_status(exp_id):
+    return 'status'

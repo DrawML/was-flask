@@ -8,5 +8,5 @@ class RedisKeyMaker:
     MODEL_TRAINING = 2
 
     @staticmethod
-    def make_key(user_id, exp_id, type):
-        return str(user_id) + '-' + str(exp_id) + '-' + str(type), type
+    def make_key(exp_id, type):
+        return str(exp_id) + '-' + str(type)
