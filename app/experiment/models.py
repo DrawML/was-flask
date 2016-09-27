@@ -49,7 +49,7 @@ class TaskRunner:
 
         if check_data:
             data_processing_task_job_dict = dict()
-            data_processing_task_job_dict['data_file_num'] = 2
+            data_processing_task_job_dict['data_file_num'] = len(self.data_input_files)
             data_processing_task_job_dict['data_file_token_list'] = self.data_input_files
             data_processing_task_job_dict['object_code'] = self.data_obj_code
 
