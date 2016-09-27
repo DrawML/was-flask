@@ -174,42 +174,55 @@ def exp_run():
     # tr = TaskRunner(obj_code)
     # ..............
 
-    input_path = 'app/experiment/object_code/test/linear_regression_input.txt'
-
-    def get_dummy_input(input_path: str):
-        with open(input_path, 'r', encoding='utf-8') as f:
-            return f.read()
-
-    task_job_dict = dict()
-    task_job_dict['object_code'] = obj_code
-    task_job_dict['data_file_token'] = get_dummy_input(input_path)
-
-    # TensorFlowTaskResult
+    # # Callback parameter
     # <status>
-    #   - ["success", "error"]: str
+    #   - ["success", "error", "cancel"]: str
     # <body>
     #   - dict      when "success",
     #       { "stdout", "stderr", "result_file_token" }
     #   - str       when "error"
+    #   - None      when "cancel"
     def create_callback():
         now_user_id = g.user.id
 
-        def _callback(status: str, body: dict=None):
+        def _callback(status: str, body=None):
             print('[run_experiment] ', 'callbacked! ')
 
             if status == 'success':
-                print("[%d] callback is called with 'complete'" % now_user_id)
+                print("[%d] callback is called with 'success'" % now_user_id)
             elif status == 'error':
                 print("[%d] callback is called with 'fail'" % now_user_id)
+            elif status == 'cancel':
+                print("[%d] callback is called with 'cancel1'" % now_user_id)
 
             if body is not None:
                 print(body['stderr'])
 
         return _callback
 
-    print('[run_experiment] ', 'request! before')
-    Client().request(Client.TaskType.TYPE_TENSORFLOW_TASK, task_job_dict, create_callback())
-    print('[run_experiment] ', 'request! after')
+    input_path = 'app/experiment/object_code/test/linear_regression_input.txt'
+
+    def get_dummy_input(input_path: str):
+        with open(input_path, 'r', encoding='utf-8') as f:
+            return f.read()
+
+    # when request DataProcessingTask
+    data_processing_task_job_dict = dict()
+    data_processing_task_job_dict['data_file_num'] = 2
+    data_processing_task_job_dict['data_file_token_list'] = ['DUMMY_TOKEN1', 'DUMMY_TOKEN1']
+    data_processing_task_job_dict['object_code'] = obj_code
+    Client().request_task(g.experiment.id, Client.TaskType.TYPE_DATA_PROCESSING_TASK, data_processing_task_job_dict,
+                          create_callback())
+
+    # when request TensorflowTask
+    tensorflow_task_job_dict = dict()
+    tensorflow_task_job_dict['data_file_token'] = get_dummy_input(input_path)
+    tensorflow_task_job_dict['object_code'] = obj_code
+    Client().request_task(g.experiment.id, Client.TaskType.TYPE_TENSORFLOW_TASK, tensorflow_task_job_dict,
+                          create_callback())
+
+    # when request cancel experiment
+    Client().request_cancel(g.experiment.id)
 
     return 'run'
 
