@@ -22,8 +22,8 @@ class TaskRunner:
         self.config()
 
     def config(self):
-        check_data  = (self.data_obj_code is not None and  self.data_input_files is not None)
-        check_model = (self.model_obj_code is not None and self.model_input_files is not None)
+        check_data  = (self.data_obj_code is not None and self.data_input_files is not None)
+        check_model = (self.model_obj_code is not None and self.model_input_file is not None)
         if not check_data and not check_model:
             self.valid = False
             return
@@ -59,7 +59,6 @@ class TaskRunner:
                 task_job_dict=data_processing_task_job_dict,
                 callback=self.create_callback(self.data_key, self.entry_arguments)
             )
-
         return
 
     @staticmethod
@@ -82,30 +81,30 @@ class TaskRunner:
             print('[run_experiment] ', 'callbacked! ')
 
             if status == 'success':
-                redis_cache.set(key, 'success')
+                redis_cache.set(key, redis_cache.SUCCESS)
                 print("[%d] callback is called with 'success'" % key)
             elif status == 'error':
-                redis_cache.set(key, 'fail')
+                redis_cache.set(key, redis_cache.FAIL)
                 print("[%d] callback is called with 'fail'" % key)
             elif status == 'cancel':
                 Client().request_cancel(key)
-                redis_cache.set(key, 'cancel')
+                redis_cache.set(key, redis_cache.CANCEL)
                 print("[%d] callback is called with 'cancel1'" % key)
 
             if body is not None:
                 print(body['stderr'])
 
             if next_arguments:
-                redis_cache.set(next_arguments['experiment_id'], 'running')
-                Client().request_task(next_arguments)
+                redis_cache.set(next_arguments['experiment_id'], redis_cache.RUNNING)
+                Client().request_task(**next_arguments)
 
         return _callback
 
     def run(self):
         if self.valid is False:
             return self.valid
-        redis_cache.set(self.entry_arguments['experiment_id'], 'running')
-        Client().request_task(self.entry_arguments)
+        redis_cache.set(self.entry_arguments['experiment_id'], redis_cache.RUNNING)
+        Client().request_task(**self.entry_arguments)
         return self.valid
 
 

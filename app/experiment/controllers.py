@@ -9,6 +9,7 @@ from app.experiment.models import Refiner, JsonParser, \
     TFConverter, TaskRunner, ExperimentError, DataProcessor
 from app.response import ErrorResponse
 from app.redis import redis_cache, RedisKeyMaker
+from app.dist_task.src.dist_system.client import Client
 
 module_exp = Blueprint('experiment',
                        __name__,
@@ -182,13 +183,58 @@ def exp_run(exp_id):
     return 'run'
 
 
-@module_exp.route('/<exp_id>/stop', methods=['GET', 'POST'], endpoint='exp_stop')
+@module_exp.route('/<exp_id>/stop', methods=['DELETE'], endpoint='exp_stop')
 @login_required
 def exp_stop(exp_id):
-    return 'stop'
+    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                      type=RedisKeyMaker.DATA_PROCESSING)
+    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                       type=RedisKeyMaker.MODEL_TRAINING)
+    data_value = redis_cache.get(data_key).decode()
+    if data_value is not None:
+        if data_value == redis_cache.RUNNING:
+            Client().request_cancel(data_key)
+            # redis_cache.set(data_key, redis_cache.CANCEL)
+            return 'task was canceled'
+
+    model_value = redis_cache.get(model_key).decode()
+    if model_value is not None:
+        if model_value == redis_cache.RUNNING:
+            Client().request_cancel(model_key)
+            # redis_cache.set(model_key, redis_cache.CANCEL)
+            return 'task was canceled'
+
+    return 'Nothing changed'
 
 
 @module_exp.route('/<exp_id>/status', methods=['GET'], endpoint='exp_status')
 @login_required
 def exp_status(exp_id):
-    return 'status'
+    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                      type=RedisKeyMaker.DATA_PROCESSING)
+    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                       type=RedisKeyMaker.MODEL_TRAINING)
+    model_value = redis_cache.get(model_key)
+    data_value = redis_cache.get(data_key)
+
+    if model_value is not None:
+        return model_value.decode()
+    elif data_value is not None:
+        return data_value.decode()
+    return 'No status'
+
+
+@module_exp.route('/<exp_id>/clean', methods=['DELETE'], endpoint='exp_clean')
+@login_required
+def exp_clean(exp_id):
+    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                      type=RedisKeyMaker.DATA_PROCESSING)
+    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+                                       type=RedisKeyMaker.MODEL_TRAINING)
+    try:
+        redis_cache.delete(model_key)
+        redis_cache.delete(data_key)
+    except Exception as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Server Error')
+    return 'clean'
