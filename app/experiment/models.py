@@ -96,6 +96,7 @@ class TaskRunner:
                 print(body['stderr'])
 
             if next_arguments:
+                redis_cache.set(next_arguments['experiment_id'], 'running')
                 Client().request_task(next_arguments)
 
         return _callback
@@ -103,6 +104,7 @@ class TaskRunner:
     def run(self):
         if self.valid is False:
             return self.valid
+        redis_cache.set(self.entry_arguments['experiment_id'], 'running')
         Client().request_task(self.entry_arguments)
         return self.valid
 
