@@ -154,7 +154,8 @@ class TFConverter:
         script_module = __import__(self.SCRIPT_MODULE, globals(),
                                    locals(), [self.model_type], 0)
         object_script = getattr(script_module, self.model_type)
-        return object_script.make_code(self.root)
+        template_name = self.root.find("model").find("type").text + "_train"
+        return object_script.make_code(self.root, template_name)
 
     def run_obj_code(self, obj_code):
         """This function just for test object code"""

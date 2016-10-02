@@ -15,7 +15,7 @@ PARENT_DIR = os.path.abspath(os.path.join(THIS_DIR, os.pardir))
 def get_template(model_type: str):
     j2_env = Environment(loader=FileSystemLoader(PARENT_DIR + '/templates'),
                          trim_blocks=True)
-    template = j2_env.get_template("/template_" + model_type)
+    template = j2_env.get_template("/" + model_type)
     return template
 
 

@@ -1,8 +1,6 @@
-SAVE_PATH = '/Users/chan/test/trained_model'
-
 def load_input():
     argc = len(sys.argv)
-    if argc < 2:
+    if argc < 3:
         print('No input argument')
         sys.exit(2)
 
@@ -10,6 +8,7 @@ def load_input():
     if os.path.isfile(file_path) is False:
         print('No such file or directory', file_path)
         sys.exit(2)
+    sess_path = sys.argv[2]
 
     x = np.genfromtxt(file_path, max_rows=1)
     raw_data = np.genfromtxt(file_path, dtype='float32', skip_header=1)
