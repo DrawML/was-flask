@@ -17,6 +17,20 @@
           <button type="submit" class="btn btn-success">Rename</button>
         </div>
     </div>
-  </form>
+    </form>
+    <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_model()">DELETE</button>
+    <script type=text/javascript>
+        function delete_model() {
+            $.ajax({                //Send (docinfo) to server
+                url : 'http://localhost:5000/tests/{{ model.id }}',
+                type : 'DELETE',
+                async : true,
+                success : function(){
+                    window.location.href = "http://localhost:5000/tests";
+                }
+            });
+        }
+    </script>
+
 </div>
 {% endblock %}

@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.mysql_models import TrainedModel, Data
 from app.mysql import db
 from app.response import ErrorResponse
+from app.test.models import TFConverter
 from app.redis import redis_cache, RedisKeyMaker
 from app.dist_task.src.dist_system.client import Client
 
@@ -39,8 +40,7 @@ def get_model(model_id):
 def update_model(model_id):
     if request.method == 'GET':
         return render_template('/test/update.html',
-                               model=Data.query.
-                               filter_by(id=int(model_id)).first())
+                               model=TrainedModel.query.filter_by(id=model_id).first())
     name = request.form['name']
     try:
         duplicate = TrainedModel.query.filter_by(user_id=g.user.id,
@@ -68,21 +68,22 @@ def update_model(model_id):
     flash('Trained model renamed')
     return redirect(url_for('test.get_all_model'))
 
-"""
-@module_exp.route('/<exp_id>', methods=['DELETE'], endpoint='exp_delete')
+
+@module_test.route('/<model_id>', methods=['DELETE'], endpoint='model_delete')
 @login_required
-def exp_delete(exp_id):
+def model_delete(model_id):
     try:
-        deleted = db.session.query(Experiment) \
-            .filter(Experiment.id == exp_id) \
+        deleted = db.session.query(TrainedModel) \
+            .filter(TrainedModel.id == model_id) \
             .delete(synchronize_session=False)
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
-        return ErrorResponse(500, 'Error, Database Internal Error')
-    current_app.logger.info(str(deleted) + ' columns deleted : ' + exp_id)
-    return 'delete'
+        flash('Database Internal Error', 'Error')
+        return redirect(url_for('test.get_all_model'))
+    current_app.logger.info(str(deleted) + ' columns deleted : ' + model_id)
+    return 'deleted'
 
 
 @module_exp.route('/<exp_id>/run', methods=['POST'], endpoint='exp_run')
