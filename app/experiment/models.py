@@ -5,12 +5,19 @@ from app.mysql_models import Experiment
 import app.experiment.object_code.scripts.data_process as data_process
 import pickle
 from app.dist_task.src.dist_system.client import Client
-from app.redis import redis_cache
+from app.redis import redis_cache, RedisKeyMaker
+from app.mysql_models import Data
+from app.mysql import db
+from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
+from flask import current_app
 
 
 class TaskRunner:
-    def __init__(self, data_obj_code, data_input_files, data_key,
+    def __init__(self, user_id,
+                 data_obj_code, data_input_files, data_key,
                  model_obj_code, model_input_file, model_key):
+        self.user_id            = user_id
         self.data_obj_code      = data_obj_code
         self.data_input_files   = data_input_files
         self.data_key           = data_key,
@@ -61,8 +68,7 @@ class TaskRunner:
             )
         return
 
-    @staticmethod
-    def create_callback(task_key, task_args):
+    def create_callback(self, task_key: str, task_args: dict):
         """
         # # Callback parameter
         # <status>
@@ -82,6 +88,24 @@ class TaskRunner:
 
             if status == 'success':
                 redis_cache.set(key, redis_cache.SUCCESS)
+                task_type = key.split('-')[1]
+                if task_type == str(RedisKeyMaker.DATA_PROCESSING):
+                    exp_id = key.split('-')[0]
+                    current_time = datetime.now().isoformat()
+                    file_name = exp_id + 'exp-' + current_time
+                    file_token = body.get('result_file_token', None)
+                    new_data = Data(name=file_name, user_id=self.user_id, path=file_token)
+                    try:
+                        db.session.add(new_data)
+                        db.session.commit()
+                    except SQLAlchemyError as e:
+                        db.session.rollback()
+                        current_app.logger.error(e)
+                        redis_cache.set(key, redis_cache.FAIL)
+                        return
+                    # update file token
+                    next_arguments['data_file_token'] = file_token
+                    current_app.logger.info('data created :' + str(new_data))
                 print("[%d] callback is called with 'success'" % key)
             elif status == 'error':
                 redis_cache.set(key, redis_cache.FAIL)

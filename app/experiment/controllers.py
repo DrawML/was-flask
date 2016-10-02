@@ -138,6 +138,7 @@ def exp_run(exp_id):
     try:
         data_processor = DataProcessor(xml)
         data_obj_code, data_input_files = data_processor.generate_object_code()
+        current_app.logger.info('Code was generated')
         # data_processor.run_obj_code(data_obj_code)
     except ExperimentError:
         current_app.logger.error('Invalid XML form')
@@ -174,7 +175,8 @@ def exp_run(exp_id):
 
     model_key = RedisKeyMaker.make_key(exp_id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
-    isValid = TaskRunner(data_obj_code=data_obj_code,
+    isValid = TaskRunner(user_id=g.user.id,
+                         data_obj_code=data_obj_code,
                          data_input_files=data_input_files,
                          data_key=data_key,
                          model_obj_code=model_obj_code,
@@ -226,9 +228,9 @@ def exp_status(exp_id):
     return 'No status'
 
 
-@module_exp.route('/<exp_id>/clean', methods=['DELETE'], endpoint='exp_clean')
+@module_exp.route('/<exp_id>/clear', methods=['DELETE'], endpoint='exp_clear')
 @login_required
-def exp_clean(exp_id):
+def exp_clear(exp_id):
     data_key = RedisKeyMaker.make_key(exp_id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_key = RedisKeyMaker.make_key(exp_id=exp_id,
@@ -239,4 +241,4 @@ def exp_clean(exp_id):
     except Exception as e:
         current_app.logger.error(e)
         return ErrorResponse(500, 'Internal Server Error')
-    return 'clean'
+    return 'clear'

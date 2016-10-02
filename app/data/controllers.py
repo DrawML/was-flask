@@ -92,7 +92,7 @@ def data_upload_post():
             db.session.rollback()
             current_app.logger.error(e)
             return ErrorResponse(500, 'Error, Database internal error')
-        current_app.logger.info('exp_data created :' + str(new_data))
+        current_app.logger.info('data created :' + str(new_data))
         file.save(filepath)
 
     # send response with appropriate mime type header
