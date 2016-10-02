@@ -1,0 +1,16 @@
+{% include 'recurrent_neural_network' %}
+
+
+
+with tf.Session(config=config) as sess:
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    for _ in range(training_epoch):
+        for start, end in zip(range(0, len(x_train), batch_size), range(batch_size, len(x_train)+1, batch_size)):
+            train_data = load_train_data(start, end)
+            sess.run(train, feed_dict=train_data)
+        # accuracy = sess.run(predict)
+        # print("step ", _ , " accuracy ", accuracy)
+    # some logging codes will be added...
+    save_model(sess, sess_path)
+

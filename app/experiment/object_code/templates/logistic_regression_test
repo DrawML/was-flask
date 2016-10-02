@@ -1,0 +1,11 @@
+{% include 'logistic_regression' %}
+
+
+
+with tf.Session(config=config) as sess:
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    restore_model(sess, sess_path)
+    # some logging codes will be added...
+    # print(sess.run(cost, feed_dict=train_data))
+    # run test....

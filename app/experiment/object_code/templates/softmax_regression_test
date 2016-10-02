@@ -1,0 +1,11 @@
+{% include 'softmax_regression' %}
+
+
+
+with tf.Session(config=config) as sess:
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    restore_model(sess, sess_path)
+    for _ in range(training_epoch):
+        # for evaluation
+        print(_, np.mean(np.argmax(y_test, axis=1) == sess.run(predict, feed_dict={X: x_test, Y: y_test})))

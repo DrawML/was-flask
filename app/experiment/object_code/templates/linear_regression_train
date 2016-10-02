@@ -1,0 +1,15 @@
+{% include 'linear_regression' %}
+
+
+
+with tf.Session(config=config) as sess:
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    train_data = load_train_data()
+    for _ in range(training_epoch):
+        sess.run(train, feed_dict=train_data)
+        # some logging codes will be added...
+    save_model(sess, sess_path)
+
+
+

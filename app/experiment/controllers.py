@@ -159,7 +159,7 @@ def exp_run(exp_id):
         tf_converter = TFConverter(xml)
         model_obj_code, model_input_file = tf_converter.generate_object_code()
         current_app.logger.info('Code was generated')
-        # tf_converter.run_obj_code(obj_code)
+        # tf_converter.run_obj_code(model_obj_code)
     except ExperimentError:
         current_app.logger.error('Invalid XML form')
         return ErrorResponse(400, 'Invalid XML form')
