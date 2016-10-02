@@ -6,7 +6,7 @@ import app.experiment.object_code.scripts.data_process as data_process
 import pickle
 from app.dist_task.src.dist_system.client import Client
 from app.redis import redis_cache, RedisKeyMaker
-from app.mysql_models import Data
+from app.mysql_models import Data, TrainedModel
 from app.mysql import db
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
@@ -14,9 +14,9 @@ from flask import current_app
 
 
 class TaskRunner:
-    def __init__(self, user_id,
-                 data_obj_code, data_input_files, data_key,
-                 model_obj_code, model_input_file, model_key):
+    def __init__(self, user_id: int,
+                 data_obj_code, data_input_files, data_key: str,
+                 model_obj_code, model_input_file, model_key: str):
         self.user_id            = user_id
         self.data_obj_code      = data_obj_code
         self.data_input_files   = data_input_files
@@ -64,7 +64,7 @@ class TaskRunner:
                 experiment_id=self.model_key,
                 task_type=Client.TaskType.TYPE_DATA_PROCESSING_TASK,
                 task_job_dict=data_processing_task_job_dict,
-                callback=self.create_callback(self.data_key, self.entry_arguments)
+                callback=self.create_callback(str(self.data_key), self.entry_arguments)
             )
         return
 
@@ -87,7 +87,6 @@ class TaskRunner:
             print('[run_experiment] ', 'callbacked! ')
 
             if status == 'success':
-                redis_cache.set(key, redis_cache.SUCCESS)
                 task_type = key.split('-')[1]
                 if task_type == str(RedisKeyMaker.DATA_PROCESSING):
                     exp_id = key.split('-')[0]
@@ -100,12 +99,27 @@ class TaskRunner:
                         db.session.commit()
                     except SQLAlchemyError as e:
                         db.session.rollback()
-                        current_app.logger.error(e)
                         redis_cache.set(key, redis_cache.FAIL)
+                        current_app.logger.error(e)
                         return
                     # update file token
                     next_arguments['data_file_token'] = file_token
                     current_app.logger.info('data created :' + str(new_data))
+                elif task_type == str(RedisKeyMaker.MODEL_TRAINING):
+                    exp_id = key.split('-')[0]
+                    current_time = datetime.now().isoformat()
+                    file_name = exp_id + 'exp-model-' + current_time
+                    file_token = body.get('result_file_token', None)
+                    new_model = TrainedModel(name=file_name, user_id=self.user_id, path=file_token)
+                    try:
+                        db.session.add(new_model)
+                        db.session.commit()
+                    except SQLAlchemyError as e:
+                        db.session.rollback()
+                        redis_cache.set(key, redis_cache.FAIL)
+                        current_app.logger.error(e)
+                        return
+                redis_cache.set(key, redis_cache.SUCCESS)
                 print("[%d] callback is called with 'success'" % key)
             elif status == 'error':
                 redis_cache.set(key, redis_cache.FAIL)

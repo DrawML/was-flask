@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container">
+    <h2>{{ model.name }} </h2>
+
+    <form action="" method=post class="form-horizontal">
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="name" name="name" class="input-xlarge"
+            placeholder="Enter Model Name" value="{{ request.form.name }}"
+            required>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-success">Rename</button>
+        </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

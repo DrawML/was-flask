@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container">
+    <h2>Tranined Models</h2>
+    <table class="table table-hover">
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Date</th>
+      </tr>
+      {%- for model in models %}
+      <tr>
+        <td>{{model.id}}</td>
+        <td><a href="/tests/{{ model.id }}">{{ model.name }}</a></td>
+        <td>{{ model.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {%- endfor %}
+    </table>
+</div>
+{% endblock %}

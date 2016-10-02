@@ -1,6 +1,5 @@
 from app.mysql import db
 import datetime
-# Base = declarative_base()
 
 
 class Base(db.Model):
@@ -19,6 +18,7 @@ class User(Base):
     pw              = db.Column(db.VARCHAR(64), nullable=False)
     experiments     = db.relationship('Experiment', backref='user', lazy='dynamic')
     data            = db.relationship('Data', backref='user', lazy='dynamic')
+    trainedmodel    = db.relationship('TrainedModel', backref='user', lazy='dynamic')
 
     def __init__(self, userid, pw):
         self.user_id = userid
@@ -91,6 +91,30 @@ class Data(Base):
             Data.name:    self.name,
             Data.user_id: self.user_id,
             Data.path:     self.path
+        }
+
+
+class TrainedModel(Base):
+    __tablename__   = 'trainedmodel'
+    __table_args__  = {'extend_existing': True}
+    name            = db.Column(db.VARCHAR(45), primary_key=True)
+    user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    path            = db.Column(db.VARCHAR(255))
+
+    def __init__(self, name, user_id, path):
+        super()
+        self.name       = name
+        self.user_id    = user_id
+        self.path       = path
+
+    def __repr__(self):
+        return '<TrainedModel %r %r>' % (self.user.user_id, self.name)
+
+    def to_dict(self):
+        return {
+            TrainedModel.name:    self.name,
+            TrainedModel.user_id: self.user_id,
+            TrainedModel.path:    self.path
         }
 
 

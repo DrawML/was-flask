@@ -33,10 +33,12 @@ class Server(object):
         from app.auth.controllers import module_auth as auth
         from app.experiment.controllers import module_exp as exp
         from app.data.controllers import module_data as data
+        from app.test.controllers import module_test as test
         self.app.register_blueprint(index)
         self.app.register_blueprint(auth)
         self.app.register_blueprint(exp)
         self.app.register_blueprint(data)
+        self.app.register_blueprint(test)
 
         self.client = Client(self.app.config['MASTER_ADDR'],
                              self.app.config['RESULT_ROUTER_PROTOCOL'] + '://*:' + self.app.config[
