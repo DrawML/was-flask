@@ -19,6 +19,7 @@ batch_size      = {{batch_size}}
 time_step_size  = {{time_step_size}}
 layer_size      = {{layer_size}}
 sess_path       = None
+output_file_path = None
 
 {% include 'drawml_functions' %}
 

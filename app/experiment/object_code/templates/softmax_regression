@@ -11,6 +11,7 @@ import sys
 import os
 
 sess_path = None
+output_file_path = None
 training_epoch = {{training_epoch}}
 
 {% include 'drawml_functions' %}
