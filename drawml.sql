@@ -40,6 +40,7 @@ CREATE TABLE `drawml`.`trainedmodel` (
   `date_modified` DATETIME DEFAULT NOW(),
   `name` VARCHAR(45) NOT NULL,
   `path` VARCHAR(255) NOT NULL,
+  `xml` BLOB NOT NULL,
   `user_id` INTEGER NOT NULL,
   PRIMARY KEY (`user_id`, `name`),
   FOREIGN KEY user(user_id) REFERENCES user(id) ON DELETE CASCADE,

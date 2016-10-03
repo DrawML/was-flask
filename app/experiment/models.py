@@ -14,10 +14,11 @@ from flask import current_app
 
 
 class TaskRunner:
-    def __init__(self, user_id: int,
+    def __init__(self, user_id: int, xml,
                  data_obj_code, data_input_files, data_key: str,
                  model_obj_code, model_input_file, model_key: str):
         self.user_id            = user_id
+        self.xml                = xml
         self.data_obj_code      = data_obj_code
         self.data_input_files   = data_input_files
         self.data_key           = data_key,
@@ -110,7 +111,8 @@ class TaskRunner:
                     current_time = datetime.now().isoformat()
                     file_name = exp_id + 'exp-model-' + current_time
                     file_token = body.get('result_file_token', None)
-                    new_model = TrainedModel(name=file_name, user_id=self.user_id, path=file_token)
+                    new_model = TrainedModel(name=file_name, user_id=self.user_id,
+                                             path=file_token, xml=pickle.dumps(self.xml))
                     try:
                         db.session.add(new_model)
                         db.session.commit()
@@ -125,9 +127,9 @@ class TaskRunner:
                 redis_cache.set(key, redis_cache.FAIL)
                 print("[%d] callback is called with 'fail'" % key)
             elif status == 'cancel':
-                Client().request_cancel(key)
+                # Client().request_cancel(key)
                 redis_cache.set(key, redis_cache.CANCEL)
-                print("[%d] callback is called with 'cancel1'" % key)
+                print("[%d] callback is called with 'cancel'" % key)
 
             if body is not None:
                 print(body['stderr'])

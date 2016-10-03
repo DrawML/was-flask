@@ -100,12 +100,14 @@ class TrainedModel(Base):
     name            = db.Column(db.VARCHAR(45), primary_key=True)
     user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     path            = db.Column(db.VARCHAR(255))
+    xml             = db.Column(db.BLOB)
 
-    def __init__(self, name, user_id, path):
+    def __init__(self, name, user_id, path, xml):
         super()
         self.name       = name
         self.user_id    = user_id
         self.path       = path
+        self.xml        = xml
 
     def __repr__(self):
         return '<TrainedModel %r %r>' % (self.user.user_id, self.name)
@@ -114,7 +116,8 @@ class TrainedModel(Base):
         return {
             TrainedModel.name:    self.name,
             TrainedModel.user_id: self.user_id,
-            TrainedModel.path:    self.path
+            TrainedModel.path:    self.path,
+            TrainedModel.xml:     self.xml
         }
 
 

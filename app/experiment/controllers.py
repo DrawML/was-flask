@@ -175,15 +175,16 @@ def exp_run(exp_id):
 
     model_key = RedisKeyMaker.make_key(exp_id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
-    isValid = TaskRunner(user_id=g.user.id,
-                         data_obj_code=data_obj_code,
-                         data_input_files=data_input_files,
-                         data_key=data_key,
-                         model_obj_code=model_obj_code,
-                         model_input_file=model_input_file,
-                         model_key=model_key).run()
-    if isValid is False:
-        return 'invalid request task is not done'
+    valid = TaskRunner(user_id=g.user.id,
+                       xml=xml,
+                       data_obj_code=data_obj_code,
+                       data_input_files=data_input_files,
+                       data_key=data_key,
+                       model_obj_code=model_obj_code,
+                       model_input_file=model_input_file,
+                       model_key=model_key).run()
+    if valid is False:
+        return 'Invalid request, Task is not done'
     return 'run'
 
 

@@ -10,6 +10,7 @@ redis_cache.RUNNING = 'running'
 class RedisKeyMaker:
     DATA_PROCESSING = 1
     MODEL_TRAINING = 2
+    MODEL_TESTING = 3
 
     @staticmethod
     def make_key(exp_id, type):
