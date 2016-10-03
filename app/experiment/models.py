@@ -76,7 +76,7 @@ class TaskRunner:
         #   - ["success", "error", "cancel"]: str
         # <body>
         #   - dict      when "success",
-        #       { "stdout", "stderr", "result_file_token" }
+        #       { "stdout", "stderr", "result_file_token", "session_file_token" }
         #   - str       when "error"
         #   - None      when "cancel"
         """
@@ -92,7 +92,7 @@ class TaskRunner:
                 if task_type == str(RedisKeyMaker.DATA_PROCESSING):
                     exp_id = key.split('-')[0]
                     current_time = datetime.now().isoformat()
-                    file_name = exp_id + 'exp-' + current_time
+                    file_name = exp_id + 'exp-data-' + current_time
                     file_token = body.get('result_file_token', None)
                     new_data = Data(name=file_name, user_id=self.user_id, path=file_token)
                     try:
@@ -109,12 +109,24 @@ class TaskRunner:
                 elif task_type == str(RedisKeyMaker.MODEL_TRAINING):
                     exp_id = key.split('-')[0]
                     current_time = datetime.now().isoformat()
-                    file_name = exp_id + 'exp-model-' + current_time
-                    file_token = body.get('result_file_token', None)
+                    file_name = exp_id + 'exp-train-' + current_time
+                    file_token = body.get('session_file_token', None)
                     new_model = TrainedModel(name=file_name, user_id=self.user_id,
                                              path=file_token, xml=pickle.dumps(self.xml))
                     try:
                         db.session.add(new_model)
+                        db.session.commit()
+                    except SQLAlchemyError as e:
+                        db.session.rollback()
+                        redis_cache.set(key, redis_cache.FAIL)
+                        current_app.logger.error(e)
+                        return
+                    current_time = datetime.now().isoformat()
+                    file_name = exp_id + 'exp-train-result-' + current_time
+                    file_token = body.get('result_file_token', None)
+                    new_data = Data(name=file_name, user_id=self.user_id, path=file_token)
+                    try:
+                        db.session.add(new_data)
                         db.session.commit()
                     except SQLAlchemyError as e:
                         db.session.rollback()

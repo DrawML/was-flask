@@ -6,8 +6,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.mysql_models import TrainedModel, Data
 from app.mysql import db
 from app.response import ErrorResponse
-from app.test.models import TFConverter
+from app.test.models import TFConverter, TestError, TaskRunner
 from app.redis import redis_cache, RedisKeyMaker
+import pickle
 from app.dist_task.src.dist_system.client import Client
 
 
@@ -74,7 +75,7 @@ def update_model(model_id):
 def model_delete(model_id):
     try:
         deleted = db.session.query(TrainedModel) \
-            .filter(TrainedModel.id == model_id) \
+            .filter(TrainedModel.id == int(model_id)) \
             .delete(synchronize_session=False)
         db.session.commit()
     except SQLAlchemyError as e:
@@ -82,44 +83,23 @@ def model_delete(model_id):
         current_app.logger.error(e)
         flash('Database Internal Error', 'Error')
         return redirect(url_for('test.get_all_model'))
-    current_app.logger.info(str(deleted) + ' columns deleted : ' + model_id)
+    current_app.logger.info(str(deleted) + ' columns deleted : ' + int(model_id))
     return 'deleted'
 
 
-@module_exp.route('/<exp_id>/run', methods=['POST'], endpoint='exp_run')
+@module_test.route('/<model_id>/<data_id>', methods=['POST'], endpoint='test_run')
 @login_required
-def exp_run(exp_id):
-    xml = request.data.decode()
+def test_run(model_id, data_id):
+    model = TrainedModel.query.filter_by(id=int(model_id)).first()
+    xml = pickle.loads(model.xml)
 
-    data_obj_code = None
-    data_input_files = None
-    try:
-        data_processor = DataProcessor(xml)
-        data_obj_code, data_input_files = data_processor.generate_object_code()
-        current_app.logger.info('Code was generated')
-        # data_processor.run_obj_code(data_obj_code)
-    except ExperimentError:
-        current_app.logger.error('Invalid XML form')
-        return ErrorResponse(400, 'Invalid XML form')
-    except TemplateError as e:
-        current_app.logger.error(e)
-        return ErrorResponse(500, 'Internal Server Error, Template Error')
-    except AttributeError:
-        current_app.logger.info('No data processing in XML')
-    except Exception as e:
-        current_app.logger.error(e)
-        return ErrorResponse(500, 'Unexpected Error')
-
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                      type=RedisKeyMaker.DATA_PROCESSING)
     model_obj_code = None
-    model_input_file = None
     try:
         tf_converter = TFConverter(xml)
-        model_obj_code, model_input_file = tf_converter.generate_object_code()
-        current_app.logger.info('Code was generated')
+        model_obj_code, dummy = tf_converter.generate_object_code()
+        current_app.logger.info('Test code was generated')
         # tf_converter.run_obj_code(model_obj_code)
-    except ExperimentError:
+    except TestError:
         current_app.logger.error('Invalid XML form')
         return ErrorResponse(400, 'Invalid XML form')
     except TemplateError as e:
@@ -131,73 +111,50 @@ def exp_run(exp_id):
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                       type=RedisKeyMaker.MODEL_TRAINING)
-    isValid = TaskRunner(user_id=g.user.id,
-                         data_obj_code=data_obj_code,
-                         data_input_files=data_input_files,
-                         data_key=data_key,
-                         model_obj_code=model_obj_code,
-                         model_input_file=model_input_file,
-                         model_key=model_key).run()
-    if isValid is False:
+    model_key = RedisKeyMaker.make_key(id=model_id,
+                                       type=RedisKeyMaker.MODEL_TESTING)
+    valid = TaskRunner(user_id=g.user.id,
+                       model_obj_code=model_obj_code,
+                       model_input_file=data_id,
+                       model_key=model_key).run()
+    if valid is False:
         return 'invalid request task is not done'
     return 'run'
 
 
-@module_exp.route('/<exp_id>/stop', methods=['DELETE'], endpoint='exp_stop')
+@module_test.route('/<model_id>/stop', methods=['DELETE'], endpoint='test_stop')
 @login_required
-def exp_stop(exp_id):
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                      type=RedisKeyMaker.DATA_PROCESSING)
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                       type=RedisKeyMaker.MODEL_TRAINING)
-    data_value = redis_cache.get(data_key).decode()
-    if data_value is not None:
-        if data_value == redis_cache.RUNNING:
-            Client().request_cancel(data_key)
-            # redis_cache.set(data_key, redis_cache.CANCEL)
-            return 'task was canceled'
-
+def test_stop(model_id):
+    model_key = RedisKeyMaker.make_key(id=model_id,
+                                       type=RedisKeyMaker.MODEL_TESTING)
     model_value = redis_cache.get(model_key).decode()
     if model_value is not None:
         if model_value == redis_cache.RUNNING:
             Client().request_cancel(model_key)
             # redis_cache.set(model_key, redis_cache.CANCEL)
             return 'task was canceled'
-
     return 'Nothing changed'
 
 
-@module_exp.route('/<exp_id>/status', methods=['GET'], endpoint='exp_status')
+@module_test.route('/<model_id>/status', methods=['GET'], endpoint='test_status')
 @login_required
-def exp_status(exp_id):
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                      type=RedisKeyMaker.DATA_PROCESSING)
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                       type=RedisKeyMaker.MODEL_TRAINING)
+def test_status(model_id):
+    model_key = RedisKeyMaker.make_key(id=model_id,
+                                       type=RedisKeyMaker.MODEL_TESTING)
     model_value = redis_cache.get(model_key)
-    data_value = redis_cache.get(data_key)
-
     if model_value is not None:
         return model_value.decode()
-    elif data_value is not None:
-        return data_value.decode()
     return 'No status'
 
 
-@module_exp.route('/<exp_id>/clear', methods=['DELETE'], endpoint='exp_clear')
+@module_test.route('/<model_id>/clear', methods=['DELETE'], endpoint='model_clear')
 @login_required
-def exp_clear(exp_id):
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                      type=RedisKeyMaker.DATA_PROCESSING)
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
-                                       type=RedisKeyMaker.MODEL_TRAINING)
+def model_clear(model_id):
+    model_key = RedisKeyMaker.make_key(id=model_id,
+                                       type=RedisKeyMaker.MODEL_TESTING)
     try:
         redis_cache.delete(model_key)
-        redis_cache.delete(data_key)
     except Exception as e:
         current_app.logger.error(e)
         return ErrorResponse(500, 'Internal Server Error')
     return 'clear'
-"""
