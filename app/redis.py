@@ -13,5 +13,5 @@ class RedisKeyMaker:
     MODEL_TESTING = 3
 
     @staticmethod
-    def make_key(exp_id, type):
-        return str(exp_id) + '-' + str(type)
+    def make_key(id, type):
+        return str(id) + '-' + str(type)

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, current_app, render_template, g, session
+from flask import Blueprint, request, current_app, render_template, g
 from flask_login import login_required
 import json
 from jinja2.exceptions import TemplateError
@@ -152,7 +152,7 @@ def exp_run(exp_id):
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_obj_code = None
     model_input_file = None
@@ -173,7 +173,7 @@ def exp_run(exp_id):
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    model_key = RedisKeyMaker.make_key(id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
     valid = TaskRunner(user_id=g.user.id,
                        xml=xml,
@@ -191,9 +191,9 @@ def exp_run(exp_id):
 @module_exp.route('/<exp_id>/stop', methods=['DELETE'], endpoint='exp_stop')
 @login_required
 def exp_stop(exp_id):
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    model_key = RedisKeyMaker.make_key(id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
     data_value = redis_cache.get(data_key).decode()
     if data_value is not None:
@@ -215,9 +215,9 @@ def exp_stop(exp_id):
 @module_exp.route('/<exp_id>/status', methods=['GET'], endpoint='exp_status')
 @login_required
 def exp_status(exp_id):
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    model_key = RedisKeyMaker.make_key(id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
     model_value = redis_cache.get(model_key)
     data_value = redis_cache.get(data_key)
@@ -232,9 +232,9 @@ def exp_status(exp_id):
 @module_exp.route('/<exp_id>/clear', methods=['DELETE'], endpoint='exp_clear')
 @login_required
 def exp_clear(exp_id):
-    data_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
-    model_key = RedisKeyMaker.make_key(exp_id=exp_id,
+    model_key = RedisKeyMaker.make_key(id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
     try:
         redis_cache.delete(model_key)
