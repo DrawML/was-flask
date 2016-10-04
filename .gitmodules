@@ -1,6 +1,6 @@
-[submodule "app/dist-task"]
-	path = app/dist_task
-	url = git@github.com:DrawML/dist-task.git
 [submodule "app/cloud_dfs"]
 	path = app/cloud_dfs
 	url = https://github.com/DrawML/cloud-dfs.git
+[submodule "app/dist_task"]
+	path = app/dist_task
+	url = https://github.com/DrawML/dist-task.git
