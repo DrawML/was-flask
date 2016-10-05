@@ -41,14 +41,14 @@ class TaskRunner:
                 with open(input_path, 'r', encoding='utf-8') as f:
                     return f.read()
 
-            tensorflow_task_job_dict = dict()
-            tensorflow_task_job_dict['data_file_token'] = get_dummy_input(input_path)
-            tensorflow_task_job_dict['object_code'] = self.model_obj_code
+            tensorflow_train_task_job_dict = dict()
+            tensorflow_train_task_job_dict['data_file_token'] = get_dummy_input(input_path)
+            tensorflow_train_task_job_dict['object_code'] = self.model_obj_code
 
             self.entry_arguments = dict(
                 experiment_id=self.model_key,
-                task_type=Client.TaskType.TYPE_TENSORFLOW_TASK,
-                task_job_dict=tensorflow_task_job_dict,
+                task_type=Client.TaskType.TYPE_TENSORFLOW_TRAIN_TASK,
+                task_job_dict=tensorflow_train_task_job_dict,
                 callback=self.create_callback(self.model_key, self.entry_arguments)
             )
 
