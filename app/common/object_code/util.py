@@ -17,6 +17,7 @@ class TestError(Exception):
 
 
 class GeneratorType(Enum):
+    DATA_PROCESSING = {"GENERATOR": "data_processing", "TAG": "experiment"}
     TRAIN = {"GENERATOR": "train", "TAG": "experiment"}
     TEST = {"GENERATOR": "test", "TAG": "test"}
 
@@ -44,7 +45,7 @@ class XMLTree:
             raise error()
 
     def get_error(self):
-        if self.xml_tree_type == GeneratorType.TRAIN:
+        if self.xml_tree_type == GeneratorType.TRAIN or self.xml_tree_type == GeneratorType.DATA_PROCESSING:
             return ExperimentError
         elif self.xml_tree_type == GeneratorType.TEST:
             return TestError
@@ -52,7 +53,7 @@ class XMLTree:
 
 class DataProcessor:
     def __init__(self, xml):
-        self.root = XMLTree(xml).root
+        self.root = XMLTree(xml, GeneratorType.DATA_PROCESSING).root
         self.processing = self.root.find('data_processing')
 
     def generate_object_code(self):
