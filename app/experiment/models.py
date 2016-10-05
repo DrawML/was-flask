@@ -35,7 +35,7 @@ class TaskRunner:
 
         if check_model:
             # Gonna be changed to 'model_input_file'
-            input_path = 'app/experiment/object_code/test/linear_regression_input.txt'
+            input_path = 'app/common/object_code/test/linear_regression_input.txt'
 
             def get_dummy_input(input_path: str):
                 with open(input_path, 'r', encoding='utf-8') as f:

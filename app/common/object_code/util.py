@@ -70,7 +70,7 @@ class DataProcessor:
 
 class TFConverter:
     """This code is NOT considered about exception"""
-    SCRIPT_MODULE = 'app.experiment.object_code.scripts'
+    SCRIPT_MODULE = 'app.common.object_code.scripts'
     TYPE = GeneratorType
 
     def __init__(self, xml, converter_type: GeneratorType):
