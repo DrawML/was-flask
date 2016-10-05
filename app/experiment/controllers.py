@@ -5,8 +5,8 @@ from jinja2.exceptions import TemplateError
 from sqlalchemy.exc import SQLAlchemyError
 from app.mysql_models import Experiment
 from app.mysql import db
-from app.experiment.models import Refiner, JsonParser, \
-    TFConverter, TaskRunner, ExperimentError, DataProcessor
+from app.experiment.models import TaskRunner
+from app.common.util import ExperimentError, DataProcessor, TFConverter, Refiner, JsonParser, GeneratorType
 from app.response import ErrorResponse
 from app.redis import redis_cache, RedisKeyMaker
 from app.dist_task.src.dist_system.client import Client
@@ -157,8 +157,8 @@ def exp_run(exp_id):
     model_obj_code = None
     model_input_file = None
     try:
-        tf_converter = TFConverter(xml)
-        model_obj_code, model_input_file = tf_converter.generate_object_code()
+        tf_train_converter = TFConverter(xml, TFConverter.TYPE.TRAIN)
+        model_obj_code, model_input_file = tf_train_converter.generate_object_code()
         current_app.logger.info('Code was generated')
         # tf_converter.run_obj_code(model_obj_code)
     except ExperimentError:
