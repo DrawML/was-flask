@@ -6,7 +6,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.mysql_models import TrainedModel, Data
 from app.mysql import db
 from app.response import ErrorResponse
-from app.test.models import TFConverter, TestError, TaskRunner
+from app.test.models import TaskRunner
+from app.common.util import TFConverter, TestError
 from app.redis import redis_cache, RedisKeyMaker
 import pickle
 from app.dist_task.src.dist_system.client import Client
@@ -95,7 +96,7 @@ def test_run(model_id, data_id):
 
     model_obj_code = None
     try:
-        tf_converter = TFConverter(xml)
+        tf_converter = TFConverter(xml, TFConverter.TYPE.TEST)
         model_obj_code, dummy = tf_converter.generate_object_code()
         current_app.logger.info('Test code was generated')
         # tf_converter.run_obj_code(model_obj_code)

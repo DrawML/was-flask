@@ -1,6 +1,7 @@
 import json
 import os
 import pickle
+from enum import Enum
 from xml.etree import ElementTree as Et
 
 from app.experiment.object_code.scripts import data_process as data_process
@@ -11,16 +12,42 @@ class ExperimentError(Exception):
     pass
 
 
+class TestError(Exception):
+    pass
+
+
+class GeneratorType(Enum):
+    TRAIN = {"GENERATOR": "train", "TAG": "experiment"}
+    TEST = {"GENERATOR": "test", "TAG": "test"}
+
+    def __str__(self):
+        return self.value["GENERATOR"]
+
+    def get_tag_name(self):
+        return self.value["TAG"]
+
+
 class XMLTree:
-    def __init__(self, xml):
+    TYPE = GeneratorType
+
+    def __init__(self, xml, xml_tree_type: GeneratorType):
+        self.xml_tree_type = xml_tree_type
+
         if os.path.isfile(xml) is True:
             self.xml_tree = Et.parse(xml)
             self.xml_tree.getroot()
         else:
             self.xml_tree = Et.fromstring(xml)
         self.root = self.xml_tree
-        if self.root.tag != "experiment":
-            raise ExperimentError()
+        if self.root.tag != self.xml_tree_type.get_tag_name():
+            error = self.get_error()
+            raise error()
+
+    def get_error(self):
+        if self.xml_tree_type == GeneratorType.TRAIN:
+            return ExperimentError
+        elif self.xml_tree_type == GeneratorType.TEST:
+            return TestError
 
 
 class DataProcessor:
@@ -43,22 +70,25 @@ class DataProcessor:
 class TFConverter:
     """This code is NOT considered about exception"""
     SCRIPT_MODULE = 'app.experiment.object_code.scripts'
+    TYPE = GeneratorType
 
-    def __init__(self, xml):
-        self.root = XMLTree(xml).root
+    def __init__(self, xml, converter_type: GeneratorType):
+        self.root = XMLTree(xml, converter_type).root
         self.model_type = self.root.find("model").find("type").text
+        self.converter_type = converter_type
 
     def generate_object_code(self):
         # have to consider about exception
         script_module = __import__(self.SCRIPT_MODULE, globals(),
                                    locals(), [self.model_type], 0)
         object_script = getattr(script_module, self.model_type)
-        template_name = self.root.find("model").find("type").text + "_train"
+        template_name = self.root.find("model").find("type").text + "_{0}".format(self.converter_type)
         return object_script.make_code(self.root, template_name)
 
+    # have to be deprecated
     def run_obj_code(self, obj_code):
         """This function just for test object code"""
-        OUTPUT_PATH = '/Users/chan/test/output.py'
+        OUTPUT_PATH = '/Users/chan/test/output{0}.py'.format(self.converter_type)
         output_file = open(OUTPUT_PATH, "w")
         output_file.write(obj_code)
         output_file.close()

@@ -1,5 +1,3 @@
-import xml.etree.ElementTree as Et
-import os
 from datetime import datetime
 
 from flask import current_app
@@ -9,45 +7,6 @@ from app import db
 from app.dist_task.src.dist_system.client import Client
 from app.mysql_models import Data
 from app.redis import RedisKeyMaker, redis_cache
-
-
-class TestError(Exception):
-    pass
-
-
-class XMLTree:
-    def __init__(self, xml):
-        if os.path.isfile(xml) is True:
-            self.xml_tree = Et.parse(xml)
-            self.xml_tree.getroot()
-        else:
-            self.xml_tree = Et.fromstring(xml)
-        self.root = self.xml_tree
-        if self.root.tag != "test":
-            raise TestError()
-
-
-class TFConverter:
-    SCRIPT_MODULE = 'app.experiment.object_code.scripts'
-
-    def __init__(self, xml):
-        self.root = XMLTree(xml).root
-        self.model_type = self.root.find("model").find("type").text
-
-    def generate_object_code(self):
-        # have to consider about exception
-        script_module = __import__(self.SCRIPT_MODULE, globals(),
-                                   locals(), [self.model_type], 0)
-        object_script = getattr(script_module, self.model_type)
-        template_name = self.root.find("model").find("type").text + "_test"
-        return object_script.make_code(self.root, template_name)
-
-    def run_obj_code(self, obj_code):
-        """This function just for test object code"""
-        OUTPUT_PATH = '/Users/chan/test/output_test.py'
-        output_file = open(OUTPUT_PATH, "w")
-        output_file.write(obj_code)
-        output_file.close()
 
 
 class TaskRunner:
