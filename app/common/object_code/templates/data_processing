@@ -11,6 +11,9 @@ import numpy as np
 import sys
 import os
 
+{% include 'tensorflow_configuration' %}
+
+
 shapes  = {{shapes}}
 file_ids = {{file_ids}}
 require  = "{{require}}"
@@ -55,12 +58,16 @@ def concat(data, shape):
         tf.reshape(data[i], [-1])
     concatenated = tf.concat(0, data)
     result = tf.reshape(concatenated, shape)
-    return result.eval(session=tf.Session())
+
+    global config
+    return result.eval(session=tf.Session(config=config))
 
 
 def transpose(data):
     result = tf.transpose(data)
-    return result.eval(session=tf.Session())
+
+    global config
+    return result.eval(session=tf.Session(config=config))
 
 
 def save_require(name):
@@ -78,25 +85,28 @@ def save_require(name):
         np.savetxt(f, files[name], delimiter=' ')
 
 
-files = load_input()
+{% raw %}
+with tf.device("{{device}}"):
+{% endraw %}
+    files = load_input()
 
 {% for unit in processing %}
 {% if unit.type == 'concat' %}
-unit_data = {{unit.data}}
-unit_shape = {{unit.shape}}
-input_data = []
-for data in unit_data:
-    input_data.append(files[data])
-unit_name = "{{unit.name}}"
-files[unit_name] = concat(input_data, unit_shape)
-save_require(unit_name)
+    unit_data = {{unit.data}}
+    unit_shape = {{unit.shape}}
+    input_data = []
+    for data in unit_data:
+        input_data.append(files[data])
+    unit_name = "{{unit.name}}"
+    files[unit_name] = concat(input_data, unit_shape)
+    save_require(unit_name)
 
 {% endif %}
 {% if unit.type == 'transpose' %}
-unit_data = {{unit.data}}
-unit_name = "{{unit.name}}"
-files[unit_name] = transpose(files[unit_data[0]])
-save_require(unit_name)
+    unit_data = {{unit.data}}
+    unit_name = "{{unit.name}}"
+    files[unit_name] = transpose(files[unit_data[0]])
+    save_require(unit_name)
 
 {% endif %}
 {% endfor %}
