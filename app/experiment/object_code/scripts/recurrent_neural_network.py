@@ -29,9 +29,9 @@ def bind_variables(xml_info: dict, template_variables: dict):
         template_variables['cell_type'] = "'gru'"
 
 
-def make_code(root: et.Element):
+def make_code(root: et.Element, template_name: str):
     try:
-        template = get_template(root.find("model").find("type").text)
+        template = get_template(template_name)
     except TemplateError as e:
         raise e
     xml_info = dict()

@@ -26,9 +26,9 @@ def bind_variables(xml_info: dict, template_variables: dict):
     template_variables['output_shape'] = output_shape
 
 
-def make_code(root: et.Element):
+def make_code(root: et.Element, template_name: str):
     try:
-        template = get_template(root.find("model").find("type").text)
+        template = get_template(template_name)
     except TemplateError as e:
         raise e
     xml_info = dict()
