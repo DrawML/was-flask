@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as et
 from jinja2.exceptions import TemplateError
-from app.experiment.object_code.scripts.code_generator import get_template, \
+from app.common.object_code.scripts.code_generator import get_template, \
     parse_xml, process_data, make_optimizer, bind_common_variables, get_input_shape
 
 

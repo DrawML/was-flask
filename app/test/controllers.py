@@ -1,17 +1,18 @@
+import pickle
+
 from flask import Blueprint, request, current_app, render_template, g, \
     flash, redirect, url_for
 from flask_login import login_required
 from jinja2.exceptions import TemplateError
 from sqlalchemy.exc import SQLAlchemyError
-from app.mysql_models import TrainedModel, Data
+
+from app.common.object_code.util import TFConverter, TestError
+from app.dist_task.src.dist_system.client import Client
 from app.mysql import db
+from app.mysql_models import TrainedModel, Data
+from app.redis import redis_cache, RedisKeyMaker
 from app.response import ErrorResponse
 from app.test.models import TaskRunner
-from app.common.util import TFConverter, TestError
-from app.redis import redis_cache, RedisKeyMaker
-import pickle
-from app.dist_task.src.dist_system.client import Client
-
 
 module_test = Blueprint('test',
                         __name__,
