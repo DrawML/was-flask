@@ -4,7 +4,7 @@ import pickle
 from enum import Enum
 from xml.etree import ElementTree as Et
 
-from app.experiment.object_code.scripts import data_process as data_process
+from app.common.object_code.scripts import data_process as data_process
 from app.mysql_models import Experiment
 
 

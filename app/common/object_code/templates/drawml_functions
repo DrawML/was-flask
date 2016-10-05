@@ -8,6 +8,8 @@ def load_input():
     if os.path.isfile(file_path) is False:
         print('No such file or directory', file_path)
         sys.exit(2)
+
+    global sess_path, output_file_path
     sess_path = sys.argv[2]
     output_file_path = sys.argv[3]
 

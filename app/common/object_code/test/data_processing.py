@@ -1,4 +1,4 @@
-import app.experiment.object_code.scripts.data_process as DP
+import app.common.object_code.scripts.data_process as DP
 
 set1 = [[1,2,3], [4,5,6]]
 set2 = [[7,8,9], [10,11,12], [13,14,15]]

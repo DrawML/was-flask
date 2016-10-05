@@ -24,7 +24,8 @@ def load_input():
         sys.exit(-1)
 
     file_count = int(sys.argv[1])
-    if file_count + 3 < len(sys.argv):  # this file name, file num, output_file_path
+    # this file name, input file num, [input_files], output_file_path
+    if file_count + 3 < len(sys.argv):
         print('Wrong argument')
         sys.exit(-1)
 
@@ -36,7 +37,7 @@ def load_input():
             sys.exit(2)
         file = np.genfromtxt(file_path, dtype='float32')
         files[file_ids[i]] = file
-
+    global output_file_path
     output_file_path = str(sys.argv[file_count + 2])
     return files
 
