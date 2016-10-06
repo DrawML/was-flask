@@ -12,6 +12,10 @@ from app.redis import redis_cache, RedisKeyMaker
 
 
 class TaskRunner:
+    """
+    Deprecated
+    USE common.object_code.util
+    """
     def __init__(self, user_id: int, xml,
                  data_obj_code, data_input_files, data_key: str,
                  model_obj_code, model_input_file, model_key: str):

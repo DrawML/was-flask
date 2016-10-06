@@ -10,6 +10,10 @@ from app.redis import RedisKeyMaker, redis_cache
 
 
 class TaskRunner:
+    """
+    Deprecated
+    USE common.object_code.util
+    """
     def __init__(self, user_id: int,
                  model_obj_code, model_input_file, model_key: str):
         self.user_id            = user_id
@@ -36,7 +40,7 @@ class TaskRunner:
 
             tensorflow_test_task_job_dict = dict()
             tensorflow_test_task_job_dict['data_file_token'] = get_dummy_input(input_path)
-            tensorflow_test_task_job_dict['session_file_token'] = None
+            # tensorflow_test_task_job_dict['session_file_token'] = None
             tensorflow_test_task_job_dict['object_code'] = self.model_obj_code
             self.entry_arguments = dict(
                 experiment_id=self.model_key,

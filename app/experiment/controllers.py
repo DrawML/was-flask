@@ -5,9 +5,9 @@ from flask_login import login_required
 from jinja2.exceptions import TemplateError
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.common.object_code.util import ExperimentError, DataProcessor, TFConverter
+from app.common.object_code.util import ExperimentError, DataProcessor, TaskRunner, TFConverter
 from app.dist_task.src.dist_system.client import Client
-from app.experiment.models import TaskRunner, Refiner, JsonParser
+from app.experiment.models import Refiner, JsonParser
 from app.mysql import db
 from app.mysql_models import Experiment
 from app.redis import redis_cache, RedisKeyMaker
@@ -182,9 +182,9 @@ def exp_run(exp_id):
                        data_obj_code=data_obj_code,
                        data_input_files=data_input_files,
                        data_key=data_key,
-                       model_obj_code=model_obj_code,
-                       model_input_file=model_input_file,
-                       model_key=model_key).run()
+                       train_obj_code=model_obj_code,
+                       train_input_file=model_input_file,
+                       train_key=model_key).run()
     if valid is False:
         return 'Invalid request, Task is not done'
     return 'run'

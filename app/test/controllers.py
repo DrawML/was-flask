@@ -7,13 +7,12 @@ from flask_login import login_required
 from jinja2.exceptions import TemplateError
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.common.object_code.util import TFConverter, TestError
+from app.common.object_code.util import TFConverter, TestError, TaskRunner
 from app.dist_task.src.dist_system.client import Client
 from app.mysql import db
 from app.mysql_models import TrainedModel, Data
 from app.redis import redis_cache, RedisKeyMaker
 from app.response import ErrorResponse
-from app.test.models import TaskRunner
 
 module_test = Blueprint('test',
                         __name__,
@@ -118,9 +117,9 @@ def test_run(model_id, data_id):
     model_key = RedisKeyMaker.make_key(id=model_id,
                                        type=RedisKeyMaker.MODEL_TESTING)
     valid = TaskRunner(user_id=g.user.id,
-                       model_obj_code=model_obj_code,
-                       model_input_file=data_id,
-                       model_key=model_key).run()
+                       test_obj_code=model_obj_code,
+                       test_input_file=data_id,
+                       test_key=model_key).run()
     if valid is False:
         return 'invalid request task is not done'
     return 'run'
