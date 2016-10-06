@@ -100,6 +100,7 @@ def test_run(model_id, data_id):
     try:
         tf_converter = TFConverter(xml, TFConverter.TYPE.TEST)
         model_obj_code, dummy = tf_converter.generate_object_code()
+        model_input_file = Data.query.filter_by(id=int(data_id)).first().path
         current_app.logger.info('Test code was generated')
         # tf_converter.run_obj_code(model_obj_code)
     except TestError:
@@ -118,7 +119,7 @@ def test_run(model_id, data_id):
                                        type=RedisKeyMaker.MODEL_TESTING)
     valid = TaskRunner(user_id=g.user.id,
                        test_obj_code=model_obj_code,
-                       test_input_file=data_id,
+                       test_input_file=model_input_file,
                        test_key=model_key).run()
     if valid is False:
         return 'invalid request task is not done'

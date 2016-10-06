@@ -8,7 +8,7 @@ def bind_variables(xml_info: dict, template_variable: dict):
     ids = xml_info['input_data']
     ids.replace(' ', '')
     template_variable['file_ids'] = ids.split(',')
-    return ids
+    return ids.split(',')
 
 
 def find_key(num: int, xml: dict):

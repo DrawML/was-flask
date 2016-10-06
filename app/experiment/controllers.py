@@ -9,7 +9,7 @@ from app.common.object_code.util import ExperimentError, DataProcessor, TaskRunn
 from app.dist_task.src.dist_system.client import Client
 from app.experiment.models import Refiner, JsonParser
 from app.mysql import db
-from app.mysql_models import Experiment
+from app.mysql_models import Experiment, Data
 from app.redis import redis_cache, RedisKeyMaker
 from app.response import ErrorResponse
 
@@ -139,7 +139,10 @@ def exp_run(exp_id):
     data_input_files = None
     try:
         data_processor = DataProcessor(xml)
-        data_obj_code, data_input_files = data_processor.generate_object_code()
+        data_obj_code, file_ids = data_processor.generate_object_code()
+        data_input_files = []
+        for file_id in file_ids:
+            data_input_files.append(Data.query.filter_by(id=int(file_id)).first().path)
         current_app.logger.info('Code was generated')
         # data_processor.run_obj_code(data_obj_code)
     except ExperimentError:
@@ -157,10 +160,15 @@ def exp_run(exp_id):
     data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_obj_code = None
-    model_input_file = None
+    if data_obj_code and data_input_files:
+        model_input_file = True  # In this case, model file will be filled after data processing
+    else:
+        model_input_file = None
     try:
         tf_train_converter = TFConverter(xml, TFConverter.TYPE.TRAIN)
-        model_obj_code, model_input_file = tf_train_converter.generate_object_code()
+        model_obj_code, file_id = tf_train_converter.generate_object_code()
+        if not model_input_file:
+            model_input_file = Data.query.filter_by(id=int(file_id)).first().path
         current_app.logger.info('Code was generated')
         # tf_converter.run_obj_code(model_obj_code)
     except ExperimentError:
