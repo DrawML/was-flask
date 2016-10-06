@@ -13,7 +13,7 @@
       {%- for data in datas %}
       <tr>
         <td>{{data.id}}</td>
-        <td><a href="/experiments/{{ data.id }}">{{ data.name }}</a></td>
+        <td><a href="/data/{{ data.id }}">{{ data.name }}</a></td>
         <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
       </tr>
       {%- endfor %}

@@ -60,14 +60,16 @@ class DataManager:
             filter(Data.user_id == self.user_id, Data.name == self.name).all()
         return len(query_data) > 0
 
-    def save(self):
-        fs = CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT)
-        with open(self.path, 'r') as f:
-            fs_path = fs.put_data_file(self.name, f, 'binary')
+    def save(self, fs_path=None):
+        if not fs_path:
+            fs = CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT)
+            with open(self.path, 'r') as f:
+                fs_path = fs.put_data_file(self.name, f, 'binary')
         new_data = Data(name=self.name, user_id=self.user_id, path=fs_path)
         db.session.add(new_data)
         db.session.commit()
-        os.remove(self.path)
+        if os.path.exists(self.path):
+            os.remove(self.path)
         return new_data
 
     def remove(self):

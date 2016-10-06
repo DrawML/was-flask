@@ -86,7 +86,7 @@ def model_delete(model_id):
         current_app.logger.error(e)
         flash('Database Internal Error', 'Error')
         return redirect(url_for('test.get_all_model'))
-    current_app.logger.info(str(deleted) + ' columns deleted : ' + int(model_id))
+    current_app.logger.info(str(deleted) + ' columns deleted : ' + str(model_id))
     return 'deleted'
 
 
