@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.common.object_code.util import ExperimentError, DataProcessor, TFConverter, Refiner, JsonParser
 from app.dist_task.src.dist_system.client import Client
-from app.experiment.models import TaskRunner
+from app.experiment.models import TaskRunner, Refiner, JsonParser
 from app.mysql import db
 from app.mysql_models import Experiment
 from app.redis import redis_cache, RedisKeyMaker

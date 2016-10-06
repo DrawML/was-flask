@@ -1,3 +1,4 @@
+import json
 import pickle
 from datetime import datetime
 
@@ -6,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.dist_task.src.dist_system.client import Client
 from app.mysql import db
-from app.mysql_models import Data, TrainedModel
+from app.mysql_models import Data, TrainedModel, Experiment
 from app.redis import redis_cache, RedisKeyMaker
 
 
@@ -157,3 +158,41 @@ class TaskRunner:
         return self.valid
 
 
+class Refiner(json.JSONEncoder):
+    def __init__(self, exps):
+        super().__init__()
+        if type(exps) is not list:
+            self.exps = self.exp_to_dict(exps)
+        else:
+            self.exps = []
+            for exp in exps:
+                temp = self.exp_to_dict(exp)
+                self.exps.append(temp)
+
+    def exp_to_dict(self, exp):
+        exp_dict = dict(
+            id=exp.id,
+            date_modified=str(exp.date_modified),
+            date_created=str(exp.date_created),
+            user_id=exp.user_id,
+            name=exp.name,
+            xml=exp.xml.decode(),
+            drawing=exp.drawing.decode(),
+            input=exp.input
+        )
+        return exp_dict
+
+
+class JsonParser:
+    @staticmethod
+    def parse_post(json, user_id):
+        try:
+            exp_json = json['exp_data']
+            exp_data = Experiment(exp_json['name'],
+                                  user_id,
+                                  pickle.dumps(exp_json['xml']),
+                                  pickle.dumps(exp_json['drawing']),
+                                  exp_json['input'])
+        except KeyError as e:
+            return e
+        return exp_data
