@@ -99,3 +99,6 @@ env
 
 #redis
 dump.rdb
+
+# tempfiles
+temp_files

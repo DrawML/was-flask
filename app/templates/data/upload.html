@@ -3,7 +3,7 @@
 <div id="progress">
     <div class="bar" style="width: 0%;"></div>
 </div>
-<input id="fileupload" type="file" name="file" data-url="/data" multiple>
+<input id="fileupload" type="file" name="file" data-url="/data/" multiple>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/static/javascripts/vendor/jquery.ui.widget.js"></script>
 <script src="/static/javascripts/jquery.iframe-transport.js"></script>
@@ -15,6 +15,7 @@
     })
         .on('fileuploaddone', function (e, data) {
             alert('Uploading Complete');
+            console.log(data);
         })
         .on('fileuploadfail', function (e, data) {
             $.ajax({

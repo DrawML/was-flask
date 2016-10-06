@@ -62,18 +62,21 @@ class Experiment(Base):
 
     def to_dict(self):
         return {
-            Experiment.name:    self.name,
-            Experiment.user_id: self.user_id,
-            Experiment.xml:     self.xml,
-            Experiment.drawing: self.drawing,
-            Experiment.input:   self.input
+            Experiment.id:            self.id,
+            Experiment.date_created:  self.date_created,
+            Experiment.date_modified: self.date_modified,
+            Experiment.name:          self.name,
+            Experiment.user_id:       self.user_id,
+            Experiment.xml:           self.xml,
+            Experiment.drawing:       self.drawing,
+            Experiment.input:         self.input
         }
 
 
 class Data(Base):
     __tablename__   = 'data'
     __table_args__  = {'extend_existing': True}
-    name            = db.Column(db.VARCHAR(45), primary_key=True)
+    name            = db.Column(db.VARCHAR(255), primary_key=True)
     user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     path            = db.Column(db.VARCHAR(255))
 
@@ -88,9 +91,12 @@ class Data(Base):
 
     def to_dict(self):
         return {
-            Data.name:    self.name,
-            Data.user_id: self.user_id,
-            Data.path:     self.path
+            Data.id:            self.id,
+            Data.date_created:  self.date_created,
+            Data.date_modified: self.date_modified,
+            Data.name:          self.name,
+            Data.user_id:       self.user_id,
+            Data.path:          self.path
         }
 
 
@@ -114,10 +120,13 @@ class TrainedModel(Base):
 
     def to_dict(self):
         return {
-            TrainedModel.name:    self.name,
-            TrainedModel.user_id: self.user_id,
-            TrainedModel.path:    self.path,
-            TrainedModel.xml:     self.xml
+            TrainedModel.id:            self.id,
+            TrainedModel.date_created:  self.date_created,
+            TrainedModel.date_modified: self.date_modified,
+            TrainedModel.name:          self.name,
+            TrainedModel.user_id:       self.user_id,
+            TrainedModel.path:          self.path,
+            TrainedModel.xml:           self.xml
         }
 
 

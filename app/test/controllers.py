@@ -1,4 +1,5 @@
 import pickle
+from datetime import datetime
 
 from flask import Blueprint, request, current_app, render_template, g, \
     flash, redirect, url_for
@@ -58,6 +59,7 @@ def update_model(model_id):
 
     model = TrainedModel.query.filter_by(id=int(model_id)).first()
     model.name = name
+    model.date_modified = datetime.now()
     try:
         updated = db.session.query(TrainedModel)\
             .filter(TrainedModel.id == int(model_id))\

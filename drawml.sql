@@ -26,7 +26,7 @@ CREATE TABLE `drawml`.`data` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
   `date_created` DATETIME DEFAULT NOW(),
   `date_modified` DATETIME DEFAULT NOW(),
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   `path` VARCHAR(255) NOT NULL,
   `user_id` INTEGER NOT NULL,
   PRIMARY KEY (`user_id`, `name`),
