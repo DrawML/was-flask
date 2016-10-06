@@ -194,6 +194,7 @@ class TaskRunner:
         #   - None      when "cancel"
         """
         key = task_key
+        session = db.session
         if self.entry_arguments is not None:
             next_arguments = self.entry_arguments
 
@@ -202,8 +203,8 @@ class TaskRunner:
 
             def save_obj(data_class, params):
                 new_one = data_class(**params)
-                db.session.add(new_one)
-                db.session.commit()
+                session.add(new_one)
+                session.commit()
                 return new_one
 
             def fail(token=None):
@@ -212,7 +213,7 @@ class TaskRunner:
                     from config.app_config import CLOUDDFS_ADDR, CLOUDDFS_PORT
                     CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT)\
                         .del_data_file(token)
-                db.session.rollback()
+                session.rollback()
                 redis_cache.set(key, redis_cache.FAIL)
                 current_app.logger.error(e)
                 return
