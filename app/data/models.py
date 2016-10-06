@@ -72,7 +72,7 @@ class DataManager:
 
     def remove(self):
         fs_path = self.fetch()[0].path
-        CloudDFSConnector(CloudDFS_ADDR, CloudDFS_PORT).del_data_file(fs_path)
+        CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT).del_data_file(fs_path)
         db.session.query(Data).filter(Data.id == self.id) \
             .delete(synchronize_session=False)
         db.session.commit()
