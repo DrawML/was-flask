@@ -183,6 +183,8 @@ class TaskRunner:
         key = task_key
         db = DrawMLRepository().db
         session = db.session
+        next_arguments = None
+
         if self.entry_arguments is not None:
             next_arguments = self.entry_arguments
 
@@ -220,10 +222,11 @@ class TaskRunner:
                     except SQLAlchemyError as e:
                         fail(file_token)
                     # update file token
-                    next_arguments['data_file_token'] = file_token
+                    next_arguments['task_job_dict']['data_file_token'] = file_token
                 elif task_type == str(RedisKeyMaker.MODEL_TRAINING):
                     file_name = '{}-train-session-{}'.format(id, current_time)
                     file_token = body.get('session_file_token', None)
+                    print("received ", file_token, " / with name ", file_name)
                     try:
                         save_obj(TrainedModel, dict(name=file_name, user_id=self.user_id,
                                                     path=file_token, xml=pickle.dumps(self.xml)))
@@ -233,6 +236,7 @@ class TaskRunner:
                     current_time = datetime.now().isoformat()
                     file_name = '{}-train-result-{}'.format(id, current_time)
                     file_token = body.get('result_file_token', None)
+                    print("received ", file_token, " / with name ", file_name)
                     try:
                         save_obj(Data, dict(name=file_name, user_id=self.user_id,
                                             path=file_token))
@@ -248,16 +252,16 @@ class TaskRunner:
                     except SQLAlchemyError as e:
                         fail(file_token)
                     # update file token ??
-                current_app.logger.info('Test finish: {}'.format(id))
+                print('Test finish: {}'.format(id))
                 redis_cache.set(key, redis_cache.SUCCESS)
-                print("[%d] callback is called with 'success'" % key)
+                print("[%s] callback is called with 'success'" % key)
             elif status == 'error':
                 redis_cache.set(key, redis_cache.FAIL)
-                print("[%d] callback is called with 'fail'" % key)
+                print("[%s] callback is called with 'fail'" % key)
             elif status == 'cancel':
                 # Client().request_cancel(key)
                 redis_cache.set(key, redis_cache.CANCEL)
-                print("[%d] callback is called with 'cancel'" % key)
+                print("[%s] callback is called with 'cancel'" % key)
 
             if body is not None:
                 print(body['stderr'])
