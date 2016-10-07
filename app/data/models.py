@@ -2,7 +2,7 @@ import os
 
 from app.cloud_dfs.connector import CloudDFSConnector
 from app.mysql_models import Data
-from app.mysql import db
+from app.mysql import DrawMLRepository
 import json
 
 from config.app_config import CLOUDDFS_ADDR
@@ -51,12 +51,13 @@ class DataManager:
         self.user_id = user_id
         self.name = name
         self.path = path
+        self.db =  DrawMLRepository().db
 
     def fetch(self):
-        return db.session.query(Data).filter(Data.id == self.id).all()
+        return self.db.session.query(Data).filter(Data.id == self.id).all()
 
     def check(self):
-        query_data = db.session.query(Data). \
+        query_data = self.db.session.query(Data). \
             filter(Data.user_id == self.user_id, Data.name == self.name).all()
         return len(query_data) > 0
 
@@ -66,8 +67,8 @@ class DataManager:
             with open(self.path, 'r') as f:
                 fs_path = fs.put_data_file(self.name, f, 'binary')
         new_data = Data(name=self.name, user_id=self.user_id, path=fs_path)
-        db.session.add(new_data)
-        db.session.commit()
+        self.db.session.add(new_data)
+        self.db.session.commit()
         if os.path.exists(self.path):
             os.remove(self.path)
         return new_data
@@ -75,6 +76,6 @@ class DataManager:
     def remove(self):
         fs_path = self.fetch()[0].path
         CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT).del_data_file(fs_path)
-        db.session.query(Data).filter(Data.id == self.id) \
+        self.db.session.query(Data).filter(Data.id == self.id) \
             .delete(synchronize_session=False)
-        db.session.commit()
+        self.db.session.commit()

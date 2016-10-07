@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, make_response, \
 from flask_login import login_user, logout_user
 from sqlalchemy.exc import SQLAlchemyError
 from app.mysql_models import User
-from app.mysql import db
+from app.mysql import DrawMLRepository
 
 module_auth = Blueprint('auth',
                         __name__,
@@ -14,6 +14,8 @@ module_auth = Blueprint('auth',
 
 @module_auth.route('/register', methods=['GET', 'POST'])
 def register():
+    db = DrawMLRepository().db
+
     if request.method == 'GET':
         return render_template('auth/register.html')
     user = User(request.form['user_id'], request.form['pw'])

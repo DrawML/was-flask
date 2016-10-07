@@ -7,10 +7,9 @@ import pickle
 from flask import current_app
 from sqlalchemy.exc import SQLAlchemyError
 
-from app import db
+from app.mysql import DrawMLRepository
 from app.common.object_code.scripts import data_process as data_process
 from app.dist_task.src.dist_system.client import Client
-from app.mysql_models import Data, TrainedModel
 from app.redis import RedisKeyMaker, redis_cache
 
 
@@ -193,7 +192,10 @@ class TaskRunner:
         #   - str       when "error"
         #   - None      when "cancel"
         """
+        from app.mysql_models import Data, TrainedModel
+
         key = task_key
+        db = DrawMLRepository().db
         session = db.session
         if self.entry_arguments is not None:
             next_arguments = self.entry_arguments

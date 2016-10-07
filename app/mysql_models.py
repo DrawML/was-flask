@@ -1,5 +1,7 @@
-from app.mysql import db
+from app.mysql import DrawMLRepository
 import datetime
+
+db = DrawMLRepository().db
 
 
 class Base(db.Model):

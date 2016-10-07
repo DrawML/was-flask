@@ -5,7 +5,7 @@ from flask import redirect
 from flask import url_for
 from sqlalchemy.exc import SQLAlchemyError
 from flask_login import login_required
-from app.mysql import db
+from app.mysql import DrawMLRepository
 from app.mysql_models import Data
 from app.response import ErrorResponse
 from app.data.models import DataManager, Refiner, ChunkRange
@@ -23,6 +23,7 @@ module_data = Blueprint('data',
 @module_data.route('/api', methods=['GET'], endpoint='api_all')
 @login_required
 def api_all():
+    db = DrawMLRepository().db
     data_set = db.session.query(Data).filter(Data.user_id == g.user.id).all()
     return json.dumps(Refiner(data_set).get())
 
@@ -30,6 +31,7 @@ def api_all():
 @module_data.route('/api/<data_id>', methods=['GET'], endpoint='api_one')
 @login_required
 def api_one(data_id):
+    db = DrawMLRepository().db
     data = db.session.query(Data).filter(Data.user_id == g.user.id, Data.id == data_id).first()
     return json.dumps(Refiner(data).get())
 
@@ -68,6 +70,8 @@ def create():
     # duplication check
     if DataManager(user_id=user_id, name=filename).check():
         return ErrorResponse(400, 'Error, Same file name already exist')
+
+    db = DrawMLRepository().db
 
     if 'Content-Range' in request.headers:
         # extract starting byte from Content-Range header string
@@ -121,6 +125,9 @@ def update(data_id):
     data = Data.query.filter_by(id=int(data_id)).first()
     data.name = name
     data.date_modified = datetime.now()
+
+    db = DrawMLRepository().db
+
     try:
         updated = db.session.query(Data)\
             .filter(Data.id == int(data_id))\
@@ -145,6 +152,7 @@ def data_delete(data_id):
     try:
         DataManager(data_id).remove()
     except SQLAlchemyError as e:
+        db = DrawMLRepository().db
         db.session.rollback()
         current_app.logger.error(e)
         return ErrorResponse(500, 'Internal Database Error')

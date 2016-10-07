@@ -4,9 +4,7 @@ from flask_login import current_user
 from app.dist_task.src.dist_system.client import Client
 from app.dist_task.src.dist_system.result_receiver import ResultReceiverAddress
 from config import app_config
-from app.mysql_session import SQLAlchemySessionInterface
-from app.mysql import db
-from app.manager import login_manager
+from app.mysql import DrawMLRepository
 from app.redis_session import RedisSessionInterface
 from app.redis import redis_cache
 
@@ -15,6 +13,7 @@ class Server(object):
     def __init__(self):
         self.app = Flask(__name__, static_url_path='/static')
         self.app.config.from_object(app_config)
+        self.db = DrawMLRepository(self.app).db
 
         @self.app.before_request
         def before_request():
@@ -48,25 +47,25 @@ class Server(object):
                                                    int(self.app.config['RESULT_ROUTER_PORT'])))
 
     def setup_database(self):
-        db.init_app(self.app)
+        self.db.init_app(self.app)
         with self.app.app_context():
-            db.create_all()
+            self.db.create_all()
 
         @self.app.teardown_appcontext
         def shutdown_session(exception=None):
-            db.session.remove()
+            DrawMLRepository().db.session.remove()
 
     def setup_session(self):
         # self.app.session_interface = SQLAlchemySessionInterface()
         self.app.session_interface = RedisSessionInterface()
 
     def setup_login_manager(self):
+        from app.manager import login_manager
         login_manager.init_app(self.app)
         login_manager.login_view = 'auth.signin'
 
     def setup_dist_client(self):
         self.client.start()
-
 
 server = Server()
 server.setup_database()

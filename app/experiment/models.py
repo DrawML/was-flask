@@ -6,7 +6,7 @@ from flask import current_app
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.dist_task.src.dist_system.client import Client
-from app.mysql import db
+from app.mysql import DrawMLRepository
 from app.mysql_models import Data, TrainedModel, Experiment
 from app.redis import redis_cache, RedisKeyMaker
 
@@ -83,6 +83,7 @@ class TaskRunner:
         #   - None      when "cancel"
         """
         key = task_key
+        db = DrawMLRepository().db
         if task_args is not None:
             next_arguments = task_args
 

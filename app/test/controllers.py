@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.common.object_code.util import TFConverter, TestError, TaskRunner
 from app.dist_task.src.dist_system.client import Client
-from app.mysql import db
+from app.mysql import DrawMLRepository
 from app.mysql_models import TrainedModel, Data
 from app.redis import redis_cache, RedisKeyMaker
 from app.response import ErrorResponse
@@ -19,6 +19,7 @@ module_test = Blueprint('test',
                         url_prefix='/tests',
                         static_folder='/static',
                         template_folder='templates/test')
+db = DrawMLRepository().db
 
 
 @module_test.route('/', methods=['GET'], endpoint='get_all_model')

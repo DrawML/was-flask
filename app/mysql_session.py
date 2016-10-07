@@ -2,11 +2,10 @@ from werkzeug.datastructures import CallbackDict
 from uuid import uuid4
 import pickle
 from flask.sessions import SessionInterface, SessionMixin
-from app.mysql import db
+from app.mysql import DrawMLRepository
 from app.mysql_models import FlaskSession
 
 """currently NOT used"""
-
 class SQLAlchemySession(CallbackDict, SessionMixin):
     def __init__(self, initial=None, sid=None, new=False):
         def on_update(self):
@@ -25,6 +24,7 @@ class SQLAlchemySessionInterface(SessionInterface):
         return str(uuid4())
 
     def open_session(self, app, request):
+        db = DrawMLRepository().db
         sid = request.cookies.get(app.session_cookie_name)
         if not sid:
             sid = self.generate_sid()
@@ -38,6 +38,7 @@ class SQLAlchemySessionInterface(SessionInterface):
         return self.session_class(data, sid=sid)
 
     def save_session(self, app, session, response):
+        db = DrawMLRepository().db
         domain = self.get_cookie_domain(app)
 
         if not session:

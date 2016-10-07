@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.common.object_code.util import ExperimentError, DataProcessor, TaskRunner, TFConverter
 from app.dist_task.src.dist_system.client import Client
 from app.experiment.models import Refiner, JsonParser
-from app.mysql import db
+from app.mysql import DrawMLRepository
 from app.mysql_models import Experiment, Data
 from app.redis import redis_cache, RedisKeyMaker
 from app.response import ErrorResponse
@@ -18,6 +18,7 @@ module_exp = Blueprint('experiment',
                        url_prefix='/experiments',
                        static_folder='/static/experiments',
                        template_folder='templates/experiments')
+db = DrawMLRepository().db
 
 
 @module_exp.route('/', methods=['GET'], endpoint='get_all_exp')
