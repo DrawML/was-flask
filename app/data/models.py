@@ -41,7 +41,7 @@ class ChunkRange:
         """
         self.head  = int(range_str.split(' ')[1].split('-')[0])
         self.tail  = int(range_str.split(' ')[1].split('-')[1].split('/')[0])
-        self.total = int(range_str.split(' ')[1].split('-')[1].split('/')[1])
+        self.total = int(range_str.split(' ')[1].split('-')[1].split('/')[1]) - 1
 
 
 class DataManager:
@@ -64,8 +64,8 @@ class DataManager:
     def save(self, fs_path=None):
         if not fs_path:
             fs = CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT)
-            with open(self.path, 'r') as f:
-                fs_path = fs.put_data_file(self.name, f, 'binary')
+            with open(self.path, 'rt') as f:
+                fs_path = fs.put_data_file(self.name, f.read(), 'text')
         new_data = Data(name=self.name, user_id=self.user_id, path=fs_path)
         self.db.session.add(new_data)
         self.db.session.commit()

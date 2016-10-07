@@ -65,6 +65,8 @@ def create():
     file = param['file']
     user_id = g.user.id
     filename = file.filename
+
+    # [issue#4] Duplicate the name of uploaded file
     filepath = temp_dir + str(user_id) + '-' + filename
 
     # duplication check
@@ -89,8 +91,12 @@ def create():
                 current_app.logger.error(e)
                 res = ErrorResponse(500, 'Error, Database internal error')
                 return res
-            except:
+            except Exception as e:
+                current_app.logger.info(e)
                 return ErrorResponse(400, 'Error, File system internal error')
+            finally:
+                if os.path.exists(filepath):
+                    os.remove(filepath)
             current_app.logger.info('Data created :' + str(new_data))
 
     else:
