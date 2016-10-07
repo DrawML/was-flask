@@ -130,15 +130,8 @@ class TaskRunner:
             return
 
         if check_train:
-            # Gonna be changed to 'train_input_file'
-            input_path = 'app/common/object_code/test/linear_regression_input.txt'
-
-            def get_dummy_input(input_path: str):
-                with open(input_path, 'r', encoding='utf-8') as f:
-                    return f.read()
-
             tensorflow_train_task_job_dict = dict()
-            tensorflow_train_task_job_dict['data_file_token'] = get_dummy_input(input_path)
+            tensorflow_train_task_job_dict['data_file_token'] = self.train_input_file
             tensorflow_train_task_job_dict['object_code'] = self.train_obj_code
 
             self.entry_arguments = dict(
@@ -162,15 +155,8 @@ class TaskRunner:
             )
 
         if check_test:
-            # Gonna be changed to 'model_input_file'
-            input_path = 'app/common/object_code/test/linear_regression_input.txt'
-
-            def get_dummy_input(input_path: str):
-                with open(input_path, 'r', encoding='utf-8') as f:
-                    return f.read()
-
             tensorflow_test_task_job_dict = dict()
-            tensorflow_test_task_job_dict['data_file_token'] = get_dummy_input(input_path)
+            tensorflow_test_task_job_dict['data_file_token'] = self.test_input_file
             # tensorflow_test_task_job_dict['session_file_token'] = None
             tensorflow_test_task_job_dict['object_code'] = self.test_obj_code
             self.entry_arguments = dict(
