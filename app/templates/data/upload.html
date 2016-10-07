@@ -1,19 +1,28 @@
 {% extends "layout.html" %}
 {% block body %}
-<div id="progress">
-    <div class="bar" style="width: 0%;"></div>
+
+<div id="progressBox">
+    <div>In progress... (<span id="progress">0%</span>)</div>
+    <progress class="progress" value="0" max="100" aria-describedby="example-caption-1"></progress>
 </div>
+
 <input id="fileupload" type="file" name="file" data-url="/data/" multiple>
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/static/javascripts/vendor/jquery.ui.widget.js"></script>
 <script src="/static/javascripts/jquery.iframe-transport.js"></script>
 <script src="/static/javascripts/jquery.fileupload.js"></script>
 <script>
+    $("#progressBox").hide();
     $('#fileupload').fileupload({
         maxChunkSize: 4 * 1024 * 1024, // 4 MB
         method:'POST'
     })
+        .on('fileuploadstart', function (e, data) {
+            $("#progressBox").show();
+        })
         .on('fileuploaddone', function (e, data) {
+            $('#progress').html("<span style='color: blue;'>100%</span>");
             alert('Uploading Complete');
             console.log(data);
         })
@@ -24,10 +33,15 @@
                 data: {file: data.files[0].name},
                 type: 'DELETE'
             });
+            $('#progress').html("<span style='color: red;'>FAIL</span>");
             alert('Uploading Fail');
         })
         .on('fileuploadchunksend', function (e, data) {})
-        .on('fileuploadchunkdone', function (e, data) {})
+        .on('fileuploadchunkdone', function (e, data) {
+            var percent = parseInt(data.loaded / data.total * 100);
+            $(".progress").attr("value", percent);
+            $("#progress").text(percent + "%");
+        })
         .on('fileuploadchunkfail', function (e, data) {})
         .on('fileuploadchunkalways', function (e, data) {});
 </script>

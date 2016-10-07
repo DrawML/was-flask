@@ -1,0 +1,8 @@
+progress::-webkit-progress-value {
+    background-color: #5bc0de;
+}
+
+.progress {
+    width: 25%;
+    display: block;
+}
