@@ -696,7 +696,7 @@ function restoreModel(exp){
 
         var modelData=$(xml).find('model').find('data').text().trim();
 
-        if(modelData.length > 4 && modelData.substring(0,3)=="seq"){
+        if(modelData.length >= 4 && modelData.substring(0,3)=="seq"){
             //PreProcessing과 연결
             modelData = modelData.substring(3,modelData.length)*1;
 
