@@ -124,7 +124,7 @@ function handleDropEvent( event, ui ) {
         clearDataShapeOption();
         clearDefaultOptions();
         var fileName = ui.draggable.text();
-        var l = new DataPreprocessingModel(modelCnt++,fileName(fileName),canvasX-wi-150,canvasY-ContainerTop);
+        var l = new DataPreprocessingModel(modelCnt++,fileName,canvasX-wi-150,canvasY-ContainerTop);
         models.push(l);
         currentSelectedModel=l;
         canvas.add(l.fabricModel);
