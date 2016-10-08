@@ -473,7 +473,7 @@ function topologicalSort(visit){
             break;
         }
     }
-    console.log(startModel);
+   // console.log(startModel);
     //DFS
     list.push(startModel);
     visit[getModelIdxById(startModel.ID)]=true;
@@ -486,11 +486,11 @@ function topologicalSort(visit){
             alert("not fully connected!!");
             return null;
         }
-        console.log(stack.length);
-        console.log(curModel.prevModel);
+      //  console.log(stack.length);
+       // console.log(curModel.prevModel);
 
         for(var p=0; p<curModel.prevModel.length;p++){
-            console.log("visit : " + getModelIdxById(curModel.prevModel[p].ID));
+          //  console.log("visit : " + getModelIdxById(curModel.prevModel[p].ID));
             if(visit[getModelIdxById(curModel.prevModel[p].ID)]==true) continue;
             else{
                 list.push(curModel.prevModel[p]);
