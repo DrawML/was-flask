@@ -565,15 +565,9 @@ function restoreModel(exp){
     var xml = json_exp['xml'];
     var drawing = json_exp['drawing'];
 
-
-    //TEST
-    x=xml;
-    d=drawing;
-    //TEST
-
     //string to xml
-    xml=$.parseXML(xml);
-    drawing=$.parseXML(drawing);
+    x=xml=$.parseXML(xml);
+    d=drawing=$.parseXML(drawing);
     console.log(xml);
     console.log(drawing);
 
