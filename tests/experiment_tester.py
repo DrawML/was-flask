@@ -38,7 +38,7 @@ class ExperimentRunTestCase(unittest.TestCase):
             'User-Agent': 'Mozilla/5.0'
         }
         response = session.post(self.url + path, headers=headers, data=data)
-        self.assertEqual("index", response.text, "Fail to sign in")
+        self.assertEqual(200, response.status_code, "Fail to sign in")
 
         # try to run
         path = "/experiments/1/run"
@@ -54,3 +54,7 @@ class ExperimentRunTestCase(unittest.TestCase):
         self.assertEqual('run', response.text, "Fail to run")
 
         print("Successfully Run")
+
+
+if __name__ == '__main__':
+    unittest.main()
