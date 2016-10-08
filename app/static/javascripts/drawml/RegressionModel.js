@@ -290,15 +290,15 @@ function Regression(id,type,pointLeft, pointTop){
             console.log('START REGRESSION MODEL');
             XML.BeginNode("model");
             console.log('Check prevModel');
-            if(this.prevModel==null || this.prevModel.length==0){
+            if(this.prevModel ==null || this.prevModel.length==0){
                 alert("Model hasn't Input Data");
             }
             console.log(prevModel);
 
             if(this.prevModel[0] instanceof InputModel){
-                XML.Node("data",prevModel[0].fileID.toString());
+                XML.Node("data",this.prevModel[0].fileID.toString());
             }else if(this.prevModel[0] instanceof DataPreprocessingModel){
-                XML.Node("data",'seq'+prevModel[0].seq.toString());
+                XML.Node("data",'seq'+this.prevModel[0].seq.toString());
             }
 
 
