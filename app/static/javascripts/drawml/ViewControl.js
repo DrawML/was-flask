@@ -566,7 +566,7 @@ function restoreModel(exp){
 
     //string to xml
     xml=$.parseXML(xml);
-    drawing=$.parseXML(xml);
+    drawing=$.parseXML(drawing);
     console.log(xml);
     console.log(drawing);
 
