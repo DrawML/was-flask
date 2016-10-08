@@ -410,9 +410,9 @@ function NeuralNetworks(id,pointLeft, pointTop){
             }
 
             if(this.prevModel[0] instanceof InputModel){
-                XML.Node("data",prevModel[0].fileID.toString());
+                XML.Node("data",this.prevModel[0].fileID.toString());
             }else if(this.prevModel[0] instanceof DataPreprocessingModel){
-                XML.Node("data",prevModel[0].seq.toString());
+                XML.Node("data",'seq'+this.prevModel[0].seq.toString());
             }
 
                 XML.Node("type", "neural_network");

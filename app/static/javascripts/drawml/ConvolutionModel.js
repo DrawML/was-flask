@@ -627,14 +627,14 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
         {
             XML.BeginNode("model");
 
-            if(this.prevModel==null ||this.prevModel.length==0){
+             if(this.prevModel==null ||this.prevModel.length==0){
                 alert("Model hasn't Input Data");
             }
 
             if(this.prevModel[0] instanceof InputModel){
-                XML.Node("data",prevModel[0].fileID.toString());
+                XML.Node("data",this.prevModel[0].fileID.toString());
             }else if(this.prevModel[0] instanceof DataPreprocessingModel){
-                XML.Node("data",prevModel[0].seq.toString());
+                XML.Node("data",'seq'+this.prevModel[0].seq.toString());
             }
             XML.Node("type", "convolution_neural_network");
             this.dropOut.toXML(XML);
