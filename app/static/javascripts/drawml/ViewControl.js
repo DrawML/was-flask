@@ -5,7 +5,7 @@ function getDataIDByName(name){
     for(var x =0 ; x<datalist.length;x++)
     {
         if(datalist[x].name==name){
-            result=datalist[x].name;
+            result=datalist[x].id;
         }
     }
     return result;
