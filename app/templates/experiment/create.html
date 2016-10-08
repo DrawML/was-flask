@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <div class="control-group">
+        <div class="controls">
+          <input type="password" id="name" name="name" class="input-xlarge"
+            placeholder="Enter Experiment name"
+            required>
+        </div>
+    </div>
+ 
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-success">Create</button>
+        </div>
+        <div class="controls">
+            <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_model()">Cancel</button>
+        </div>
+    </div>
+  </form>
+{% endblock %}

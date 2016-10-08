@@ -1,5 +1,4 @@
 import json
-
 from flask import Blueprint, request, current_app, render_template, g
 from flask_login import login_required
 from jinja2.exceptions import TemplateError
@@ -53,8 +52,16 @@ def get_exp_api(exp_id):
 
 @module_exp.route('/<exp_id>', methods=['GET'], endpoint='get_exp_view')
 @login_required
-def get_exp_api(exp_id):
-    return render_template('/experiment/draw.html')
+def get_exp_view(exp_id):
+    exp = Experiment.query.filter_by(id=exp_id).first()
+    return render_template('/experiment/draw.html',
+                           exp_id=exp.id)
+
+
+@module_exp.route('/create', methods=['GET'], endpoint='create_view')
+@login_required
+def create_view():
+    return render_template('/experiment/create.html')
 
 
 @module_exp.route('/', methods=['POST'], endpoint='exp_create')

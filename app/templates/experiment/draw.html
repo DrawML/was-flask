@@ -10,6 +10,9 @@
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/static/javascripts/drawml/fabric.js"></script>
         <script type="text/javascript" src="/static/javascripts/drawml/XMLWriter.js"></script>
+        <script type="text/javascript">
+            var exp_id = {{ exp_id }};
+        </script>
         <link rel="stylesheet" type="text/css" href="/static/css/draw.css">
     </head>
     
@@ -20,7 +23,6 @@
             <div class="container-fluid">
                 <a class="navbar-brand">DrawML</a>
                 <p class="navbar-text pull-right">Stacker</p>
-
             </div>
         </nav>
     </header>
@@ -182,6 +184,7 @@
     <script type="text/javascript" src="/static/javascripts/drawml/DataModel.js"></script>
     <script type="text/javascript" src="/static/javascripts/drawml/ArrowModel.js"></script>
     <script type="text/javascript" src="/static/javascripts/drawml/ViewControl.js"></script>
+    <script type="text/javascript" src="/static/javascripts/drawml/NetworkRequest.js"></script>
 
     </body>
 
