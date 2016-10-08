@@ -2,10 +2,10 @@
 <experiment>
     <input>
         <shape>[28,28],[10]</shape>
-        <data>84</data>                      <!-- data id -->
+        <data>89</data>                      <!-- data id -->
     </input>
     <model>
-        <data>84</data>
+        <data>89</data>
         <type>convolution_neural_network</type>
         <dropout_conv>0.8</dropout_conv>
         <dropout_hidden>0.8</dropout_hidden>

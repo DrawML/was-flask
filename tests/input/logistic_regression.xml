@@ -2,10 +2,10 @@
 <experiment>
     <input>
         <shape>[2],[1]</shape>
-        <data>1</data>
+        <data>88</data>
     </input>
     <model>
-        <data>1</data>
+        <data>88</data>
         <type>logistic_regression</type>
         <initializer>
             <type>random_uniform</type> <!-- valid type -->

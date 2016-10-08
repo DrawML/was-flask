@@ -2,10 +2,10 @@
 <experiment>
     <input>
         <shape>[784],[10]</shape>
-        <data>36</data>
+        <data>89</data>
     </input>
     <model>
-        <data>36</data>
+        <data>89</data>
         <type>softmax_regression</type>
         <initializer>
             <type>random_uniform</type> <!-- valid type -->
