@@ -554,6 +554,7 @@ function restoreModel(exp){
 
     //restore INPUT
     var inputModels=$(xml).find('input').find('data').text().split(',');
+    console.log(inputModels);
     for(var x in inputModels){
         //inputModels[x]
         //get left, top
@@ -565,6 +566,7 @@ function restoreModel(exp){
 
     //restore Processing by seq
     var processSize=$(xml).find('data_processing').find('size').text();
+    console.log("pre size : "+ processSize);
     for(var s=1;s<=processSize;s++){
         //find seq : s in drawing
         var cur = $(drawing).find('DataPreprocessingModel').attr("seq",s.toString()).text().split(',');
