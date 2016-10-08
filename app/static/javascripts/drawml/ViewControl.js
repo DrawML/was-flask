@@ -414,7 +414,7 @@ function makeXML() {
     XML.Node("data",makeFileidCommaString(inputList));
     XML.EndNode();
 
-    console.log(visit);
+    //console.log(visit);
     var modelList = topologicalSort(visit);
 
     //data_processing
@@ -540,4 +540,27 @@ function makeCommaString(list){
 function restoreModel(exp){
     //TODO : Complete
     console.log(exp);
+    var json_exp = JSON.parse(exp);
+
+    var xml = json_exp['xml'];
+    var drawing = json_exp['drawing'];
+
+    console.log(xml);
+    console.log(drawing);
+
+    //string to xml
+    $(xml);
+    $(drawing);
+
+
+    //restore INPUT
+    var inputModels=xml.find('input').find('data').text().split(',');
+    for(var x in inputModels){
+        //inputModels[x]
+    }
+    //restore Processing by seq
+
+    //restore MODEL
+
+
 }

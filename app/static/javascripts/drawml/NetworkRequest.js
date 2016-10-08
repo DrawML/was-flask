@@ -8,7 +8,7 @@ function get_data() {
         async : true,
         success : function(dataList){
             var obj = JSON.parse(dataList);
-            console.log(obj);
+           // console.log(obj);
             for(var x in obj){
                 $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+obj[x].name+'</div>');
             }

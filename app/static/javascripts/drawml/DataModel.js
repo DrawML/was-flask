@@ -82,7 +82,9 @@ function DataPreprocessingModel(id,type,pointLeft, pointTop){
         try
         {
             var list = [this.type,this.fabricModel.left,this.fabricModel.top];
-            XML.Node("DataPreprocessingModel", makeCommaString(list));
+            XML.BeginNode("DataPreprocessingModel");
+            XML.Attrib("seq",this.seq.toString());
+            XML.WriteString(makeCommaString(list));
         }
         catch(Err)
         {
@@ -133,8 +135,10 @@ function InputModel(id,fileID,pointLeft, pointTop){
     this.toModelXML = function(XML){
         try
         {
-            var list = [this.fileID,this.fabricModel.left,this.fabricModel.top];
-            XML.Node("InputModel", makeCommaString(list));
+            var list = [this.fabricModel.left,this.fabricModel.top];
+            XML.BeginNode("InputModel");
+            XML.Attrib("fildId",this.fileID.toString());
+            XML.WriteString(makeCommaString(list));
         }
         catch(Err)
         {
