@@ -449,7 +449,9 @@ function makeXML() {
         if(models[x] instanceof InputModel || models[x] instanceof DataPreprocessingModel){
             continue;
         }else{
+            console.log(models[x]);
             models[x].toXML(XML);
+            break;
         }
     }
 
