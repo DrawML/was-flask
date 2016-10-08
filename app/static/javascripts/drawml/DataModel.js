@@ -66,6 +66,7 @@ function DataPreprocessingModel(id,type,pointLeft, pointTop){
         this.seq=seq;
         try
         {
+            this.seq=seq;
             XML.BeginNode(this.type.toString());
             XML.Attrib("seq",seq.toString());
             XML.Node("data", makeFileidCommaString(this.prevModel));
