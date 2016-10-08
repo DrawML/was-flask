@@ -653,26 +653,26 @@ function restoreModel(exp){
 
     if(modelType == "linear_regression"){
         var curXY = $(drawing).find('linear_regression').text().split(',');
-        var l = new Regression(modelCnt++,'linear_regression',curXY[0],curXY[1]);
+        var l = new Regression(modelCnt++,'linear_regression',curXY[0]*1,curXY[1]*1);
         models.push(l);
         canvas.add(l.fabricModel);
 
 
     }else if(modelType == "softmax_regression"){
         var curXY = $(drawing).find('softmax_regression').text().split(',');
-        var l = new Regression(modelCnt++,'softmax_regression',curXY[0],curXY[1]);
+        var l = new Regression(modelCnt++,'softmax_regression',curXY[0]*1,curXY[1]*1);
         models.push(l);
         canvas.add(l.fabricModel);
 
     }else if(modelType == "Polynomial regression"){
         var curXY = $(drawing).find('Polynomial regression').text().split(',');
-        var l = new Regression(modelCnt++,'Polynomial regression',curXY[0],curXY[1]);
+        var l = new Regression(modelCnt++,'Polynomial regression',curXY[0]*1,curXY[1]*1);
         models.push(l);
         canvas.add(l.fabricModel);
 
     }else if(modelType == "neural_network"){
          var curXY = $(drawing).find('NeuralNetworks').text().split(',');
-        var l = new NeuralNetworks(modelCnt++,curXY[0],curXY[1]);
+        var l = new NeuralNetworks(modelCnt++,curXY[0]*1,curXY[1]*1);
         models.push(l);
         canvas.add(l.fabricModel);
         l.updateFabricModel();
@@ -680,7 +680,7 @@ function restoreModel(exp){
 
     }else if(modelType == "convolution_neural_network"){
         var curXY = $(drawing).find('ConvolutionNeuralNetworks').text().split(',');
-        var l = new ConvolutionNeuralNetworks(modelCnt++,curXY[0],curXY[1]);
+        var l = new ConvolutionNeuralNetworks(modelCnt++,curXY[0]*1,curXY[1]*1);
         models.push(l);
         canvas.add(l.fabricModel);
         l.updateFabricModel();
