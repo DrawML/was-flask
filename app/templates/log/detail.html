@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container">
+    <h2>{{ data.name }} </h2>
+    <p>
+    {% for content in contents %}
+    {{ content }} <br>
+    {% endfor %}
+    </p>
+
+    <form action="" method=post class="form-horizontal">
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="name" name="name" class="input-xlarge"
+            placeholder="Enter Data Name" value="{{ request.form.name }}"
+            required>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-success">Rename</button>
+        </div>
+    </div>
+    </form>
+    <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_data()">DELETE</button>
+    <script type=text/javascript>
+        function delete_data() {
+            $.ajax({                //Send (docinfo) to server
+                url : 'http://210.118.74.55:5000/log/{{ data.id }}',
+                type : 'DELETE',
+                async : true,
+                success : function(){
+                    window.location.href = "http://210.118.74.55:5000/log";
+                }
+            });
+        }
+    </script>
+
+</div>
+{% endblock %}
