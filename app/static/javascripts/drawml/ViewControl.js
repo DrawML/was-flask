@@ -647,7 +647,7 @@ function restoreModel(exp){
 
     console.log("START  : ML MODEL START");
     //restore MODEL
-     var modelType=$(xml).find('model').find('type').text();
+     var modelType=$(xml).find('model').find('type')[0].text();
     console.log(modelType);
 
     if(modelType == "linear_regression"){

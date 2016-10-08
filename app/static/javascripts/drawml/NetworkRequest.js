@@ -5,7 +5,7 @@ function get_data() {
     $.ajax({
         url : server+'data/api',
         type : 'GET',
-        async : true,
+        async : false,
         success : function(dataList){
             var obj = JSON.parse(dataList);
            // console.log(obj);
