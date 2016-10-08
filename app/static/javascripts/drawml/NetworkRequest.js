@@ -3,10 +3,11 @@ var server = "http://210.118.74.55:5000/"
 
 function get_data() {
     $.ajax({
-        url : server+'/data/api',
+        url : server+'data/api',
         type : 'GET',
         async : true,
         success : function(dataList){
+            console.log(dataList.length);
             for(var x in dataList){
                 $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+dataList[x].name+'</div>');
             }
@@ -18,7 +19,7 @@ function get_data() {
 // /experiments/api/<exp_id>	GET	get specific exp
 function get_exp() {
     $.ajax({
-        url : server+'experiments/api/exp_id',
+        url : server+'experiments/api/'+exp_id,
         type : 'GET',
         async : true,
         success : function(exp){
@@ -30,7 +31,7 @@ function get_exp() {
 // /experiments/<exp_id>	PATCH	update exp
 function update_exp(jsonInfo) {
     $.ajax({
-        url : server+'experiments/api/exp_id',
+        url : server+'experiments/api/'+exp_id,
         type : 'PATCH',
         async : true,
         data : jsonInfo
@@ -40,7 +41,7 @@ function update_exp(jsonInfo) {
 // /experiments/<exp_id>run	POST	run exp
 function run_exp() {
     $.ajax({
-        url : server+'experiments/api/exp_id',
+        url : server+'experiments/api/'+exp_id,
         type : 'POST',
         async : true,
         success : function(){
@@ -55,7 +56,7 @@ function run_exp() {
 
 function stop_exp() {
     $.ajax({
-        url : server+'experiments/api/exp_id',
+        url : server+'experiments/api/'+exp_id,
         type : 'DELETE',
         async : true,
         success : function(){
@@ -69,7 +70,7 @@ function stop_exp() {
 
 function get_expStatus() {
     $.ajax({
-        url : server+'experiments/api/exp_id',
+        url : server+'experiments/api/'+exp_id,
         type : 'GET',
         async : true,
         success : function(result){
