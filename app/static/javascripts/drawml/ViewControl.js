@@ -650,48 +650,75 @@ function restoreModel(exp){
      var modelType=$(xml).find('model').find('type')[0];
     modelType=$(modelType).text().trim();
     console.log(modelType);
+    var ML;
+    if(modelType!=null && modelType!="") {
 
-    if(modelType == "linear_regression"){
-        var curXY = $(drawing).find('linear_regression').text().split(',');
-        var l = new Regression(modelCnt++,curXY[0],curXY[1]*1,curXY[2]*1);
-        models.push(l);
-        canvas.add(l.fabricModel);
+        if (modelType == "linear_regression") {
+            var curXY = $(drawing).find('linear_regression').text().split(',');
+            ML = new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
+            models.push(ML);
+            canvas.add(ML.fabricModel);
 
 
-    }else if(modelType == "softmax_regression"){
-        var curXY = $(drawing).find('softmax_regression').text().split(',');
-        var l = new Regression(modelCnt++,curXY[0],curXY[1]*1,curXY[2]*1);
-        models.push(l);
-        canvas.add(l.fabricModel);
+        } else if (modelType == "softmax_regression") {
+            var curXY = $(drawing).find('softmax_regression').text().split(',');
+            ML = new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
+            models.push(ML);
+            canvas.add(ML.fabricModel);
 
-    }else if(modelType == "Polynomial regression"){
-        var curXY = $(drawing).find('Polynomial regression').text().split(',');
-        var l = new Regression(modelCnt++,curXY[0],curXY[1]*1,curXY[2]*1);
-        models.push(l);
-        canvas.add(l.fabricModel);
+        } else if (modelType == "Polynomial regression") {
+            var curXY = $(drawing).find('Polynomial regression').text().split(',');
+            ML= new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
+            models.push(ML);
+            canvas.add(ML.fabricModel);
 
-    }else if(modelType == "neural_network"){
-         var curXY = $(drawing).find('NeuralNetworks').text().split(',');
-        var l = new NeuralNetworks(modelCnt++,curXY[0]*1,curXY[1]*1);
-        models.push(l);
-        canvas.add(l.fabricModel);
-        l.updateFabricModel();
-        makeLayerOption(1);
+        } else if (modelType == "neural_network") {
+            var curXY = $(drawing).find('NeuralNetworks').text().split(',');
+            ML = new NeuralNetworks(modelCnt++, curXY[0] * 1, curXY[1] * 1);
+            models.push(ML)
+            canvas.add(ML.fabricModel);
+            ML.updateFabricModel();
+            makeLayerOption(1);
 
-    }else if(modelType == "convolution_neural_network"){
-        var curXY = $(drawing).find('ConvolutionNeuralNetworks').text().split(',');
-        var l = new ConvolutionNeuralNetworks(modelCnt++,curXY[0]*1,curXY[1]*1);
-        models.push(l);
-        canvas.add(l.fabricModel);
-        l.updateFabricModel();
-        canvas.renderAll();
-        makeCNNLayerOption(1);
+        } else if (modelType == "convolution_neural_network") {
+            var curXY = $(drawing).find('ConvolutionNeuralNetworks').text().split(',');
+            ML = new ConvolutionNeuralNetworks(modelCnt++, curXY[0] * 1, curXY[1] * 1);
+            models.push(ML);
+            canvas.add(ML.fabricModel);
+            ML.updateFabricModel();
+            canvas.renderAll();
+            makeCNNLayerOption(1);
+        }
+        else {
+            console.log("can not match model type");
+        }
+        console.log("START  : ML MODEL END");
+
+        var modelData=$(xml).find('model').find('data').text().trim();
+
+        if(modelData.length > 4 && modelData.substring(0,3)=="seq"){
+            //PreProcessing과 연결
+            modelData = modelData.substring(3,modelData.length)*1;
+
+        }
+        for (var idx in models) {
+                if (models[idx] instanceof InputModel && models[idx].fileID == modelData) {
+                    console.log("Connect To INPUT");
+                    makingModel=true;
+                    modelConnect(models[idx]);
+                    modelConnect(ML);
+                    makingModel=false;
+                }else if(models[idx] instanceof DataPreprocessingModel && models[idx].seq ==modelData){
+                    console.log("Connect To DATAPREPRO");
+                    makingModel=true;
+                    modelConnect(models[idx]);
+                    modelConnect(ML);
+                    makingModel=false;
+
+                }
+            }
+
     }
-    else{
-        console.log("can not match model type");
-    }
-    console.log("START  : ML MODEL END");
-
 
     canvas.renderAll();
 
