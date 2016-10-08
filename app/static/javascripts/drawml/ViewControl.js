@@ -595,7 +595,7 @@ function restoreModel(exp){
     for (var x in inputModels) {
         var num = inputModels[x]*1;
         var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
-        var l = new InputModel(modelCnt++, inputModels[x], lt[0]*1, lt[1]*1);
+        var l = new InputModel(modelCnt++,getDataNameById(num),inputModels[x], lt[0]*1, lt[1]*1);
         models.push(l);
         canvas.add(l.fabricModel);
         canvas.renderAll();
@@ -620,7 +620,7 @@ function restoreModel(exp){
         var prev = $(xml).find(l.type.toString()).attr("seq",s.toString()).find('data').text().split(',');
         for(var prevId in prev) {
             for (var idx in models) {
-                if (models[idx] instanceof InputModel && model[idx].fileID == (prev[prevID]*1).toString()) {
+                if (models[idx] instanceof InputModel && model[idx].fileID == (prev[prevId]*1).toString()) {
                     selectedModel[0] = models[idx];
                     modelConnect(l);
                     break;
