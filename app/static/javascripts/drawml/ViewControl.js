@@ -625,12 +625,16 @@ function restoreModel(exp){
             for (var idx in models) {
                 if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId]*1)) {
                     console.log("Connect To INPUT");
+                    makingModel=true;
                     modelConnect(models[idx]);
                     modelConnect(l);
+                    makingModel=false;
                 }else if(models[idx] instanceof DataPreprocessingModel && models[idx].seq ==(prev[prevId]*1)){
                     console.log("Connect To DATAPREPRO");
+                    makingModel=true;
                     modelConnect(models[idx]);
                     modelConnect(l);
+                    makingModel=false;
 
                 }
             }

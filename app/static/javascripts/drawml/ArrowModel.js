@@ -184,7 +184,7 @@ function modelConnect(model){
             selectedModel=[];
             makingModel=false;
             connectComplete();
-            //alert("같은 모델을 연결할 수 없습니다.");
+            alert("같은 모델을 연결할 수 없습니다.");
             return;
         }
         //Make Arrow
