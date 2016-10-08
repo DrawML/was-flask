@@ -102,10 +102,11 @@ with tf.Session() as sess:
     init = tf.initialize_all_variables()
     sess.run(init)
     train_data = load_train_data()
+    f = open('/result/file/path', 'a')
     for _ in range(training_epoch):
         sess.run(train, feed_dict=train_data)
         # some logging codes will be added...
-        print(sess.run(cost, feed_dict=train_data))
+        print('Loss of epoch {} : {}'.format(_, sess.run(cost, feed_dict=train_data)), file=f)
     save_model(sess, SAVE_PATH)
     restore_model(sess, SAVE_PATH)
 
