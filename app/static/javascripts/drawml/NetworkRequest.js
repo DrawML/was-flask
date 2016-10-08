@@ -35,6 +35,7 @@ function update_exp(jsonInfo) {
         url : server+'experiments/'+exp_id,
         type : 'PATCH',
         async : true,
+        contentType : 'application/json',
         data : jsonInfo,
         dataType: 'json',
         xhr: function() {
