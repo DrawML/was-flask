@@ -7,7 +7,6 @@ function get_data() {
         type : 'GET',
         async : true,
         success : function(dataList){
-            //console.log(dataList);
             for(var x in dataList){
                 $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+'dataList[x].name'+'</div>');
             }
@@ -34,9 +33,7 @@ function update_exp(jsonInfo) {
         url : server+'experiments/api/exp_id',
         type : 'PATCH',
         async : true,
-        success : function(){
-
-        }
+        data : jsonInfo
     });
 }
 
@@ -47,7 +44,8 @@ function run_exp() {
         type : 'POST',
         async : true,
         success : function(){
-
+             $('#footer-Stop-btn').show();
+            isProcessing=true;
         }
     });
 }
@@ -76,7 +74,20 @@ function get_expStatus() {
         async : true,
         success : function(result){
             console.log(result);
-            //if clear -> hide processing....
+            if(result == 'success'){
+                $('#footer-Stop-btn').hide();
+            }else if(result == 'fail'){
+                $('#footer-Stop-btn').hide();
+            }else if(result == 'cancel'){
+                $('#footer-Stop-btn').hide();
+            }else if(result == 'running'){
+                $('#footer-Stop-btn').show();
+            }else if(result == 'No status'){
+                $('#footer-Stop-btn').hide();
+            }else{
+                //Status Error
+                alert('Can not Match Status');
+            }
         }
     });
 }

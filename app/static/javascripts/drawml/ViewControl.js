@@ -289,8 +289,6 @@ $(document).ready(function(){
         var exp_xml=makeXML();
 
         var exp_data=new Object();
-        //TODO : name?
-        exp_data.name = 'exp_afer';
         exp_data.drawing = exp_xml;
         exp_data.xml = model_xml;
         var x = new Object();
@@ -302,8 +300,6 @@ $(document).ready(function(){
         update_exp(jsonInfo);
         run_exp();
 
-        isProcessing=true;
-        $('#footer-Stop-btn').show();
     });
 
     $('#footer-Stop-btn').click(function () {
