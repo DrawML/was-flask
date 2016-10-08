@@ -255,16 +255,19 @@ class TaskRunner:
                 print('Test finish: {}'.format(id))
                 redis_cache.set(key, redis_cache.SUCCESS)
                 print("[%s] callback is called with 'success'" % key)
+
+                if body is not None:
+                    print(body['stderr'])
             elif status == 'error':
                 redis_cache.set(key, redis_cache.FAIL)
                 print("[%s] callback is called with 'fail'" % key)
+
+                if body is not None:
+                    print(body)
             elif status == 'cancel':
                 # Client().request_cancel(key)
                 redis_cache.set(key, redis_cache.CANCEL)
                 print("[%s] callback is called with 'cancel'" % key)
-
-            if body is not None:
-                print(body['stderr'])
 
             if next_arguments:
                 redis_cache.set(next_arguments['experiment_id'], redis_cache.RUNNING)
