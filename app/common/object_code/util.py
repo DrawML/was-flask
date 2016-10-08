@@ -218,7 +218,7 @@ class TaskRunner:
                     file_token = body.get('result_file_token', None)
                     try:
                         save_obj(Data, dict(name=file_name, user_id=self.user_id,
-                                            path=file_token))
+                                            path=file_token, type='log'))
                     except SQLAlchemyError as e:
                         fail(file_token)
                     # update file token
@@ -239,7 +239,7 @@ class TaskRunner:
                     print("received ", file_token, " / with name ", file_name)
                     try:
                         save_obj(Data, dict(name=file_name, user_id=self.user_id,
-                                            path=file_token))
+                                            path=file_token, type='log'))
                     except SQLAlchemyError as e:
                         fail(file_token)
 
@@ -248,7 +248,7 @@ class TaskRunner:
                     file_token = body.get('result_file_token', None)
                     try:
                         save_obj(Data, dict(name=file_name, user_id=self.user_id,
-                                            path=file_token))
+                                            path=file_token, type='log'))
                     except SQLAlchemyError as e:
                         fail(file_token)
                     # update file token ??

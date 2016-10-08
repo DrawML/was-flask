@@ -81,12 +81,14 @@ class Data(Base):
     name            = db.Column(db.VARCHAR(255), primary_key=True)
     user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     path            = db.Column(db.VARCHAR(255))
+    type            = db.Column(db.VARCHAR(16), primary_key=True)
 
-    def __init__(self, name, user_id, path):
+    def __init__(self, name, user_id, path, type):
         super()
         self.name       = name
         self.user_id    = user_id
         self.path       = path
+        self.type       = type
 
     def __repr__(self):
         return '<Data %r %r>' % (self.user.user_id, self.name)
@@ -98,7 +100,8 @@ class Data(Base):
             Data.date_modified: self.date_modified,
             Data.name:          self.name,
             Data.user_id:       self.user_id,
-            Data.path:          self.path
+            Data.path:          self.path,
+            Data.type:          self.type
         }
 
 

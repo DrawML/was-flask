@@ -97,7 +97,7 @@ class TaskRunner:
                     current_time = datetime.now().isoformat()
                     file_name = exp_id + 'exp-data-' + current_time
                     file_token = body.get('result_file_token', None)
-                    new_data = Data(name=file_name, user_id=self.user_id, path=file_token)
+                    new_data = Data(name=file_name, user_id=self.user_id, path=file_token, type='log')
                     try:
                         db.session.add(new_data)
                         db.session.commit()
@@ -127,7 +127,7 @@ class TaskRunner:
                     current_time = datetime.now().isoformat()
                     file_name = exp_id + 'exp-train-result-' + current_time
                     file_token = body.get('result_file_token', None)
-                    new_data = Data(name=file_name, user_id=self.user_id, path=file_token)
+                    new_data = Data(name=file_name, user_id=self.user_id, path=file_token, type='log')
                     try:
                         db.session.add(new_data)
                         db.session.commit()
