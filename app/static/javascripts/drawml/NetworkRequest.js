@@ -1,62 +1,83 @@
+
+var server = "http://210.118.74.55:5000"
+
 function get_data() {
     $.ajax({
-        url : 'http://localhost:5000/data/api',
+        url : server+'/data/api',
         type : 'GET',
         async : true,
         success : function(dataList){
-            console.log(dataList);
-            //data_user_group
-            //<div class="list-group-item data">나의 데이터 1</div>
-              //       "user_id": 1,
-              // "name": "file2",
-              // "path": "file_path",
-              // "date_modified": "2016-09-18 00:48:34",
-              // "date_created": "2016-09-18 00:45:38",
-              // "id": 7
+            //console.log(dataList);
             for(var x in dataList){
-                $('#data_user_group').appendChild('<div class="list-group-item data">'+'dataList[x].name'+'</div>');
+                $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+'dataList[x].name'+'</div>');
             }
-
+            $( init );
         }
     });
 }
 
-
-//experiments/<exp_id>	GET	get specific exp
-function get_data() {
+// /experiments/api/<exp_id>	GET	get specific exp
+function get_exp() {
     $.ajax({
-        url : 'http://localhost:5000/data/api',
+        url : server+'experiments/api/exp_id',
         type : 'GET',
         async : true,
-        success : function(dataList){
-            console.log(dataList);
+        success : function(exp){
+            restoreModel(exp);
         }
     });
 }
-//experiments/<exp_id>	PATCH	update exp
-function get_data() {
+
+// /experiments/<exp_id>	PATCH	update exp
+function update_exp(jsonInfo) {
     $.ajax({
-        url : 'http://localhost:5000/data/api',
+        url : server+'experiments/api/exp_id',
+        type : 'PATCH',
+        async : true,
+        success : function(){
+
+        }
+    });
+}
+
+// /experiments/<exp_id>run	POST	run exp
+function run_exp() {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
+        type : 'POST',
+        async : true,
+        success : function(){
+
+        }
+    });
+}
+
+
+// /experiments/<exp_id>stop	DELETE	stop exp
+
+function stop_exp() {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
+        type : 'DELETE',
+        async : true,
+        success : function(){
+            $('#footer-Stop-btn').hide();
+        }
+    });
+}
+
+
+// /experiments/<exp_id>status	GET	get experiement status
+
+function get_expStatus() {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
         type : 'GET',
         async : true,
-        success : function(dataList){
-            console.log(dataList);
+        success : function(result){
+            console.log(result);
+            //if clear -> hide processing....
         }
     });
 }
 
-
-//experiments/<exp_id>	DELETE	delete exp
-function get_data() {
-    $.ajax({
-        url : 'http://localhost:5000/data/api',
-        type : 'GET',
-        async : true,
-        success : function(dataList){
-            console.log(dataList);
-        }
-    });
-}
-
-//experiments/<exp_id>stop	DELETE	stop exp
-//experiments/<exp_id>status	GET	get experiement status
