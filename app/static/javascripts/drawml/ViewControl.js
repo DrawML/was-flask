@@ -614,6 +614,7 @@ function restoreModel(exp){
         //find seq : s in drawing
         var cur = $(drawing).find('DataPreprocessingModel').attr("seq",s.toString()).text().split(',');
         var l = new DataPreprocessingModel(modelCnt++,cur[0],cur[1]*1,cur[2]*1);
+        l.seq = s;
         models.push(l);
         canvas.add(l.fabricModel);
 
@@ -623,9 +624,13 @@ function restoreModel(exp){
         for(var prevId in prev) {
             for (var idx in models) {
                 if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId]*1)) {
+                    console.log("Connect To INPUT");
                     selectedModel[0] = models[idx];
                     modelConnect(l);
-                    break;
+                }else if(models[idx] instanceof DataPreprocessingModel && models[idx].seq ==(prev[prevId]*1)){
+                    console.log("Connect To DATAPREPRO");
+                    selectedModel[0] = models[idx];
+                    modelConnect(l);
                 }
             }
         }
