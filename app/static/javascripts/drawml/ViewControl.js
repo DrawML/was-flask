@@ -594,6 +594,7 @@ function restoreModel(exp){
     console.log("START  : INPUT MODEL RESTORE");
     for (var x in inputModels) {
         var num = inputModels[x]*1;
+        console.log(getDataNameById(num*1));
         var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
         var l = new InputModel(modelCnt++,getDataNameById(num*1),inputModels[x]*1, lt[0]*1, lt[1]*1);
         models.push(l);
