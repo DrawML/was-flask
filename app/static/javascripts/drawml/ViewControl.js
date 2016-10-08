@@ -589,23 +589,24 @@ function restoreModel(exp){
     var inputModels=$(xml).find('input').find('data').text().split(',');
     console.log(inputModels);
     if(inputModels.length!=0) return;
-        for (var x in inputModels) {
-            var num = inputModels[x]*1;
-            var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
-            var l = new InputModel(modelCnt++, inputModels[x], lt[0]*1, lt[1]*1);
-            models.push(l);
-            canvas.add(l.fabricModel);
-            canvas.renderAll();
-        }
 
+    for (var x in inputModels) {
+        var num = inputModels[x]*1;
+        var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
+        var l = new InputModel(modelCnt++, inputModels[x], lt[0]*1, lt[1]*1);
+        models.push(l);
+        canvas.add(l.fabricModel);
+        canvas.renderAll();
+
+    }
 
     //restore Processing by seq
-    var processSize=$(xml).find('data_processing').find('size').text();
+    var processSize=$(xml).find('data_processing').find('size').text()*1;
     console.log("pre size : "+ processSize);
     for(var s=1;s<=processSize;s++){
         //find seq : s in drawing
         var cur = $(drawing).find('DataPreprocessingModel').attr("seq",s.toString()).text().split(',');
-        var l = new DataPreprocessingModel(modelCnt++,cur[0],cur[1],cur[2]);
+        var l = new DataPreprocessingModel(modelCnt++,cur[0],cur[1]*1,cur[2]*1);
         models.push(l);
         canvas.add(l.fabricModel);
 
@@ -613,7 +614,7 @@ function restoreModel(exp){
         var prev = $(xml).find(l.type.toString()).attr("seq",s.toString()).find('data').text().split(',');
         for(var prevId in prev) {
             for (var idx in models) {
-                if (models[idx] instanceof InputModel && model[idx].fileID == prevID) {
+                if (models[idx] instanceof InputModel && model[idx].fileID == (prev[prevID]*1).toString()) {
                     selectedModel[0] = models[idx];
                     modelConnect(l);
                     break;
