@@ -36,9 +36,9 @@ def get_all_exp():
     """
 
 
-@module_exp.route('/<exp_id>', methods=['GET'], endpoint='get_exp')
+@module_exp.route('/api/<exp_id>', methods=['GET'], endpoint='get_exp_api')
 @login_required
-def get_exp(exp_id):
+def get_exp_api(exp_id):
     try:
         experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
     except SQLAlchemyError as e:
@@ -49,6 +49,12 @@ def get_exp(exp_id):
     refined_exps = Refiner(experiment)
     current_app.logger.info('GET exp <%r>', refined_exps.exps['name'])
     return json.dumps(refined_exps.exps)
+
+
+@module_exp.route('/<exp_id>', methods=['GET'], endpoint='get_exp_view')
+@login_required
+def get_exp_api(exp_id):
+    return render_template('/experiment/draw.html')
 
 
 @module_exp.route('/', methods=['POST'], endpoint='exp_create')
