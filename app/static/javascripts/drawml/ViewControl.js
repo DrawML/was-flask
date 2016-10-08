@@ -573,6 +573,9 @@ function restoreModel(exp){
 
     //restore INPUT
     var inputModels=$(xml).find('input').find('data').text().split(',');
+    var inputM= $(xml).find("input");
+    console.log(inputM);
+
     console.log(inputModels);
     if(inputModels.length!=0) return;
         for (var x in inputModels) {
