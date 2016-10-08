@@ -30,6 +30,7 @@ body {
                         <li><a href="{{ url_for('experiment.get_all_exp') }}">Experiment</a></li>
                         <li><a href="{{ url_for('data.get_all') }}">Data</a></li>
                         <li><a href="{{ url_for('test.get_all_model') }}">Test</a></li>
+                        <li><a href="{{ url_for('log.get_all') }}">Log</a></li>
                         <li><a href="{{ url_for('auth.signout') }}">Sign out</a></li>
                     {% endif %}
                     {% if not g.user.is_authenticated%}

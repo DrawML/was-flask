@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container">
+    <h2>Result List</h2>
+    <table class="table table-hover">
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Date</th>
+      </tr>
+      {%- for data in data_set %}
+      <tr>
+        <td>{{data.id}}</td>
+        <td> <a href="/log/{{ data.id }}" >{{ data.name }}</a></td>
+        <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {%- endfor %}
+    </table>
+</div>
+{% endblock %}
