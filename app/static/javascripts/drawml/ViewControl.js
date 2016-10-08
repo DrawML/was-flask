@@ -284,8 +284,9 @@ $(document).ready(function(){
     $('#footer-toxml-btn').click(function () {
         if(isProcessing) return;
 
-        var model_xml=makeModelXML();
         var exp_xml=makeXML();
+        var model_xml=makeModelXML();
+
 
         var exp_data=new Object();
         exp_data.drawing = exp_xml;
