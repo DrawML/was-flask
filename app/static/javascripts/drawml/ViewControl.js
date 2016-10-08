@@ -554,6 +554,8 @@ function makeCommaString(list){
 ////////////////////////////////////////////////////////////
 
 
+var x;
+var d;
 
 function restoreModel(exp){
     //TODO : Complete
@@ -563,6 +565,11 @@ function restoreModel(exp){
     var xml = json_exp['xml'];
     var drawing = json_exp['drawing'];
 
+
+    //TEST
+    x=xml;
+    d=drawing;
+    //TEST
 
     //string to xml
     xml=$.parseXML(xml);
