@@ -287,9 +287,10 @@ function Regression(id,type,pointLeft, pointTop){
     {
         try
         {
-
+            console.log('START REGRESSION MODEL');
             XML.BeginNode("model");
-            if(this.prevModel==null ||this.prevModel.length==0){
+            console.log('Check prevModel');
+            if(this.prevModel==null || this.prevModel.length==0){
                 alert("Model hasn't Input Data");
             }
             console.log(prevModel);
