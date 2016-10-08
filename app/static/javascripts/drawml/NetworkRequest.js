@@ -3,7 +3,7 @@ var server = "http://210.118.74.55:5000/"
 
 function get_data() {
     $.ajax({
-        url : server+'/data/api',
+        url : server+'data/api',
         type : 'GET',
         async : true,
         success : function(dataList){
