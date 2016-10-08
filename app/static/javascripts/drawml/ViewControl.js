@@ -692,7 +692,7 @@ function restoreModel(exp){
         else {
             console.log("can not match model type");
         }
-        console.log("START  : ML MODEL END");
+
 
         var modelData=$(xml).find('model').find('data').text().trim();
 
@@ -701,6 +701,7 @@ function restoreModel(exp){
             modelData = modelData.substring(3,modelData.length)*1;
 
         }
+        console.log("Model DATA  : "+modelData);
         for (var idx in models) {
                 if (models[idx] instanceof InputModel && models[idx].fileID == modelData) {
                     console.log("Connect To INPUT");
@@ -717,7 +718,7 @@ function restoreModel(exp){
 
                 }
             }
-
+                console.log("START  : ML MODEL END");
     }
 
     canvas.renderAll();
