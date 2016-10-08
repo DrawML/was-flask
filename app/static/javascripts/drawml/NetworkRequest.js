@@ -7,7 +7,7 @@ function get_data() {
         type : 'GET',
         async : true,
         success : function(dataList){
-            console.log(dataList.length);
+            console.log(dataList);
             for(var x in dataList){
                 $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+dataList[x].name+'</div>');
             }
