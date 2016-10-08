@@ -269,7 +269,7 @@ class TaskRunner:
                 redis_cache.set(key, redis_cache.CANCEL)
                 print("[%s] callback is called with 'cancel'" % key)
 
-            if next_arguments:
+            if status == 'success' and next_arguments:
                 redis_cache.set(next_arguments['experiment_id'], redis_cache.RUNNING)
                 Client().request_task(**next_arguments)
 
