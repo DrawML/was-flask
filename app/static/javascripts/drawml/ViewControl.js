@@ -6,6 +6,19 @@ function getDataIDByName(name){
     {
         if(datalist[x].name==name){
             result=datalist[x].id;
+            break;
+        }
+    }
+    return result;
+}
+
+function getDataNameById(id){
+    var result ="";
+    for(var x =0 ; x<datalist.length;x++)
+    {
+        if(datalist[x].name==id){
+            result=datalist[x].name;
+            break;
         }
     }
     return result;
@@ -573,16 +586,16 @@ function restoreModel(exp){
 
 
     //restore INPUT
-    var inputModels=$(xml).find('experiment').find('input').find('data').text().split(',');
+    var inputModels=$(xml).find('input').find('data').text().split(',');
     console.log(inputModels);
     if(inputModels.length!=0) return;
         for (var x in inputModels) {
-            //inputModels[x]
-            //get left, top
-            var lt = $(drawing).find('input').attr('fileId', inputModels[x]).text().split(',');
-            var l = new InputModel(modelCnt++, inputModels[x], lt[0], lt[1]);
+            var num = inputModels[x]*1;
+            var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
+            var l = new InputModel(modelCnt++, inputModels[x], lt[0]*1, lt[1]*1);
             models.push(l);
             canvas.add(l.fabricModel);
+            canvas.renderAll();
         }
 
 
