@@ -36,7 +36,8 @@ function update_exp(jsonInfo) {
         url : server+'experiments/'+exp_id,
         type : 'PATCH',
         async : true,
-        data : jsonInfo
+        data : jsonInfo,
+        dataType: 'json'
     });
 }
 
