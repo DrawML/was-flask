@@ -1,3 +1,16 @@
+var datalist =[];
+
+function getDataIDByName(name){
+    var result ="";
+    for(var x =0 ; x<datalist.length;x++)
+    {
+        if(datalist[x].name==name){
+            result=datalist[x].name;
+        }
+    }
+    return result;
+}
+
 /////////////////////////////////////////////
 ////////////Drag & Drop Event Handler////////
 /////////////////////////////////////////////
@@ -29,6 +42,7 @@ function canMLmodel(){
 function handleDragStop(event,ui){
     console.log($(this).attr('id'));
 }
+
 
 function handleDropEvent( event, ui ) {
     var draggable = ui.draggable;
@@ -109,7 +123,8 @@ function handleDropEvent( event, ui ) {
         clearLayerOption();
         clearDataShapeOption();
         clearDefaultOptions();
-        var l = new DataPreprocessingModel(modelCnt++,ui.draggable.text(),canvasX-wi-150,canvasY-ContainerTop);
+        var fileName = ui.draggable.text();
+        var l = new DataPreprocessingModel(modelCnt++,fileName(fileName),canvasX-wi-150,canvasY-ContainerTop);
         models.push(l);
         currentSelectedModel=l;
         canvas.add(l.fabricModel);
@@ -118,7 +133,8 @@ function handleDropEvent( event, ui ) {
         clearLayerOption();
         makeDataShapeOption();
         clearDefaultOptions();
-        var l = new InputModel(modelCnt++,ui.draggable.text(),canvasX-wi-150,canvasY-ContainerTop);
+        var fileName = ui.draggable.text();
+        var l = new InputModel(modelCnt++,fileName,getDataIDByName(fileName),canvasX-wi-150,canvasY-ContainerTop);
         models.push(l);
         currentSelectedModel=l;
         canvas.add(l.fabricModel);

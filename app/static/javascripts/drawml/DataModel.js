@@ -96,13 +96,14 @@ function DataPreprocessingModel(id,type,pointLeft, pointTop){
     }
 }
 
-function InputModel(id,fileID,pointLeft, pointTop){
+function InputModel(id,fileName,fileID,pointLeft, pointTop){
     this.ID=id;
     this.ShapeX=1;
     this.ShapeY=1;
     this.fileID =fileID;
+    this.fileName=fileName;
 
-    this.fabricModel=getDataContainer(this.fileID);
+    this.fabricModel=getDataContainer(this.fileName);
     this.fabricModel.set({
         left: pointLeft,
         top : pointTop

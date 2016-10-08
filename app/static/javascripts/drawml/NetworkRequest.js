@@ -11,6 +11,10 @@ function get_data() {
            // console.log(obj);
             for(var x in obj){
                 $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+obj[x].name+'</div>');
+                var pushData = new Object();
+                pushData.name=obj[x].name;
+                pushData.id = obj[x].id;
+                datalist.push(pushData);
             }
             $( init );
         }

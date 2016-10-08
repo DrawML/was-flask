@@ -287,7 +287,20 @@ function Regression(id,type,pointLeft, pointTop){
     {
         try
         {
+
             XML.BeginNode("model");
+
+            if(this.prevModel==null ||this.prevModel.length==0){
+                alert("Model hasn't Input Data");
+            }
+
+            if(this.prevModel[0] instanceof InputModel){
+                XML.Node("data",prevModel[0].fileID.toString());
+            }else if(this.prevModel[0] instanceof DataPreprocessingModel){
+                XML.Node("data",prevModel[0].seq.toString());
+            }
+
+
             XML.Node("type", this.type);
             this.initializer.toXML(XML);
             this.optimizer.toXML(XML);
