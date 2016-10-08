@@ -293,10 +293,13 @@ function Regression(id,type,pointLeft, pointTop){
             if(this.prevModel==null ||this.prevModel.length==0){
                 alert("Model hasn't Input Data");
             }
+            console.log(prevModel);
 
             if(this.prevModel[0] instanceof InputModel){
+                console.log("Find INPUTDATA");
                 XML.Node("data",prevModel[0].fileID.toString());
             }else if(this.prevModel[0] instanceof DataPreprocessingModel){
+                console.log("Find PROCESSING");
                 XML.Node("data",'seq'+prevModel[0].seq.toString());
             }
             console.log("Find prevModel.........!!!");
