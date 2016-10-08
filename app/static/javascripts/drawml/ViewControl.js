@@ -539,7 +539,6 @@ function makeCommaString(list){
 
 function restoreModel(exp){
     //TODO : Complete
-    console.log(exp);
     var json_exp = JSON.parse(exp);
 
     var xml = json_exp['xml'];
@@ -554,7 +553,7 @@ function restoreModel(exp){
 
 
     //restore INPUT
-    var inputModels=xml.find('input').find('data').text().split(',');
+    var inputModels=$(xml).find('input').find('data').text().split(',');
     for(var x in inputModels){
         //inputModels[x]
     }
