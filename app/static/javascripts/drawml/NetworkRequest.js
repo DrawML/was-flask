@@ -31,7 +31,7 @@ function get_exp() {
 // /experiments/<exp_id>	PATCH	update exp
 function update_exp(jsonInfo) {
     $.ajax({
-        url : server+'experiments/api/'+exp_id,
+        url : server+'experiments/'+exp_id,
         type : 'PATCH',
         async : true,
         data : jsonInfo
@@ -41,7 +41,7 @@ function update_exp(jsonInfo) {
 // /experiments/<exp_id>run	POST	run exp
 function run_exp() {
     $.ajax({
-        url : server+'experiments/api/'+exp_id+'/run',
+        url : server+'experiments/'+exp_id+'/run',
         type : 'POST',
         async : true,
         success : function(){
@@ -56,7 +56,7 @@ function run_exp() {
 
 function stop_exp() {
     $.ajax({
-        url : server+'experiments/api/'+exp_id+'/stop',
+        url : server+'experiments/'+exp_id+'/stop',
         type : 'DELETE',
         async : true,
         success : function(){
@@ -70,7 +70,7 @@ function stop_exp() {
 
 function get_expStatus() {
     $.ajax({
-        url : server+'experiments/api/'+exp_id+'/status',
+        url : server+'experiments/'+exp_id+'/status',
         type : 'GET',
         async : true,
         success : function(result){
