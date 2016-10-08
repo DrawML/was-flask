@@ -150,6 +150,14 @@ def exp_delete(exp_id):
 def exp_run(exp_id):
     xml = request.data.decode()
 
+    print()
+    print()
+    print()
+    print(xml)
+    print()
+    print()
+    print()
+
     data_obj_code = None
     data_input_files = None
     try:
