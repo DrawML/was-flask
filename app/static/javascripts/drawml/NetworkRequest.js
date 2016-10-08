@@ -1,5 +1,5 @@
 
-var server = "http://210.118.74.55:5000"
+var server = "http://210.118.74.55:5000/"
 
 function get_data() {
     $.ajax({
