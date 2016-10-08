@@ -298,7 +298,7 @@ $(document).ready(function(){
         console.log(jsonInfo);
 
         update_exp(jsonInfo);
-        run_exp();
+        run_exp(exp_xml);
 
     });
 

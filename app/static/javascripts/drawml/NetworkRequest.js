@@ -47,11 +47,14 @@ function update_exp(jsonInfo) {
 }
 
 // /experiments/<exp_id>run	POST	run exp
-function run_exp() {
+function run_exp(xml) {
     $.ajax({
         url : server+'experiments/'+exp_id+'/run',
         type : 'POST',
         async : true,
+        contentType : 'application/xml',
+        data : xml,
+        dataType : 'xml',
         success : function(){
              $('#footer-Stop-btn').show();
             isProcessing=true;
