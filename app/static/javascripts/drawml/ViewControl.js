@@ -590,6 +590,8 @@ function restoreModel(exp){
     console.log(inputModels);
     if(inputModels.length!=0) return;
 
+
+    console.log("START  : INPUT MODEL RESTORE");
     for (var x in inputModels) {
         var num = inputModels[x]*1;
         var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
@@ -600,6 +602,10 @@ function restoreModel(exp){
 
     }
 
+    console.log("START  : INPUT MODEL END");
+
+
+    console.log("START  : DATAPROCESSING MODEL RESTORE");
     //restore Processing by seq
     var processSize=$(xml).find('data_processing').find('size').text()*1;
     console.log("pre size : "+ processSize);
@@ -621,9 +627,13 @@ function restoreModel(exp){
                 }
             }
         }
+        canvas.renderAll();
     }
 
+    console.log("START  : DATAPROCESSING MODEL END");
 
+
+    console.log("START  : ML MODEL START");
     //restore MODEL
      var modelType=$(xml).find('model').find('type').text();
     console.log(modelType);
@@ -667,7 +677,7 @@ function restoreModel(exp){
     else{
         console.log("can not match model type");
     }
-
+    console.log("START  : ML MODEL END");
 
 
     canvas.renderAll();
