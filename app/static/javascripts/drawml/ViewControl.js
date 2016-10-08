@@ -149,7 +149,6 @@ $(document).ready(function(){
     get_expStatus();
     get_data();
 
-    restoreModel();
     clearDefaultOptions();
     clearDataShapeOption();
     clearConnectModelDelete();
