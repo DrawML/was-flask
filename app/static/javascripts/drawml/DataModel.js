@@ -85,6 +85,7 @@ function DataPreprocessingModel(id,type,pointLeft, pointTop){
             XML.BeginNode("DataPreprocessingModel");
             XML.Attrib("seq",this.seq.toString());
             XML.WriteString(makeCommaString(list));
+            XML.EndNode();
         }
         catch(Err)
         {
@@ -139,6 +140,7 @@ function InputModel(id,fileID,pointLeft, pointTop){
             XML.BeginNode("InputModel");
             XML.Attrib("fildId",this.fileID.toString());
             XML.WriteString(makeCommaString(list));
+            XML.EndNode();
         }
         catch(Err)
         {
