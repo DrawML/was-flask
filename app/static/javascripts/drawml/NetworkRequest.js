@@ -15,3 +15,69 @@ function get_data() {
         }
     });
 }
+
+// /experiments/api/<exp_id>	GET	get specific exp
+function get_exp() {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
+        type : 'GET',
+        async : true,
+        success : function(exp){
+            restoreModel(exp);
+        }
+    });
+}
+
+// /experiments/<exp_id>	PATCH	update exp
+function update_exp(jsonInfo) {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
+        type : 'PATCH',
+        async : true,
+        success : function(){
+
+        }
+    });
+}
+
+// /experiments/<exp_id>run	POST	run exp
+function run_exp() {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
+        type : 'POST',
+        async : true,
+        success : function(){
+
+        }
+    });
+}
+
+
+// /experiments/<exp_id>stop	DELETE	stop exp
+
+function stop_exp() {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
+        type : 'DELETE',
+        async : true,
+        success : function(){
+            $('#footer-Stop-btn').hide();
+        }
+    });
+}
+
+
+// /experiments/<exp_id>status	GET	get experiement status
+
+function get_expStatus() {
+    $.ajax({
+        url : server+'experiments/api/exp_id',
+        type : 'GET',
+        async : true,
+        success : function(result){
+            console.log(result);
+            //if clear -> hide processing....
+        }
+    });
+}
+

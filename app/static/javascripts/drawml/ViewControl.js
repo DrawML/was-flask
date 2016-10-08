@@ -145,9 +145,16 @@ function init() {
 
 $(document).ready(function(){
 
+    get_exp();
+    get_expStatus();
+    get_data();
+
+    restoreModel();
     clearDefaultOptions();
     clearDataShapeOption();
     clearConnectModelDelete();
+    $('#footer-Stop-btn').hide();
+
 
     //왼쪽 탭 설정
     $('#model_group').show();
@@ -272,11 +279,38 @@ $(document).ready(function(){
     });
 
 
+    var isProcessing = false;
 
     //Models To XML
     $('#footer-toxml-btn').click(function () {
-        makeModelXML();
-        makeXML();
+        if(isProcessing) return;
+
+        var model_xml=makeModelXML();
+        var exp_xml=makeXML();
+
+        var exp_data=new Object();
+        //TODO : name?
+        exp_data.name = 'exp_afer';
+        exp_data.drawing = exp_xml;
+        exp_data.xml = model_xml;
+        var x = new Object();
+        x.exp_data=exp_data;
+        var jsonInfo = JSON.stringify(x);
+
+        console.log(jsonInfo);
+
+        update_exp(jsonInfo);
+        run_exp();
+
+        isProcessing=true;
+        $('#footer-Stop-btn').show();
+    });
+
+    $('#footer-Stop-btn').click(function () {
+        isProcessing=false;
+        stop_exp();
+
+        $(this).hide();
     });
 
 
@@ -409,6 +443,7 @@ function makeXML() {
 
     XML.Close();
     console.log(XML.ToString().replace(/</g, "\n<"));
+    return XML.ToString().replace(/</g, "\n<");
 }
 
 
@@ -442,6 +477,7 @@ function topologicalSort(visit){
             break;
         }
     }
+    console.log(startModel);
     //DFS
     list.push(startModel);
     visit[getModelIdxById(startModel.ID)]=true;
@@ -454,6 +490,9 @@ function topologicalSort(visit){
             alert("not fully connected!!");
             return null;
         }
+        console.log(stack.length);
+        console.log(curModel.prevModel);
+
         for(var p=0; p<curModel.prevModel.length;p++){
             console.log("visit : " + getModelIdxById(curModel.prevModel[p].ID));
             if(visit[getModelIdxById(curModel.prevModel[p].ID)]==true) continue;
@@ -483,6 +522,7 @@ function makeModelXML(){
     }
     XML.Close();
     console.log(XML.ToString().replace(/</g, "\n<"));
+    return XML.ToString().replace(/</g, "\n<");
 }
 
 function makeCommaString(list){
@@ -493,4 +533,15 @@ function makeCommaString(list){
         }
 
     return str;
+}
+
+/////////////////////////////////////////////////////////////
+////////////////Restore MODEL from  XML//////////////////////
+////////////////////////////////////////////////////////////
+
+
+
+function restoreModel(exp){
+    //TODO : Complete
+    console.log(exp);
 }
