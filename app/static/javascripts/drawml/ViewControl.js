@@ -16,7 +16,7 @@ function getDataNameById(id){
     var result ="";
     for(var x =0 ; x<datalist.length;x++)
     {
-        if(datalist[x].name==id){
+        if(datalist[x].id==id){
             result=datalist[x].name;
             break;
         }
@@ -620,7 +620,7 @@ function restoreModel(exp){
         var prev = $(xml).find(l.type.toString()).attr("seq",s.toString()).find('data').text().split(',');
         for(var prevId in prev) {
             for (var idx in models) {
-                if (models[idx] instanceof InputModel && model[idx].fileID == (prev[prevId]*1).toString()) {
+                if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId]*1).toString()) {
                     selectedModel[0] = models[idx];
                     modelConnect(l);
                     break;
