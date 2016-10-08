@@ -42,7 +42,7 @@ function handleDropEvent( event, ui ) {
         clearDataShapeOption();
         clearLayerOption();
         makeDefaultOptions()
-            var l = new Regression(modelCnt++,'Linear regression',canvasX-wi-150,canvasY-ContainerTop);
+            var l = new Regression(modelCnt++,'linear_regression',canvasX-wi-150,canvasY-ContainerTop);
             models.push(l);
             currentSelectedModel=l;
             canvas.add(l.fabricModel);
@@ -68,7 +68,7 @@ function handleDropEvent( event, ui ) {
         clearDataShapeOption();
         clearLayerOption();
         makeDefaultOptions()
-        var l = new Regression(modelCnt++,'SoftMax regression',canvasX-wi-150,canvasY-ContainerTop);
+        var l = new Regression(modelCnt++,'softmax_regression',canvasX-wi-150,canvasY-ContainerTop);
         models.push(l);
         currentSelectedModel=l;
         canvas.add(l.fabricModel);
@@ -577,13 +577,63 @@ function restoreModel(exp){
         models.push(l);
         canvas.add(l.fabricModel);
 
-
         //connect model
+        var prev = $(xml).find(l.type.toString()).attr("seq",s.toString()).find('data').text().split(',');
+        for(var prevId in prev) {
+            for (var idx in models) {
+                if (models[idx] instanceof InputModel && model[idx].fileID == prevID) {
+                    selectedModel[0] = models[idx];
+                    modelConnect(l);
+                    break;
+                }
+            }
+        }
     }
 
 
     //restore MODEL
+     var modelType=$(xml).find('model').find('type').text();
+    console.log(modelType);
 
+    if(modelType == "linear_regression"){
+        var curXY = $(drawing).find('linear_regression').text().split(',');
+        var l = new Regression(modelCnt++,'linear_regression',curXY[0],curXY[1]);
+        models.push(l);
+        canvas.add(l.fabricModel);
+
+
+    }else if(modelType == "softmax_regression"){
+        var curXY = $(drawing).find('softmax_regression').text().split(',');
+        var l = new Regression(modelCnt++,'softmax_regression',curXY[0],curXY[1]);
+        models.push(l);
+        canvas.add(l.fabricModel);
+
+    }else if(modelType == "Polynomial regression"){
+        var curXY = $(drawing).find('Polynomial regression').text().split(',');
+        var l = new Regression(modelCnt++,'Polynomial regression',curXY[0],curXY[1]);
+        models.push(l);
+        canvas.add(l.fabricModel);
+
+    }else if(modelType == "neural_network"){
+         var curXY = $(drawing).find('NeuralNetworks').text().split(',');
+        var l = new NeuralNetworks(modelCnt++,curXY[0],curXY[1]);
+        models.push(l);
+        canvas.add(l.fabricModel);
+        l.updateFabricModel();
+        makeLayerOption(1);
+
+    }else if(modelType == "convolution_neural_network"){
+        var curXY = $(drawing).find('ConvolutionNeuralNetworks').text().split(',');
+        var l = new ConvolutionNeuralNetworks(modelCnt++,curXY[0],curXY[1]);
+        models.push(l);
+        canvas.add(l.fabricModel);
+        l.updateFabricModel();
+        canvas.renderAll();
+        makeCNNLayerOption(1);
+    }
+    else{
+        console.log("can not match model type");
+    }
 
 
 

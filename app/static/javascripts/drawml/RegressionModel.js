@@ -305,7 +305,7 @@ function Regression(id,type,pointLeft, pointTop){
         try
         {
             var list = [this.type,this.fabricModel.left,this.fabricModel.top];
-            XML.Node("Regression", makeCommaString(list));
+            XML.Node(this.type, makeCommaString(list));
         }
         catch(Err)
         {
