@@ -306,6 +306,7 @@ function Regression(id,type,pointLeft, pointTop){
             this.optimizer.toXML(XML);
             this.regularization.toXML(XML);
             XML.Node("training_epoch",this.training_epoch.toString());
+            XML.EndNode();
         }
         catch(Err)
         {
