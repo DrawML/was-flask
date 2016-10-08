@@ -181,8 +181,8 @@ class Refiner(json.JSONEncoder):
             date_created=str(exp.date_created),
             user_id=exp.user_id,
             name=exp.name,
-            xml=exp.xml.decode(),
-            drawing=exp.drawing.decode(),
+            xml=pickle.loads(exp.xml),
+            drawing=pickle.loads(exp.drawing),
             input=exp.input
         )
         return exp_dict
