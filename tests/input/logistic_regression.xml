@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<experiment>
+    <input>
+        <shape>[2],[1]</shape>
+        <data>1</data>
+    </input>
+    <model>
+        <data>1</data>
+        <type>logistic_regression</type>
+        <initializer>
+            <type>random_uniform</type> <!-- valid type -->
+            <min>-1.0</min>     <!-- float -->
+            <max>1.0</max>    <!-- float -->
+        </initializer>
+        <optimizer>
+            <type>gradient_descent</type>           <!-- valid type -->
+            <learning_rate>0.01</learning_rate>     <!-- float -->
+        </optimizer>
+        <regularization>
+            <enable>true</enable>
+            <lambda>0.0</lambda>
+        </regularization>
+        <training_epoch>1024</training_epoch>     <!-- unsigned -->
+    </model>
+</experiment>

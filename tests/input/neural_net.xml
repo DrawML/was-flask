@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<experiment>
+    <input>
+        <shape>[784], [10]</shape>
+        <data>36</data>
+    </input>
+    <model>
+        <data>36</data>
+        <type>neural_network</type>
+        <layer_set>
+            <size>3</size>
+            <layer id = "1">
+                <type>none</type>
+                <activation>relu</activation>
+                <input>784</input>
+                <output>256</output>
+            </layer>
+            <layer id = "2">
+                <type>none</type>
+                <activation>relu</activation>
+                <input>256</input>
+                <output>256</output>
+            </layer>
+            <layer id = "3">
+                <type>none</type>
+                <activation>relu</activation>
+                <input>256</input>
+                <output>10</output>
+            </layer>
+        </layer_set>
+        <initializer>
+            <type>random_uniform</type> <!-- valid type -->
+            <min>-1.0</min>     <!-- float -->
+            <max>1.0</max>    <!-- float -->
+        </initializer>
+        <optimizer>
+            <type>gradient_descent</type>           <!-- valid type -->
+            <learning_rate>0.01</learning_rate>     <!-- float -->
+        </optimizer>
+        <regularization>
+            <enable>true</enable>
+            <lambda>0.0</lambda>
+        </regularization>
+        <training_epoch>2</training_epoch>     <!-- unsigned -->
+    </model>
+</experiment>
