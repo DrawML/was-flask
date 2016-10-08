@@ -66,7 +66,7 @@ class DataManager:
         if not fs_path:
             fs = CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT)
             with open(self.path, 'rt') as f:
-                fs_path = fs.put_data_file(self.name, f.read(), 'text')
+                fs_path = fs.put_data_file(self.name, f.read())
         new_data = Data(name=self.name, user_id=self.user_id, path=fs_path, type=self.type)
         self.db.session.add(new_data)
         self.db.session.commit()
