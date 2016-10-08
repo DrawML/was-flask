@@ -102,7 +102,6 @@ function InputModel(id,fileName,fileID,pointLeft, pointTop){
     this.ShapeY=1;
     this.fileID =fileID;
     this.fileName=fileName;
-    console.log(fileID.toString());
 
     this.fabricModel=getDataContainer(this.fileName);
     this.fabricModel.set({

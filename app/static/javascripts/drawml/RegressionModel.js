@@ -297,9 +297,9 @@ function Regression(id,type,pointLeft, pointTop){
             if(this.prevModel[0] instanceof InputModel){
                 XML.Node("data",prevModel[0].fileID.toString());
             }else if(this.prevModel[0] instanceof DataPreprocessingModel){
-                XML.Node("data",prevModel[0].seq.toString());
+                XML.Node("data",'seq'+prevModel[0].seq.toString());
             }
-
+            console.log("Find prevModel.........!!!");
 
             XML.Node("type", this.type);
             this.initializer.toXML(XML);

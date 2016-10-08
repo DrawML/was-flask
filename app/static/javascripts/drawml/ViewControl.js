@@ -554,6 +554,7 @@ function makeCommaString(list){
 
 
 function restoreModel(exp){
+    return;
     //TODO : Complete
     if(exp==null) return;
     var json_exp = JSON.parse(exp);
