@@ -32,6 +32,7 @@ function get_exp() {
 // /experiments/<exp_id>	PATCH	update exp
 function update_exp(jsonInfo) {
     jsonInfo=JSON.stringify(jsonInfo);
+    console.log(jsonInfo);
     $.ajax({
         url : server+'experiments/'+exp_id,
         type : 'PATCH',
