@@ -36,7 +36,12 @@ function update_exp(jsonInfo) {
         type : 'PATCH',
         async : true,
         data : jsonInfo,
-        dataType: 'json'
+        dataType: 'json',
+        xhr: function() {
+            return window.XMLHttpRequest == null || new window.XMLHttpRequest().addEventListener == null
+                ? new window.ActiveXObject("Microsoft.XMLHTTP")
+                : $.ajaxSettings.xhr();
+        }
     });
 }
 
