@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html style="display:block;">
+    <head>
+        <meta charset="utf-8">
+        <title>Draw ML</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="fabric.js"></script>
+        <script type="text/javascript" src="XMLWriter.js"></script>
+        <link rel="stylesheet" type="text/css" href="mycss.css">
+    </head>
+    
+    <body>
+    <header>
+        <nav id="nav_head" class="navbar navbar-default navbar-fixed-top navbar-inverse"
+             role="navigation">
+            <div class="container-fluid">
+                <a class="navbar-brand">DrawML</a>
+                <p class="navbar-text pull-right">Stacker</p>
+
+            </div>
+        </nav>
+    </header>
+
+    <div id="mid" class="container-fluid" style="padding-top: 70px; padding-bottom: 70px;">
+        <div id="map" class="row">
+            <div id="paintContainer" class="col-sm-12  col-md-12">
+                <div id="leftSideBar" class="col-sm-2 col-md-2 sidebar">
+                    <ul id="leftSideBar_nav_pills" class="nav nav-pills">
+                        <li id="model_select_view" role="presentation"class="active" ><a href="#">Model</a></li>
+                        <li id="data_select_view" role="presentation" ><a href="#">Data</a></li>
+                    </ul>
+                    <div id="model_group" class="list-group">
+                        <div id="LinearRegression" class="list-group-item">LinearRegression</div>
+                        <div id="PolynomialRegression" class="list-group-item">PolynomialRegression</div>
+                        <div id="SoftMaxRegression" class="list-group-item">SoftMaxRegression</div>
+                        <div id="NeuralNetworks" class="list-group-item">NeuralNetworks</div>
+                        <div id="ConvolutionNeuralNet" class="list-group-item">ConvolutionNeuralNet</div>
+                        <div id="RecurrentNeuralNet" class="list-group-item">RecurrentNeuralNet</div>
+                     </div>
+                    <div id="data_preprocessing_group" class="list-group">
+                        <div class="list-group-item dataPreprocess">concat</div>
+                        <div class="list-group-item dataPreprocess">transpose</div>
+                        <div class="list-group-item dataPreprocess">데이터 전처리 3</div>
+                        <div class="list-group-item dataPreprocess">데이터 전처리 4</div>
+                    </div>
+
+                    <div id="data_user_group" class="list-group">
+                        <div class="list-group-item data">나의 데이터 1</div>
+                        <div class="list-group-item data">나의 데이터 2</div>
+                        <div class="list-group-item data">나의 데이터 3</div>
+                        <div class="list-group-item data">나의 데이터 4</div>
+                    </div>
+                    <button id="connectModel" type="button" class="btn btn-success">Connect Model</button>
+                    <button id="connectionDelete" type="button" class="btn btn-danger">Connection Delete</button>
+                </div>
+                <div id="canvasContaianer" class ="col-sm-8 col-md-8">
+                    <canvas id="canvas" width="100" height="100"></canvas>
+                </div>
+                <div id="rightSiedBar" class="col-sm-2 col-md-2 sidebar">
+                    <h2>Options</h2>
+
+                    <button id="datashape-btn" type="button" class="btn btn-primary" data-toggle="collapse" data-target="#div-datashape">Data Shape</button>
+                    <div id="div-datashape" class="collapse">
+                        <div id="change-datashape-x" class="input-group oprion-items">
+                            <span class="input-group-addon">Shape_X</span>
+                            <input id="change-datashape-x-input" type="text" class="form-control" placeholder="0~DataSize" aria-describedby="value_min">
+                        </div>
+                        <div id="change-datashape-y" class="input-group oprion-items">
+                            <span class="input-group-addon">Shape_Y</span>
+                            <input id="change-datashape-y-input" type="text" class="form-control" placeholder="0~DataSize" aria-describedby="value_max">
+                        </div>
+                    </div>
+
+                    <button id="initializer-btn" type="button" class="btn btn-info" data-toggle="collapse" data-target="#div-initializer">Initializer</button>
+                    <div id="div-initializer" class="collapse">
+                        <div class="oprion-items">
+                            <div class="option-type"><h4>Type</h4></div>
+                            <div class="btn-group">
+                                <button id="change-Initializer-current" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    random_uniform <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a id="change-Initializer-random_uniform" href="#">random_uniform</a></li>
+                                    <li><a id="change-Initializer-random_normal" href="#">random_normal</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="change-Initializer-value" class="input-group oprion-items">
+                            <span class="input-group-addon" id="value">value</span>
+                            <input id="change-Initializer-value-input" type="text" class="form-control" placeholder="0.0~1.0" aria-describedby="value">
+                        </div>
+                        <div id="change-Initializer-value-min" class="input-group oprion-items">
+                            <span class="input-group-addon" id="value_min">value_min</span>
+                            <input id="change-Initializer-value-min-input" type="text" class="form-control" placeholder="무한~무한" aria-describedby="value_min">
+                        </div>
+                        <div id="change-Initializer-value-max" class="input-group oprion-items">
+                            <span class="input-group-addon" id="value_max">value_max</span>
+                            <input id="change-Initializer-value-max-input" type="text" class="form-control" placeholder="무한~무한" aria-describedby="value_max">
+                        </div>
+                    </div>
+
+                    <button id="optimizer-btn" type="button" class="btn btn-info" data-toggle="collapse" data-target="#div-optimizer">Optimizer</button>
+                    <div id="div-optimizer" class="collapse">
+                        <div  class="oprion-items">
+                            <div class="option-type"><h4>Type</h4></div>
+                            <div class="btn-group">
+                                <button id="change-Optimizer-current" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    gradient descent <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a id="change-Optimizer-gradientDescent" href="#">gradient descent</a></li>
+                                    <li><a id="change-Optimizer-adadelta"href="#">adadelta</a></li>
+                                    <li><a id="change-Optimizer-adagrad"href="#">adagrad</a></li>
+                                    <li><a id="change-Optimizer-momentum"href="#">momentum</a></li>
+                                    <li><a id="change-Optimizer-adam"href="#">adam</a></li>
+                                    <li><a id="change-Optimizer-ftrl"href="#">ftrl</a></li>
+                                    <li><a id="change-Optimizer-rmsprop"href="#">rmsprop</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="change-Optimizer-learningRate" class="input-group oprion-items">
+                            <span class="input-group-addon">Learning rate</span>
+                            <input id="change-Optimizer-learningRate-input" type="text" class="form-control" placeholder="무한 ~ 무한" aria-describedby="value">
+                        </div>
+                    </div>
+
+                    <button id="regularization-btn" type="button" class="btn btn-info" data-toggle="collapse" data-target="#div-regularization">Regularization</button>
+                    <div id="div-regularization" class="collapse">
+                        <div class="oprion-items">
+                            <div class="option-type"><h4>Enable</h4></div>
+                            <div class="btn-group">
+                                <button id="change-regularization-current" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                    false <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a id="change-regularization-enable-false" href="#">false</a></li>
+                                    <li><a id="change-regularization-enable-true" href="#">true</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="change-regularization-lambda" class="input-group oprion-items">
+                            <span class="input-group-addon">Lambda</span>
+                            <input id="change-regularization-lambda-input" type="text" class="form-control" placeholder="0 ~ 1" aria-describedby="value">
+                        </div>
+                    </div>
+
+                    <button id="trainingEpoch-btn" type="button" class="btn btn-info" data-toggle="collapse" data-target="#div-trainingepoch">TrainingEpoch</button>
+                    <div id="div-trainingepoch" class="collapse">
+                        <div id="change-trainingEpoch" class="input-group oprion-items">
+                            <span class="input-group-addon">Training epoch</span>
+                            <input id="change-trainingEpoch-input" type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+                        </div>
+                    </div>
+
+                    <button id="model-addlayer-btn" type="button" class="btn btn-warning"> + AddLayer</button>
+                    <button id="model-delete-btn" type="button" class=
+                            "btn btn-danger">Delete</button>
+
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <footer>
+        <div id="nav_footer" class="navbar navbar-default navbar-fixed-bottom">
+            <div class="container-fluid">
+                <a class="navbar-brand">Stacker</a>
+                <button id="footer-toxml-btn" type="button" class="btn btn-default navbar-btn">Send</button>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="CanvasSetting.js"></script>
+    <script type="text/javascript" src="RegressionModel.js"></script>
+    <script type="text/javascript" src="NeuralNetModel.js"></script>
+    <script type="text/javascript" src="ConvolutionModel.js"></script>
+    <script type="text/javascript" src="DataModel.js"></script>
+    <script type="text/javascript" src="ArrowModel.js"></script>
+    <script type="text/javascript" src="ViewControl.js"></script>
+
+    </body>
+
+    <button id="btn-dummy" style="display: none" type="button" class="btn btn-info layer" data-toggle="collapse" data-target="#div-layer1">Layer1</button>
+    <div id="dummyLayer" class="collapse layer">
+        <div class="btn-group">
+            <button  type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                relu<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">relu</a></li>
+            </ul>
+        </div>
+        <div class="input-group oprion-items">
+            <span class="input-group-addon">Input</span>
+            <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+        </div>
+        <div class="input-group oprion-items">
+            <span class="input-group-addon">Output</span>
+            <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+        </div>
+        <button  type="button" class="btn btn-warning">Delete layer</button>
+    </div>
+
+
+    <button id="btn-dummy2" style="display: none" type="button" class="btn btn-info layer" data-toggle="collapse" data-target="#div-cnnlayer1">CNNLayer1</button>
+    <div id="dummyLayer2" class="collapse layer">
+
+        <button id="btn-dummyActivation"type="button" class="btn btn-primary layer" data-toggle="collapse" data-target="#div-cnnActivation1">CNNActivation</button>
+        <div id="dummyActivation1" class="collapse layer">
+            <div class="oprion-items">
+                <div class="option-type"><h4>Activation</h4></div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                        relu <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">relu</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="input-group oprion-items">
+                <span class="input-group-addon">Stride_Vertical</span>
+                <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+            </div>
+            <div class="input-group oprion-items">
+                <span class="input-group-addon">Stride_Horizontal</span>
+                <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+            </div>
+            <div class="oprion-items">
+                <div class="option-type"><h4>Padding</h4></div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                        false <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">하나 둘 셋</a></li>
+                        <li><a href="#">네엣!!</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-dummyPooling"type="button" class="btn btn-primary layer" data-toggle="collapse" data-target="#div-cnnPooling1">CNNPooling</button>
+        <div id="dummyPooling1" class="collapse layer">
+            <div class="oprion-items">
+                <div class="option-type"><h4>Activation</h4></div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                        relu <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">relu</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="input-group oprion-items">
+                <span class="input-group-addon">Stride_Vertical</span>
+                <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+            </div>
+            <div class="input-group oprion-items">
+                <span class="input-group-addon">Stride_Horizontal</span>
+                <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+            </div>
+            <div class="oprion-items">
+                <div class="option-type"><h4>Padding</h4></div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                        false <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">하나 둘 셋</a></li>
+                        <li><a href="#">네엣!!</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="input-group oprion-items">
+            <span class="input-group-addon">Input_X</span>
+            <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+        </div>
+        <div class="input-group oprion-items">
+            <span class="input-group-addon">Input_Y</span>
+            <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+        </div>
+        <div class="input-group oprion-items">
+            <span class="input-group-addon">Input_Z</span>
+            <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+        </div>
+        <div class="input-group oprion-items">
+            <span class="input-group-addon">Output</span>
+            <input  type="text" class="form-control" placeholder="1 ~ 무한" aria-describedby="value">
+        </div>
+        <button  type="button" class="btn btn-warning">Delete CNNlayer</button>
+    </div>
+
+
+</html>
+
