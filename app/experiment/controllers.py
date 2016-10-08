@@ -1,8 +1,12 @@
 import json
+from datetime import datetime
+
+import pickle
 from flask import Blueprint, request, current_app, render_template, g
 from flask_login import login_required
 from jinja2.exceptions import TemplateError
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import update
 
 from app.common.object_code.util import ExperimentError, DataProcessor, TaskRunner, TFConverter
 from app.dist_task.src.dist_system.client import Client
@@ -98,33 +102,25 @@ def exp_create():
 @module_exp.route('/<exp_id>', methods=['PATCH'], endpoint='exp_update')
 @login_required
 def exp_update(exp_id):
-    json_data = request.get_json()
-    exp_data = JsonParser.parse_post(json_data, g.user.id)
-    if type(exp_data) != Experiment:
-        current_app.logger.error(exp_data)
-        return ErrorResponse(400, 'Json key Error')
+    json = request.get_json()
+    drawing = json['exp_data']['drawing']
+    xml = json['exp_data']['xml']
 
+    exp_data = Experiment.query.filter_by(id=exp_id).first()
+    exp_data.drawing = pickle.dumps(drawing)
+    exp_data.xml = pickle.dumps(xml)
+    exp_data.date_modified = datetime.now()
     try:
-        experiments = db.session.query(Experiment) \
-            .filter(Experiment.user_id == exp_data.user_id,
-                    Experiment.name == exp_data.name).all()
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        current_app.logger.error(e)
-        return ErrorResponse(500, 'Error, Database Internal Error')
-    if len(experiments) > 0:
-        return ErrorResponse(400, 'Experiment name is Duplicated')
-
-    try:
-        updated = db.session.query(Experiment)\
-            .filter(Experiment.id == exp_id)\
-            .update(exp_data.to_dict(), synchronize_session=False)
+        update(Experiment).where(Experiment.id == exp_id).\
+            values(date_modified=datetime.now(),
+                   drawing=drawing,
+                   xml=xml)
         db.session.commit()
     except SQLAlchemyError as e:
         db.session.rollback()
         current_app.logger.error(e)
         return ErrorResponse(500, 'Error, Database Internal Error')
-    current_app.logger.info(str(updated) + ' columns updated : ' + str(exp_data))
+    current_app.logger.info(' columns updated : ' + str(exp_data))
     return 'updated'
 
 
