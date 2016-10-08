@@ -22,6 +22,10 @@
 ####Requirements
     virtualenv -p python3 env
     env/bin/pip3 install -r requirements.txt
+    git submodule add https://github.com/DrawML/cloud-dfs.git app/cloud_dfs
+    git submodule add https://github.com/DrawML/dist-task.git app/dist_task
+    git submodule init
+    git submodule update
 
 ####Dependency
 Mysql Ver 14.14 Distrib 5.7.9
