@@ -29,6 +29,7 @@ CREATE TABLE `drawml`.`data` (
   `name` VARCHAR(255) NOT NULL,
   `path` VARCHAR(255) NOT NULL,
   `user_id` INTEGER NOT NULL,
+  `type` VARCHAR(16) NOT NULL,
   PRIMARY KEY (`user_id`, `name`),
   FOREIGN KEY user(user_id) REFERENCES user(id) ON DELETE CASCADE,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),

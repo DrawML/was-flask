@@ -46,12 +46,13 @@ class ChunkRange:
 
 class DataManager:
     def __init__(self, id: int=-1, user_id: int=-1,
-                 name: str='None', path: str='None'):
+                 name: str='None', path: str='None', type='input'):
         self.id = id
         self.user_id = user_id
         self.name = name
         self.path = path
-        self.db =  DrawMLRepository().db
+        self.type = type
+        self.db = DrawMLRepository().db
 
     def fetch(self):
         return self.db.session.query(Data).filter(Data.id == self.id).all()
@@ -66,7 +67,7 @@ class DataManager:
             fs = CloudDFSConnector(CLOUDDFS_ADDR, CLOUDDFS_PORT)
             with open(self.path, 'rt') as f:
                 fs_path = fs.put_data_file(self.name, f.read(), 'text')
-        new_data = Data(name=self.name, user_id=self.user_id, path=fs_path)
+        new_data = Data(name=self.name, user_id=self.user_id, path=fs_path, type=self.type)
         self.db.session.add(new_data)
         self.db.session.commit()
         if os.path.exists(self.path):

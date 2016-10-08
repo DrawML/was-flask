@@ -24,7 +24,7 @@ module_data = Blueprint('data',
 @login_required
 def api_all():
     db = DrawMLRepository().db
-    data_set = db.session.query(Data).filter(Data.user_id == g.user.id).all()
+    data_set = db.session.query(Data).filter(Data.user_id == g.user.id, Data.type == 'input').all()
     return json.dumps(Refiner(data_set).get())
 
 
@@ -47,7 +47,8 @@ def upload():
 def get_all():
     return render_template('/data/list.html',
                            data_set=Data.query.
-                           filter_by(user_id=g.user.id).order_by(Data.date_modified.desc()).all())
+                           filter_by(user_id=g.user.id, type='input')
+                           .order_by(Data.date_modified.desc()).all())
 
 
 @module_data.route('/', methods=['POST'], endpoint='create')
