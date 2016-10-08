@@ -6,6 +6,19 @@ function getDataIDByName(name){
     {
         if(datalist[x].name==name){
             result=datalist[x].id;
+            break;
+        }
+    }
+    return result;
+}
+
+function getDataNameById(id){
+    var result ="";
+    for(var x =0 ; x<datalist.length;x++)
+    {
+        if(datalist[x].name==id){
+            result=datalist[x].name;
+            break;
         }
     }
     return result;
@@ -305,8 +318,8 @@ $(document).ready(function(){
 
 
         var exp_data=new Object();
-        exp_data.drawing = exp_xml;
-        exp_data.xml = model_xml;
+        exp_data.drawing = model_xml;
+        exp_data.xml = exp_xml;
         var x = new Object();
         x.exp_data=exp_data;
         var jsonInfo = JSON.stringify(x);
@@ -554,6 +567,8 @@ function makeCommaString(list){
 ////////////////////////////////////////////////////////////
 
 
+var xxx;
+var d;
 
 function restoreModel(exp){
     //TODO : Complete
@@ -563,10 +578,9 @@ function restoreModel(exp){
     var xml = json_exp['xml'];
     var drawing = json_exp['drawing'];
 
-
     //string to xml
-    xml=$.parseXML(xml);
-    drawing=$.parseXML(drawing);
+    xxx=xml=$.parseXML(xml);
+    d=drawing=$.parseXML(drawing);
     console.log(xml);
     console.log(drawing);
 
@@ -576,12 +590,12 @@ function restoreModel(exp){
     console.log(inputModels);
     if(inputModels.length!=0) return;
         for (var x in inputModels) {
-            //inputModels[x]
-            //get left, top
-            var lt = $(drawing).find('input').attr('fileId', inputModels[x]).text().split(',');
-            var l = new InputModel(modelCnt++, inputModels[x], lt[0], lt[1]);
+            var num = inputModels[x]*1;
+            var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
+            var l = new InputModel(modelCnt++, inputModels[x], lt[0]*1, lt[1]*1);
             models.push(l);
             canvas.add(l.fabricModel);
+            canvas.renderAll();
         }
 
 
