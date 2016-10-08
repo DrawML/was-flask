@@ -2,7 +2,7 @@ from flask import Flask, g, render_template
 from flask_login import current_user
 
 from app.dist_task.src.dist_system.client import Client
-from app.dist_task.src.dist_system.result_receiver import ResultReceiverAddress
+from app.dist_task.src.dist_system.address import ResultReceiverAddress
 from config import app_config
 from app.mysql import DrawMLRepository
 from app.redis_session import RedisSessionInterface

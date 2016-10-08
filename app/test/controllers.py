@@ -33,10 +33,18 @@ def get_all_model():
 @module_test.route('/<model_id>', methods=['GET'], endpoint='get_model')
 @login_required
 def get_model(model_id):
+    status = redis_cache.IDLE
+    model_key = RedisKeyMaker.make_key(id=model_id,
+                                       type=RedisKeyMaker.MODEL_TESTING)
+    model_value = redis_cache.get(model_key)
+    if model_value is not None:
+        status = model_value.decode()
+    print(status)
     return render_template('/test/data-list.html',
                            datas=Data.query.
                            filter_by(user_id=g.user.id).order_by(Data.date_modified.desc()).all(),
-                           model=TrainedModel.query.filter_by(id=model_id).first())
+                           model=TrainedModel.query.filter_by(id=model_id).first(),
+                           status=status)
 
 
 @module_test.route('/<model_id>/update', methods=['GET', 'POST'], endpoint='update_model')

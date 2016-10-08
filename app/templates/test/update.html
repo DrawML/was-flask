@@ -22,11 +22,11 @@
     <script type=text/javascript>
         function delete_model() {
             $.ajax({                //Send (docinfo) to server
-                url : 'http://localhost:5000/tests/{{ model.id }}',
+                url : 'http://210.118.74.55:5000/tests/{{ model.id }}',
                 type : 'DELETE',
                 async : true,
                 success : function(){
-                    window.location.href = "http://localhost:5000/tests";
+                    window.location.href = "http://210.118.74.55:5000/tests";
                 }
             });
         }

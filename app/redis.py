@@ -5,6 +5,7 @@ redis_cache.SUCCESS = 'success'
 redis_cache.FAIL    = 'fail'
 redis_cache.CANCEL  = 'cancel'
 redis_cache.RUNNING = 'running'
+redis_cache.IDLE    = 'idle'
 
 
 class RedisKeyMaker:

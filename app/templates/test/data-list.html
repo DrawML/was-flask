@@ -13,16 +13,50 @@
         <th>Date</th>
       </tr>
       {%- for data in datas %}
+          {% if data.type == 'input' %}
       <tr>
         <td>{{data.id}}</td>
         <td><a href="/data/{{ data.id }}">{{ data.name }}</a></td>
         <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
       </tr>
+          {% endif %}
       {%- endfor %}
     </table>
     {% endif %}
     {% if status != 'idle' %}
       <h3>Status : {{ status }}</h3>
+        {% if status == 'fail' or status == 'success' or status == 'cancel' %}
+            <button type="button" id="clear_btn" class="btn btn-info" onclick="clear()">Clear status</button>
+            <script>
+                function clear() {
+                    $.ajax({                //Send (docinfo) to server
+                        url : 'http://210.118.74.55:5000/tests/{{ model.id }}',
+                        type : 'DELETE',
+                        async : true,
+                        success : function(){
+                            window.location.href = "http://210.118.74.55:5000/tests";
+                        }
+                    });
+                }
+            </script>
+        {% endif %}
+        {% if status == 'running' %}
+            <button type="button" id="stop_btn" class="btn btn-danger" onclick="stop()">Stop</button>
+            <script>
+                function stop() {
+                    $.ajax({                //Send (docinfo) to server
+                        url : 'http://210.118.74.55:5000/tests/{{ model.id }}/stop',
+                        type : 'DELETE',
+                        async : true,
+                        success : function(){
+                            window.location.href = "http://210.118.74.55:5000/tests";
+                        }
+                    });
+                }
+            </script>
+        {% endif %}
+
+
         <table class="table table-hover">
       <tr>
         <th>#</th>
@@ -30,11 +64,13 @@
         <th>Date</th>
       </tr>
       {%- for data in datas %}
+          {% if data.type == 'log' %}
       <tr>
         <td>{{data.id}}</td>
         <td><a href="/data/{{ data.id }}">{{ data.name }}</a></td>
         <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
       </tr>
+          {% endif %}
       {%- endfor %}
     </table>
     {% endif %}

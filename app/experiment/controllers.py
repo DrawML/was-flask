@@ -103,8 +103,13 @@ def exp_create():
 @login_required
 def exp_update(exp_id):
     json = request.get_json()
-    drawing = json['exp_data']['drawing']
-    xml = json['exp_data']['xml']
+    if json.get('exp_data', None) is None:
+        ErrorResponse(400, 'No exp_data')
+
+    drawing = json['exp_data'].get('drawing', None)
+    xml = json['exp_data'].get('xml', None)
+    if drawing is None or xml is None:
+        ErrorResponse(400, 'Invalid Json form')
 
     exp_data = Experiment.query.filter_by(id=exp_id).first()
     exp_data.drawing = pickle.dumps(drawing)
