@@ -1,5 +1,5 @@
 from flask_login import LoginManager
-
+from flask import redirect, url_for
 login_manager = LoginManager()
 
 
@@ -12,4 +12,4 @@ def load_user(id):
 @login_manager.unauthorized_handler
 def unauthorized():
     # do stuff
-    return 'unauthorized'
+    return redirect(url_for('auth.signin'))
