@@ -8,7 +8,7 @@ function get_data() {
         async : true,
         success : function(dataList){
             for(var x in dataList){
-                $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+'dataList[x].name'+'</div>');
+                $('#data_user_group').append('<div class="list-group-item data ui-draggable ui-draggable-handle">'+dataList[x].name+'</div>');
             }
             $( init );
         }
