@@ -619,9 +619,10 @@ function restoreModel(exp){
 
         //connect model
         var prev = $(xml).find(l.type.toString()).attr("seq",s.toString()).find('data').text().split(',');
+        console.log(prev);
         for(var prevId in prev) {
             for (var idx in models) {
-                if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId]*1).toString()) {
+                if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId]*1)) {
                     selectedModel[0] = models[idx];
                     modelConnect(l);
                     break;
