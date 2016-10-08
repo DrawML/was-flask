@@ -538,6 +538,7 @@ function makeCommaString(list){
 
 function restoreModel(exp){
     //TODO : Complete
+    if(exp==null) return;
     var json_exp = JSON.parse(exp);
 
     var xml = json_exp['xml'];
@@ -554,7 +555,6 @@ function restoreModel(exp){
     //restore INPUT
     var inputModels=$(xml).find('input').find('data').text().split(',');
     for(var x in inputModels){
-        //TODO : restore Shape
         //inputModels[x]
         //get left, top
         var lt = $(drawing).find('input').attr('fileId',inputModels[x]).text().split(',');
@@ -564,11 +564,22 @@ function restoreModel(exp){
     }
 
     //restore Processing by seq
-    var processModels=$(xml).find('data_processing').find('size').text();
-    //var processSize =
+    var processSize=$(xml).find('data_processing').find('size').text();
+    for(var s=1;s<=processSize;s++){
+        //find seq : s in drawing
+        var cur = $(drawing).find('DataPreprocessingModel').attr("seq",s.toString()).text().split(',');
+        var l = new DataPreprocessingModel(modelCnt++,cur[0],cur[1],cur[2]);
+        models.push(l);
+        canvas.add(l.fabricModel);
+
+
+        //connect model
+    }
 
 
     //restore MODEL
+
+
 
 
     canvas.renderAll();
