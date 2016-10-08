@@ -555,11 +555,23 @@ function restoreModel(exp){
     //restore INPUT
     var inputModels=$(xml).find('input').find('data').text().split(',');
     for(var x in inputModels){
+        //TODO : restore Shape
         //inputModels[x]
+        //get left, top
+        var lt = $(drawing).find('input').attr('fileId',inputModels[x]).text().split(',');
+        var l = new InputModel(modelCnt++,inputModels[x],lt[0],lt[1]);
+        models.push(l);
+        canvas.add(l.fabricModel);
     }
+
     //restore Processing by seq
+    var processModels=$(xml).find('data_processing').find('size').text();
+    //var processSize =
+
 
     //restore MODEL
 
+
+    canvas.renderAll();
 
 }
