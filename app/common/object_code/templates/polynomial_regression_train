@@ -6,7 +6,8 @@ with tf.Session(config=config) as sess:
     init = tf.initialize_all_variables()
     sess.run(init)
     train_data = load_train_data()
+    f = open(output_file_path, 'a')
     for _ in range(training_epoch):
         sess.run(train, feed_dict=train_data)
-        # some logging codes will be added...
+        print('Loss of epoch {} : {}'.format(_, sess.run(cost, feed_dict=train_data)), file=f)
     save_model(sess, sess_path)
