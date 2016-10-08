@@ -305,8 +305,8 @@ $(document).ready(function(){
 
 
         var exp_data=new Object();
-        exp_data.drawing = exp_xml;
-        exp_data.xml = model_xml;
+        exp_data.drawing = model_xml;
+        exp_data.xml = exp_xml;
         var x = new Object();
         x.exp_data=exp_data;
         var jsonInfo = JSON.stringify(x);
@@ -554,7 +554,7 @@ function makeCommaString(list){
 ////////////////////////////////////////////////////////////
 
 
-var x;
+var xxx;
 var d;
 
 function restoreModel(exp){
@@ -566,7 +566,7 @@ function restoreModel(exp){
     var drawing = json_exp['drawing'];
 
     //string to xml
-    x=xml=$.parseXML(xml);
+    xxx=xml=$.parseXML(xml);
     d=drawing=$.parseXML(drawing);
     console.log(xml);
     console.log(drawing);
