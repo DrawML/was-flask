@@ -3,7 +3,6 @@
 
 
 with tf.Session(config=config) as sess:
-{% endraw %}
     init = tf.initialize_all_variables()
     sess.run(init)
     train_data = load_train_data()
