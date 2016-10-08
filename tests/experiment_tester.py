@@ -11,7 +11,7 @@ class ExperimentRunTestCase(unittest.TestCase):
     #MODEL_PATH = 'input/neural_net.xml'
     #MODEL_PATH = 'input/convolution_net.xml'
     PROTOCOL = "http"
-    HOSTNAME = None
+    HOSTNAME = "210.118.74.55:5000"
     url = PROTOCOL + "://" + HOSTNAME
 
     def test_experiment_run(self):
@@ -35,7 +35,7 @@ class ExperimentRunTestCase(unittest.TestCase):
         path = "/auth/signin"
         data = tester
         headers = {
-            'User-Agent': 'Mozilla/5.0'
+            'Usier-Agent': 'Mozilla/5.0'
         }
         response = session.post(self.url + path, headers=headers, data=data)
         self.assertEqual(200, response.status_code, "Fail to sign in")

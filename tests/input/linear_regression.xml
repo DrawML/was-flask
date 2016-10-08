@@ -2,7 +2,7 @@
 <experiment>
     <input>
         <shape>[2],[1]</shape>              <!-- x_input : 1 / y_input : 1 -->
-        <data>1,2</data>
+        <data>90,91</data>
     </input>
     <data_processing>
         <size>3</size>
