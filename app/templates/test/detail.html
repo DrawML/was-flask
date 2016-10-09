@@ -7,7 +7,7 @@
             url : '/tests/{{ model.id }}/clear',
             type : 'DELETE',
             async : true,
-            success : function(){
+            always : function(){
                 window.location.href = "/tests";
             }
         });
@@ -17,7 +17,7 @@
             url : '/tests/{{ model.id }}/stop',
             type : 'DELETE',
             async : true,
-            success : function(){
+            always : function(){
                 window.location.href = "/tests";
             }
         });
@@ -33,7 +33,7 @@
             url : '/tests/{{ model.id }}/' + data_id,
             type : 'POST',
             async : true,
-            success : function(){
+            always : function(){
                 window.location.href = "/tests/{{ model.id }}";
             }
         });

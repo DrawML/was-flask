@@ -180,6 +180,6 @@ def model_clear(model_id):
     except Exception as e:
         current_app.logger.error(e)
         flash('Internal Server Error')
-        return redirect(url_for('test.get_all_model'))
+        return 'error'
     flash('Cache cleared')
-    return redirect(url_for('test.get_all_model'))
+    return 'cleared'
