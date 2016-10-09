@@ -714,14 +714,17 @@ function restoreModel(exp) {
             for (var idx in models) {
                 if (!isSeq && models[idx] instanceof InputModel && models[idx].fileID == curID*1) {
                     console.log("Connect To INPUT");
-                    makingModel = true;
                     if(models[idx].nextModel!=null && models[idx].nextModel.length>=1) continue;
+                    console.log("Connect : !!!!!!!!! INPUT!!");
+                    makingModel = true;
                     modelConnect(models[idx]);
                     modelConnect(l);
                     makingModel = false;
                     break;
                 } else if (isSeq && models[idx] instanceof DataPreprocessingModel && models[idx].seq ==curID*1) {
                     console.log("Connect To DATAPREPRO");
+                    if(models[idx].nextModel!=null && models[idx].nextModel.length>=1) continue;
+                    console.log("Connect : !!!!!!!!! INPUT!!");
                     makingModel = true;
                     modelConnect(models[idx]);
                     modelConnect(l);
