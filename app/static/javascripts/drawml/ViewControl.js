@@ -693,16 +693,24 @@ function restoreModel(exp) {
         l.seq = s;
         models.push(l);
         canvas.add(l.fabricModel);
+        canvas.renderAll();
+    }
 
-        //connect model
+    //connect preprocessing model
+    for (var s = 1; s<=processSize;s++){
         var dp=$(xml).find('data_processing').children();
         dp=$(dp)[s];
-
         var prev = $(dp).find('data').text().split(',');
         console.log(prev);
         for (var prevId in prev) {
+            var curID = prev[prevId].trim();
+            var isSeq=false;
+            if(curID.length>=4 && curID.substring(0,3)=="seq"){
+                isSeq=true;
+                curID=curID.substring(3,curID.length)*1;
+            }
             for (var idx in models) {
-                if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId] * 1)) {
+                if (!isSeq && models[idx] instanceof InputModel && models[idx].fileID == curID) {
                     console.log("Connect To INPUT");
                     makingModel = true;
                     if(models[idx].nextModel!=null && models[idx].nextModel.length>=1) continue;
@@ -710,7 +718,7 @@ function restoreModel(exp) {
                     modelConnect(l);
                     makingModel = false;
                     break;
-                } else if (models[idx] instanceof DataPreprocessingModel && models[idx].seq == (prev[prevId] * 1)) {
+                } else if (isSeq && models[idx] instanceof DataPreprocessingModel && models[idx].seq ==curID) {
                     console.log("Connect To DATAPREPRO");
                     makingModel = true;
                     modelConnect(models[idx]);
@@ -720,7 +728,6 @@ function restoreModel(exp) {
                 }
             }
         }
-        canvas.renderAll();
     }
 
     console.log("START  : DATAPROCESSING MODEL END");
