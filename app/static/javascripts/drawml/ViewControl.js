@@ -711,14 +711,21 @@ function restoreModel(exp){
 
 
         //regularization
-
-
+        var regul_xml = $(xml).find('regularization');
+        var regul_bool = $(regul_xml).find('enable').text().trim();
+        ML.regularization.changeEnable(regul_bool);
+        if(regul_bool=="true"){
+            var regul_lambda = $(regul_xml).find('lambda').text()*1;
+            ML.regularization.changeLambda(regul_lambda);
+        }
 
         //training_epoch
+        var training_val = $(xml).find('training_epoch').text()*1;
+        ML.training_epoch=training_val;
 
 
+        //Connect Prev Model.....
         var modelData=$(xml).find('model').find('data').text().trim();
-
         if(modelData.length >= 4 && modelData.substring(0,3)=="seq"){
             //PreProcessing과 연결
             modelData = modelData.substring(3,modelData.length)*1;
