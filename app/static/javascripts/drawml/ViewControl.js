@@ -686,12 +686,14 @@ function restoreModel(exp) {
     //restore Processing by seq
     var processSize = $(xml).find('data_processing').find('size').text() * 1;
     console.log("pre size : " + processSize);
+    var processList=[];
     for (var s = 1; s <= processSize; s++) {
         //find seq : s in drawing
         var cur = $($(drawing).find('DataPreprocessingModel')[s]).text().split(',');
         var l = new DataPreprocessingModel(modelCnt++, cur[0], cur[1] * 1, cur[2] * 1);
         l.seq = s;
         models.push(l);
+        processList.push(l);
         canvas.add(l.fabricModel);
         canvas.renderAll();
     }
@@ -711,14 +713,14 @@ function restoreModel(exp) {
             }
             console.log("CUR ID : "+ curID);
             console.log("isSEQ : " +isSeq)
-            for (var idx in models) {
+            for (var idx =0; idx<models.length ;idx++) {
                 if (!isSeq && models[idx] instanceof InputModel && models[idx].fileID == curID*1) {
                     console.log("Connect To INPUT");
                     if(models[idx].nextModel!=null && models[idx].nextModel.length>=1) continue;
                     console.log("Connect : !!!!!!!!! INPUT!!");
                     makingModel = true;
                     modelConnect(models[idx]);
-                    modelConnect(l);
+                    modelConnect(processList[s-1]);
                     makingModel = false;
                     break;
                 } else if (isSeq && models[idx] instanceof DataPreprocessingModel && models[idx].seq ==curID*1) {
@@ -727,7 +729,7 @@ function restoreModel(exp) {
                     console.log("Connect : !!!!!!!!! INPUT!!");
                     makingModel = true;
                     modelConnect(models[idx]);
-                    modelConnect(l);
+                    modelConnect(processList[s-1]);
                     makingModel = false;
                     break;
                 }
