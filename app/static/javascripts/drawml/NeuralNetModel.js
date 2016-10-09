@@ -109,9 +109,9 @@ function Layer(id,activation,input,output){
         canvas.renderAll();
     }
 
-    this.toXML = function(XML){
+    this.toXML = function(XML,num){
         XML.BeginNode("layer");
-        XML.Attrib("id",this.id.toString());
+        XML.Attrib("id",this.num.toString());
         XML.Node("type","none");
         XML.Node("activation",this.activation);
         XML.Node("input",this.input.toString());
@@ -185,7 +185,7 @@ function LayerSet(){
         XML.BeginNode("layer_set");
         XML.Node("size",this.layers.length.toString());
         for(var x=0; x<this.layers.length;x++){
-            this.layers[x].toXML(XML);
+            this.layers[x].toXML(XML,x+1);
         }
         XML.EndNode();
     }
