@@ -616,7 +616,7 @@ function restoreModel(exp) {
 
     var shp = $(xml).find('shape').text().split(',');
     var shp_x = shp[0].trim().substring(1,shp[0].length-1);
-    var shp_y = shp[1].trim().substring(1,shp[1].length-1);
+    var shp_y = shp[1].trim().substring(1,shp[1].length-2);
 
     if ($(xml).text() == "") return;
 
