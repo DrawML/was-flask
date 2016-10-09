@@ -584,6 +584,7 @@ function restoreModel(exp){
     console.log(xml);
     console.log(drawing);
 
+    if($(xml).text()=="") return;
 
     //restore INPUT
     var inputModels=$(xml).find('input').find('data').text().split(',');
@@ -718,7 +719,7 @@ function restoreModel(exp){
 
                 }
             }
-                console.log("START  : ML MODEL END");
+         console.log("START  : ML MODEL END");
     }
 
     canvas.renderAll();
