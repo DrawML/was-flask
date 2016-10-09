@@ -12,7 +12,7 @@
 
 <input id="fileupload" type="file" accept=".txt" name="file" data-url="/data/" multiple>
     <div id="message"></div>
-    <a href="{{ url_for('data.get_all') }}" class="btn btn-large btn-primary">Back to data list</a>
+    <a href="{{ url_for('data.get_all') }}" class="btn btn-large btn-primary" style="margin-top: 20px;">Back to data list</a>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/static/javascripts/vendor/jquery.ui.widget.js"></script>
@@ -25,6 +25,7 @@
         method:'POST'
     })
         .on('fileuploadstart', function (e, data) {
+            console.log(data);
             $("#file_name").text(data.files[0].name);
             $("#progressBox").show();
         })
