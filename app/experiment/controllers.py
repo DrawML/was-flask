@@ -149,6 +149,7 @@ def exp_delete(exp_id):
 @login_required
 def exp_run(exp_id):
     xml = request.data.decode()
+    xml = ''.join(xml.split('\n'))
 
     print()
     print()
