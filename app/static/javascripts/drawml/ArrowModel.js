@@ -175,12 +175,12 @@ function modelConnect(model){
     if(!makingModel) return;
 
     if(selectedModel.length==0){
-        if(selectedModel instanceof Regression ||
-            selectedModel instanceof NeuralNetworks ||
-            selectedModel instanceof ConvolutionNeuralNetworks){
+        selectedModel.push(model);
+        if(selectedModel[0] instanceof Regression ||
+            selectedModel[0] instanceof NeuralNetworks ||
+            selectedModel[0] instanceof ConvolutionNeuralNetworks){
             alert("Can't start arrow at ML model");
         }
-        selectedModel.push(model);
     }else if(selectedModel.length==1){
         selectedModel.push(model);
 
