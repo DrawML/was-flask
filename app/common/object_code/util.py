@@ -227,7 +227,7 @@ class TaskRunner:
                     print("[DEBUG] DATA_PROCESSING file_token: ", file_token) 
                     try:
                         save_obj(Data, dict(name=file_name, user_id=self.user_id,
-                                            path=file_token, type='log'))
+                                            path=file_token, type='input'))
                     except SQLAlchemyError as e:
                         fail(file_token)
                     # update file token
