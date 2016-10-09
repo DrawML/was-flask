@@ -11,7 +11,7 @@
 </div>
 
 <input id="fileupload" type="file" accept=".txt" name="file" data-url="/data/" multiple>
-    <div id="message"></div>
+    <div id="message" style="margin-top: 20px;"></div>
     <a href="{{ url_for('data.get_all') }}" class="btn btn-large btn-primary" style="margin-top: 20px;">Back to data list</a>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -37,6 +37,8 @@
             $("#file_name").text(data.files[0].name);
         })
         .on('fileuploadfail', function (e, data) {
+            console.log(e);
+            console.log(data);
             $.ajax({
                 url: data.id,
                 dataType: 'json',
