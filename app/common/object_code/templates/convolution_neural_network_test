@@ -7,9 +7,7 @@ with tf.Session(config=config) as sess:
     sess.run(init)
     restore_model(sess, sess_path)
 
-    test_data = load_test_data()
-    test_data['p_keep_conv'] = 1.0
-    test_data['p_keep_hidden'] = 1.0
+    test_data = {X: x_test, Y: y_test, p_keep_conv: 1.0, p_keep_hidden: 1.0}
 
     f = open(output_file_path, 'a')
     p = sess.run(predict, feed_dict=test_data)
