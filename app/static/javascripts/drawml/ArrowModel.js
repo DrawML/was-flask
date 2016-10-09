@@ -183,6 +183,11 @@ function modelConnect(model){
             selectedModel=[];
             makingModel=false;
             connectComplete();
+        }else if(selectedModel[0].nextModel!=null && selectedModel[0].nextModel.length>=1){
+            alert("Can't make two arrow");
+            selectedModel=[];
+            makingModel=false;
+            connectComplete();
         }
     }else if(selectedModel.length==1){
         selectedModel.push(model);
