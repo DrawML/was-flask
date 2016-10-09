@@ -147,7 +147,9 @@ function handleDropEvent( event, ui ) {
         makeDataShapeOption();
         clearDefaultOptions();
         var fileName = ui.draggable.text();
-        var l = new InputModel(modelCnt++,fileName,getDataIDByName(fileName),canvasX-wi-150,canvasY-ContainerTop);
+        var filteredFileName = fileName;
+        if(filteredFileName.length >=16) filteredFileName=filteredFileName.substring(0,16);
+        var l = new InputModel(modelCnt++,filteredFileName,getDataIDByName(fileName),canvasX-wi-150,canvasY-ContainerTop);
         models.push(l);
         currentSelectedModel=l;
         canvas.add(l.fabricModel);
