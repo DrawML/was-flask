@@ -1,3 +1,4 @@
+{% set active_page = active_page|default('index') -%}
 <!doctype html>
 <title>DrawML</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -27,16 +28,23 @@ body {
             <div class="nav-collapse collapse">
                 <ul class="nav">
                     {% if g.user.is_authenticated%}
-                        <li><a href="{{ url_for('experiment.get_all_exp') }}">Experiment</a></li>
-                        <li><a href="{{ url_for('data.get_all') }}">Data</a></li>
-                        <li><a href="{{ url_for('test.get_all_model') }}">Test</a></li>
-                        <li><a href="{{ url_for('log.get_all') }}">Log</a></li>
-                        <li><a href="{{ url_for('auth.signout') }}">Sign out</a></li>
+                        {% set navigation_bar = [
+                            (url_for('data.get_all'), 'data', 'Data'),
+                            (url_for('experiment.get_all_exp'), 'experiment', 'Experiment'),
+                            (url_for('test.get_all_model'), 'test', 'Test'),
+                            (url_for('log.get_all'), 'log', 'Log'),
+                            (url_for('auth.signout'), 'signout', 'Sign out')
+                        ] -%}
                     {% endif %}
                     {% if not g.user.is_authenticated%}
-                        <li><a href="{{ url_for('auth.signin') }}">Sign in</a></li>
-                        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                        {% set navigation_bar = [
+                            (url_for('auth.signin'), 'signin', 'Sign in'),
+                            (url_for('auth.register'), 'register', 'Register'),
+                        ] -%}
                     {% endif %}
+                    {% for href, id, caption in navigation_bar %}
+                        <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
