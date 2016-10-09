@@ -56,6 +56,12 @@ function handleDragStop(event,ui){
     console.log($(this).attr('id'));
 }
 
+function printResultMsg(msg) {
+    $('#footer-result-msg').show();
+    $('#footer-result-msg').text(msg);
+
+    setTimeout($('#footer-result-msg').hide, 5000);
+}
 
 function handleDropEvent( event, ui ) {
     var draggable = ui.draggable;
@@ -353,8 +359,6 @@ $(document).ready(function(){
 
         update_exp(jsonInfo);
         run_exp(exp_xml);
-
-        get_expStatus();
     });
 
     $('#footer-Stop-btn').click(function () {

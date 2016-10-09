@@ -48,6 +48,9 @@ function update_exp(jsonInfo) {
                 ? new window.ActiveXObject("Microsoft.XMLHTTP")
                 : $.ajaxSettings.xhr();
         }
+    }).done(function (data) {
+        console.log(data);
+        printResultMsg("Saved");
     });
 }
 
@@ -62,6 +65,8 @@ function run_exp(xml) {
         dataType : 'xml',
         success : function(){
              $('#footer-Stop-btn').show();
+            get_expStatus();
+            printResultMsg("Successfully request to run!");
             isProcessing=true;
         }
     });
@@ -78,6 +83,8 @@ function stop_exp() {
         async : true,
         success : function(){
             $('#footer-Stop-btn').hide();
+            get_expStatus();
+            printResultMsg("Successfully request to stop!");
         }
     });
 }
