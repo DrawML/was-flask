@@ -398,12 +398,15 @@ $(document).ready(function(){
 
     $('#change-datashape-x-input').on("change paste keyup", function() {
         for(var x in models){
-            if(models[x] instanceof InputModel)models[x].changeShapeX($(this).val());
+            if(models[x] instanceof InputModel)
+                models[x].changeShapeX($(this).val());
         }
 
     });
     $('#change-datashape-y-input').on("change paste keyup", function() {
-        if(models[x] instanceof InputModel)models[x].changeSHapeY($(this).val());
+        if(models[x] instanceof InputModel) {
+            models[x].changeSHapeY($(this).val());
+        }
     });
 
 
@@ -613,6 +616,8 @@ function restoreModel(exp) {
     d = drawing = $.parseXML(drawing);
     console.log(xml);
     console.log(drawing);
+
+    if($(drawing).find('position').length !=0) return;
 
     var shp = $(xml).find('shape').text().split(',');
     var shp_x = shp[0].trim().substring(1,shp[0].length-1);
