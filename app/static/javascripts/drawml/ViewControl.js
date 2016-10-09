@@ -570,38 +570,45 @@ function makeCommaString(list){
 var xxx;
 var d;
 
-function restoreModel(exp){
+function restoreModel(exp) {
     //TODO : Complete
-    if(exp==null) return;
+    if (exp == null) return;
     var json_exp = JSON.parse(exp);
 
     var xml = json_exp['xml'];
     var drawing = json_exp['drawing'];
 
     //string to xml
-    xxx=xml=$.parseXML(xml);
-    d=drawing=$.parseXML(drawing);
+    xxx = xml = $.parseXML(xml);
+    d = drawing = $.parseXML(drawing);
     console.log(xml);
     console.log(drawing);
 
-    if($(xml).text()=="") return;
+    if ($(xml).text() == "") return;
 
     //restore INPUT
-    var inputModels=$(xml).find('input').find('data').text().split(',');
+    var inputModels = $(xml).find('input').find('data').text().split(',');
     console.log(inputModels);
-    if(inputModels.length==0) return;
+    if (inputModels.length == 0) return;
 
+
+    //WARNING : 같은 모델 2개일 때 좌표값을 구별 할 수 없음.
 
     console.log("START  : INPUT MODEL RESTORE");
     for (var x in inputModels) {
-        var num = inputModels[x]*1;
-        console.log(getDataNameById(num*1));
-        var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
-        var l = new InputModel(modelCnt++,getDataNameById(num.toString()),inputModels[x]*1, lt[0]*1, lt[1]*1);
+        var num = inputModels[x] * 1;
+        console.log(getDataNameById(num * 1));
+        console.log(inputModels[x]);
+
+        var lt = $(drawing).find('InputModel').attr('fileId', num.toString())[0];
+        lt=$(lt).text().split(',');
+        console.log(lt);
+
+        var l = new InputModel(modelCnt++, getDataNameById(num.toString()), inputModels[x] * 1, lt[0] * 1, lt[1] * 1);
         models.push(l);
         canvas.add(l.fabricModel);
         canvas.renderAll();
-
+        $(drawing).find('InputModel').attr('fileId', num.toString())[0].remove();
     }
 
     console.log("START  : INPUT MODEL END");
@@ -609,33 +616,33 @@ function restoreModel(exp){
 
     console.log("START  : DATAPROCESSING MODEL RESTORE");
     //restore Processing by seq
-    var processSize=$(xml).find('data_processing').find('size').text()*1;
-    console.log("pre size : "+ processSize);
-    for(var s=1;s<=processSize;s++){
+    var processSize = $(xml).find('data_processing').find('size').text() * 1;
+    console.log("pre size : " + processSize);
+    for (var s = 1; s <= processSize; s++) {
         //find seq : s in drawing
-        var cur = $(drawing).find('DataPreprocessingModel').attr("seq",s.toString()).text().split(',');
-        var l = new DataPreprocessingModel(modelCnt++,cur[0],cur[1]*1,cur[2]*1);
+        var cur = $(drawing).find('DataPreprocessingModel').attr("seq", s.toString()).text().split(',');
+        var l = new DataPreprocessingModel(modelCnt++, cur[0], cur[1] * 1, cur[2] * 1);
         l.seq = s;
         models.push(l);
         canvas.add(l.fabricModel);
 
         //connect model
-        var prev = $(xml).find(l.type.toString()).attr("seq",s.toString()).find('data').text().split(',');
+        var prev = $(xml).find(l.type.toString()).attr("seq", s.toString()).find('data').text().split(',');
         console.log(prev);
-        for(var prevId in prev) {
+        for (var prevId in prev) {
             for (var idx in models) {
-                if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId]*1)) {
+                if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId] * 1)) {
                     console.log("Connect To INPUT");
-                    makingModel=true;
+                    makingModel = true;
                     modelConnect(models[idx]);
                     modelConnect(l);
-                    makingModel=false;
-                }else if(models[idx] instanceof DataPreprocessingModel && models[idx].seq ==(prev[prevId]*1)){
+                    makingModel = false;
+                } else if (models[idx] instanceof DataPreprocessingModel && models[idx].seq == (prev[prevId] * 1)) {
                     console.log("Connect To DATAPREPRO");
-                    makingModel=true;
+                    makingModel = true;
                     modelConnect(models[idx]);
                     modelConnect(l);
-                    makingModel=false;
+                    makingModel = false;
 
                 }
             }
@@ -648,12 +655,11 @@ function restoreModel(exp){
 
     console.log("START  : ML MODEL START");
     //restore MODEL
-     var modelType=$(xml).find('model').find('type')[0];
-    modelType=$(modelType).text().trim();
-    if(modelType=="") return;
+    var modelType = $(xml).find('model').find('type')[0];
+    modelType = $(modelType).text().trim();
     console.log(modelType);
     var ML;
-    if(modelType!=null && modelType!="") {
+    if (modelType != null && modelType != "") {
 
         if (modelType == "linear_regression" || modelType == "softmax_regression" || modelType == "Polynomial regression") {
             var curXY = $(drawing).find(modelType).text().split(',');
@@ -665,17 +671,109 @@ function restoreModel(exp){
             ML = new NeuralNetworks(modelCnt++, curXY[0] * 1, curXY[1] * 1);
             models.push(ML)
             canvas.add(ML.fabricModel);
+            currentSelectedModel = ML;
             ML.updateFabricModel();
             makeLayerOption(1);
+
+            //Connect Layer , Layer Option
+            currentSelectedModel = ML;
+
+            //레이어 갯수 맞추기
+            var layerN = $(xml).find('layer_set').find('size').text() * 1;
+            for (var x = 0; x < layerN - 1; x++) {
+                makeLayerOption(ML.getLayerLength() + 1);
+                ML.addLayerBackOf(ML.getLayerLength() - 1);
+            }
+            //자리 재조정.
+            ML.fabricModel.set({
+                left: curXY[0] * 1,
+                top: curXY[1] * 1
+            });
+
+            //레이어 옵션적용
+            var layer_xml = $(xml).find('layer');
+            for (var x = 0; x < layerN; x++) {
+                //var layer_type = $(layer_xml).find('type').text().trim();
+                var layer_acti = $(layer_xml[x]).find('activation').text().trim();
+                var layer_input = $(layer_xml[x]).find('input').text().trim() * 1;
+                var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
+
+                ML.setActivation(x+1, layer_acti);
+                ML.setLayerInput(x+1, layer_input);
+                ML.setLayerOutput(x+1, layer_output);
+            }
+            ML.updateFabricModel();
 
         } else if (modelType == "convolution_neural_network") {
             var curXY = $(drawing).find('ConvolutionNeuralNetworks').text().split(',');
             ML = new ConvolutionNeuralNetworks(modelCnt++, curXY[0] * 1, curXY[1] * 1);
             models.push(ML);
             canvas.add(ML.fabricModel);
+            currentSelectedModel = ML;
             ML.updateFabricModel();
             canvas.renderAll();
             makeCNNLayerOption(1);
+
+
+            //Connect Layer , Layer Option
+            currentSelectedModel = ML;
+
+            //레이어 갯수 맞추기
+            var layerN = $(xml).find('layer_set').find('size').text() * 1;
+            for (var x = 0; x < layerN - 1; x++) {
+                makeCNNLayerOption(ML.getLayerLength() + 1);
+                ML.addLayerBackOf(ML.getLayerLength() - 1);
+            }
+            //자리 재조정.
+            ML.fabricModel.set({
+                left: curXY[0] * 1,
+                top: curXY[1] * 1
+            });
+
+            //레이어 옵션적용
+            var dp_conv = $(xml).find('dropout_conv').text()*1;
+            var dp_hidden = $(xml).find('dropout_hidden').text()*1;
+
+            ML.dropOut.conv=dp_conv;
+            ML.dropOut.hidden=dp_hidden;
+
+            var layer_xml = $(xml).find('layer');
+            for (var x = 0; x < layerN; x++) {
+
+                var layer_acti = $(layer_xml[x]).find('activation');
+                var layer_acti_type = $(layer_acti).find('type').text().trim();
+                var layer_acti_sv = $(layer_acti).find('strides_vertical').text()*1;
+                var layer_acti_sh = $(layer_acti).find('strides_horizontal').text()*1;
+                var layer_acti_pad = $(layer_acti).find('padding').text().trim();
+
+                var layer_pooling = $(layer_xml[x]).find('pooling');
+                var layer_pooling_type = $(layer_pooling).find('type').text().trim();
+                var layer_pooling_sv = $(layer_pooling).find('strides_vertical').text()*1;
+                var layer_pooling_sh = $(layer_pooling).find('strides_horizontal').text()*1;
+                var layer_pooling_pad = $(layer_pooling).find('padding').text().trim();
+
+                var layer_input_x = $(layer_xml[x]).find('input_x').text().trim() * 1;
+                var layer_input_y = $(layer_xml[x]).find('input_y').text().trim() * 1;
+                var layer_input_z = $(layer_xml[x]).find('input_z').text().trim() * 1;
+                var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
+
+
+                ML.setActivationType(x+1, layer_acti_type);
+                ML.setActivationSV(x+1,layer_acti_sv);
+                ML.setActivationSH(x+1,layer_acti_sh);
+                ML.setActivationPadding(x+1,layer_acti_pad);
+
+                ML.setPoolingType(x+1,layer_pooling_type);
+                ML.setPoolingSV(x+1,layer_pooling_sv);
+                ML.setPoolingSH(x+1,layer_pooling_sh);
+                ML.setPoolingPadding(x+1,layer_pooling_pad);
+
+                ML.setLayerInputX(x+1, layer_input_x);
+                ML.setLayerInputY(x+1, layer_input_y);
+                ML.setLayerInputZ(x+1, layer_input_z);
+                ML.setLayerOutput(x+1, layer_output);
+            }
+            ML.updateFabricModel();
         }
         else {
             console.log("can not match model type");
@@ -686,17 +784,17 @@ function restoreModel(exp){
         //Initializer
 
 
-        var initializer =$(xml).find('initializer');
+        var initializer = $(xml).find('initializer');
         var init_type = $(initializer).find('type').text().trim();
-        var initTemp= ML.initializer;
+        var initTemp = ML.initializer;
         ML.changeInitializer(init_type);
-        if(init_type=='random_normal'){
-            var stddev = $(initializer).find('stddev').text()*1;
-            initTemp.val=stddev;
-        }else if(init_type =='random_uniform'){
-            var init_min = $(initializer).find('min').text()*1;
-            var init_max = $(initializer).find('max').text()*1;
-            initTemp.min=init_min;
+        if (init_type == 'random_normal') {
+            var stddev = $(initializer).find('stddev').text() * 1;
+            initTemp.val = stddev;
+        } else if (init_type == 'random_uniform') {
+            var init_min = $(initializer).find('min').text() * 1;
+            var init_max = $(initializer).find('max').text() * 1;
+            initTemp.min = init_min;
             initTemp.max = init_max;
         }
 
@@ -704,7 +802,7 @@ function restoreModel(exp){
 
         var opti_xml = $(xml).find('optimizer');
         var opti_type = $(opti_xml).find('type').text().trim();
-        var opti_rate = $(opti_xml).find('learning_rate').text()*1;
+        var opti_rate = $(opti_xml).find('learning_rate').text() * 1;
 
         ML.changeOptimizer(opti_type);
         ML.optimizer.changeLearningRate(opti_rate);
@@ -714,45 +812,45 @@ function restoreModel(exp){
         var regul_xml = $(xml).find('regularization');
         var regul_bool = $(regul_xml).find('enable').text().trim();
         ML.regularization.changeEnable(regul_bool);
-        if(regul_bool=="true"){
-            var regul_lambda = $(regul_xml).find('lambda').text()*1;
+        if (regul_bool == "true") {
+            var regul_lambda = $(regul_xml).find('lambda').text() * 1;
             ML.regularization.changeLambda(regul_lambda);
         }
 
         //training_epoch
-        var training_val = $(xml).find('training_epoch').text()*1;
-        ML.training_epoch=training_val;
+        var training_val = $(xml).find('training_epoch').text() * 1;
+        ML.training_epoch = training_val;
 
 
         //Connect Prev Model.....
-        var modelData=$(xml).find('model').find('data').text().trim();
-        if(modelData.length >= 4 && modelData.substring(0,3)=="seq"){
+        var modelData = $(xml).find('model').find('data').text().trim();
+        if (modelData.length >= 4 && modelData.substring(0, 3) == "seq") {
             //PreProcessing과 연결
-            modelData = modelData.substring(3,modelData.length)*1;
+            modelData = modelData.substring(3, modelData.length) * 1;
 
         }
-        console.log("Model DATA  : "+modelData);
+        console.log("Model DATA  : " + modelData);
         for (var idx in models) {
-                if (models[idx] instanceof InputModel && models[idx].fileID == modelData) {
-                    console.log("Connect To INPUT");
-                    makingModel=true;
-                    modelConnect(models[idx]);
-                    modelConnect(ML);
-                    makingModel=false;
-                }else if(models[idx] instanceof DataPreprocessingModel && models[idx].seq ==modelData){
-                    console.log("Connect To DATAPREPRO");
-                    makingModel=true;
-                    modelConnect(models[idx]);
-                    modelConnect(ML);
-                    makingModel=false;
-                }
+            if (models[idx] instanceof InputModel && models[idx].fileID == modelData) {
+                console.log("Connect To INPUT");
+                makingModel = true;
+                modelConnect(models[idx]);
+                modelConnect(ML);
+                makingModel = false;
+            } else if (models[idx] instanceof DataPreprocessingModel && models[idx].seq == modelData) {
+                console.log("Connect To DATAPREPRO");
+                makingModel = true;
+                modelConnect(models[idx]);
+                modelConnect(ML);
+                makingModel = false;
             }
+        }
 
-        currentSelectedModel=ML;
+        currentSelectedModel = ML;
         ML.changeOptionMenu();
-         console.log("START  : ML MODEL END");
+        console.log("START  : ML MODEL END");
     }
-
     canvas.renderAll();
-
 }
+
+

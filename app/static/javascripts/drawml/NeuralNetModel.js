@@ -109,9 +109,9 @@ function Layer(id,activation,input,output){
         canvas.renderAll();
     }
 
-    this.toXML = function(XML){
+    this.toXML = function(XML,layerNtoXML){
         XML.BeginNode("layer");
-        XML.Attrib("id",this.id.toString());
+        XML.Attrib("id",layerNtoXML.toString());
         XML.Node("type","none");
         XML.Node("activation",this.activation);
         XML.Node("input",this.input.toString());
@@ -185,7 +185,7 @@ function LayerSet(){
         XML.BeginNode("layer_set");
         XML.Node("size",this.layers.length.toString());
         for(var x=0; x<this.layers.length;x++){
-            this.layers[x].toXML(XML);
+            this.layers[x].toXML(XML,x+1);
         }
         XML.EndNode();
     }
@@ -231,7 +231,7 @@ function NeuralNetworks(id,pointLeft, pointTop){
     this .type = "neural_network"
     this.layerSet=new LayerSet();
     this.initializer = new Initializer('random_uniform');
-    this.optimizer = new Optimizer('gradient descent');
+    this.optimizer = new Optimizer('gradient_descent');
     this.regularization = new Regularization();
     this.training_epoch = 1024;
     this.container=null;
@@ -498,9 +498,6 @@ function clearLayerOption(){
     var curUI = $('#trainingEpoch-btn');
     curUI.nextAll().filter('.layer').remove();
     $('#model-addlayer-btn').hide();
-
-    //TODO : CNN 관련 UI 삭제
-
 }
 
 

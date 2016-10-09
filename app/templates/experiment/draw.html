@@ -12,6 +12,18 @@
         <script type="text/javascript" src="/static/javascripts/drawml/XMLWriter.js"></script>
         <script type="text/javascript">
             var exp_id = {{ exp_id }};
+            function del_exp() {
+                const approve = confirm('Do you want to remove it?');
+                if (!approve) return;
+                $.ajax({                //Send (docinfo) to server
+                    url : '/experiments/{{ exp_id }}',
+                    type : 'DELETE',
+                    async : true,
+                    success : function(){
+                        window.location.href = "/experiments";
+                    }
+                });
+            }
         </script>
         <link rel="stylesheet" type="text/css" href="/static/css/draw.css">
     </head>
@@ -29,6 +41,7 @@
                   <li><a href="/log">Log</a></li>
                   <li><a href="/auth/signout">Signout</a></li>
                 </ul>
+                <a class="navbar-text pull-right" onclick="del_exp()">Remove</a>
             </div>
         </nav>
     </header>
@@ -110,10 +123,10 @@
                             <div class="option-type"><h4>Type</h4></div>
                             <div class="btn-group">
                                 <button id="change-Optimizer-current" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                    gradient descent <span class="caret"></span>
+                                    gradient_descent <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a id="change-Optimizer-gradientDescent" href="#">gradient descent</a></li>
+                                    <li><a id="change-Optimizer-gradientDescent" href="#">gradient_descent</a></li>
                                     <li><a id="change-Optimizer-adadelta"href="#">adadelta</a></li>
                                     <li><a id="change-Optimizer-adagrad"href="#">adagrad</a></li>
                                     <li><a id="change-Optimizer-momentum"href="#">momentum</a></li>

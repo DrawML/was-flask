@@ -216,8 +216,11 @@ function modelConnect(model){
 
 
 function trackingModel(currentModel){
-    var nextLine = currentModel.nextLine;
+
+    var nextLine;
+    if(currentModel.nextLine!=null) nextLine=currentModel.nextLine;
     var prevLine = currentModel.prevLine;
+    if(currentModel.prevLine!=null) prevLine=currentModel.prevLine;
 
     if(nextLine !=null){
         for(var i=0;i<nextLine.length;i++){

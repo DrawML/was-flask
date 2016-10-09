@@ -6,3 +6,12 @@ with tf.Session(config=config) as sess:
     init = tf.initialize_all_variables()
     sess.run(init)
     restore_model(sess, sess_path)
+
+    test_data = load_test_data()
+    f = open(output_file_path, 'a')
+    p = sess.run(predict, feed_dict=test_data)
+    y = np.argmax(y_test, axis=1)
+    print('original : predict', file=f)
+    for i in range(len(y)):
+        print('{} : {}'.format(y[i], p[i]), file=f)
+    print('Accuracy : {}'.format(np.mean(y == p)), file=f)

@@ -19,9 +19,15 @@
       </div>
     <script>
         function create() {
+            const name = $('#name')[0].value;
+            if(!name || /^\s*$/.test(name)){
+                alert('Please insert name');
+                return;
+            }
+
             const new_exp = {
                 exp_data: {
-                    "name": $('#name')[0].value,
+                    "name": name,
                     "user_id": {{ g.user.id }},
                     "drawing":"<position></position>",
                     "xml": "<experiment></experiment>"

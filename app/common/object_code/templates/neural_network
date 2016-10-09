@@ -88,7 +88,7 @@ with tf.device("{{device}}"):
     cost = cost_function(hypothesis, Y)
     optimizer = make_optimizer()
     train = optimizer.minimize(cost)
-
+    predict = tf.argmax(hypothesis, 1)
 
 
 {% include 'tensorflow_configuration' %}

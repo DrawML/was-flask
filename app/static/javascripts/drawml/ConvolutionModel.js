@@ -71,7 +71,7 @@ function CNNPooling(type,sv,sh,pad){
     }
 
     this.toXML = function(XML){
-        XML.BeginNode("activation");
+        XML.BeginNode("pooling");
         XML.Node("type",this.type.toString());
         XML.Node("strides_vertical",this.strides_vertical.toString());
         XML.Node("strides_horizontal",this.strides_horizontal.toString());
@@ -218,17 +218,17 @@ function CNNLayer(id,activation,pooling,inputX,inputY,inputZ,output){
     }
 
     this.setPoolingType = function (type) {
-        this.pooling.changeValue(type);
+        this.pooling.changeType(type);
         this.fabricModel.getObjects()[3].setText(type);
         canvas.renderAll();
     }
-    this.setActivationSV = function (sv) {
+    this.setPoolingSV = function (sv) {
         this.pooling.changeSV(sv);
     }
-    this.setActivationSH = function (sh) {
+    this.setPoolingSH = function (sh) {
         this.pooling.changeSH(sh);
     }
-    this.setActivationPadding = function (pad) {
+    this.setPoolingPadding = function (pad) {
         this.pooling.changePadding(pad);
     }
 
@@ -341,10 +341,10 @@ function CNNLayerSet(){
     this.setActivationSV = function (layer,sv) {
         this.layers[layer-1].setActivationSV(sv);
     }
-    this.setActivationSH = function (layer,type,sv,sh,pad) {
+    this.setActivationSH = function (layer,sh) {
         this.layers[layer-1].setActivationSH(sh);
     }
-    this.setActivationPadding = function (layer,type,sv,sh,pad) {
+    this.setActivationPadding = function (layer,pad) {
         this.layers[layer-1].setActivationPadding(pad);
     }
 
@@ -354,10 +354,10 @@ function CNNLayerSet(){
     this.setPoolingSV = function (layer,sv) {
         this.layers[layer-1].setPoolingSV(sv);
     }
-    this.setPoolingSH = function (layer,type,sv,sh,pad) {
+    this.setPoolingSH = function (layer,sh) {
         this.layers[layer-1].setPoolingSH(sh);
     }
-    this.setPoolingPadding = function (layer,type,sv,sh,pad) {
+    this.setPoolingPadding = function (layer,pad) {
         this.layers[layer-1].setPoolingPadding(pad);
     }
 
@@ -369,7 +369,7 @@ function CNNLayerSet(){
         this.layers[layer-1].setLayerInputY(input);
     }
 
-    this.setLayerInputY = function (layer,input) {
+    this.setLayerInputZ = function (layer,input) {
         this.layers[layer-1].setLayerInputZ(input);
     }
 
@@ -423,7 +423,7 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
     this.layerSet=new CNNLayerSet();
     this.dropOut = new CNNDropOut();
     this.initializer = new Initializer('random_uniform');
-    this.optimizer = new Optimizer('gradient descent');
+    this.optimizer = new Optimizer('gradient_descent');
     this.regularization = new Regularization();
     this.training_epoch = 1024;
     this.container=null;
@@ -579,29 +579,29 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
         this.dropOut.changeValue(conv,hidden);
     }
 
-    this.setActivationType = function (layer,type,sv,sh,pad){
+    this.setActivationType = function (layer,type){
         this.layerSet.setActivationType(layer,type);
     }
-    this.setActivationSV = function (layer,type,sv,sh,pad){
+    this.setActivationSV = function (layer,sv){
         this.layerSet.setActivationSV(layer,sv);
     }
-    this.setActivationSH = function (layer,type,sv,sh,pad){
+    this.setActivationSH = function (layer,sh){
         this.layerSet.setActivationSH(layer,sh);
     }
-    this.setActivationPadding = function (layer,type,sv,sh,pad){
+    this.setActivationPadding = function (layer,pad){
         this.layerSet.setActivationPadding(layer,pad);
     }
 
-    this.setPoolingType = function (layer,type,sv,sh,pad){
+    this.setPoolingType = function (layer,type){
         this.layerSet.setPoolingType(layer,type);
     }
-    this.setPoolingSV = function (layer,type,sv,sh,pad){
+    this.setPoolingSV = function (layer,sv){
         this.layerSet.setPoolingSV(layer,sv);
     }
-    this.setPoolingSH = function (layer,type,sv,sh,pad){
+    this.setPoolingSH = function (layer,sh){
         this.layerSet.setPoolingSH(layer,sh);
     }
-    this.setPoolingPadding = function (layer,type,sv,sh,pad){
+    this.setPoolingPadding = function (layer,pad){
         this.layerSet.setPoolingPadding(layer,pad);
     }
 

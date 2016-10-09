@@ -102,6 +102,7 @@ function InputModel(id,fileName,fileID,pointLeft, pointTop){
     this.ShapeY=1;
     this.fileID =fileID;
     this.fileName=fileName;
+    if(fileName.length >=16) fileName=fileName.substring(0,16)+'...';
 
     this.fabricModel=getDataContainer(this.fileName);
     this.fabricModel.set({
@@ -140,7 +141,7 @@ function InputModel(id,fileName,fileID,pointLeft, pointTop){
         {
             var list = [this.fabricModel.left,this.fabricModel.top];
             XML.BeginNode("InputModel");
-            XML.Attrib("fildId",this.fileID.toString());
+            XML.Attrib("fileId",this.fileID.toString());
             XML.WriteString(makeCommaString(list));
             XML.EndNode();
         }

@@ -12,7 +12,7 @@ import numpy as np
 import sys
 import os
 
-training_epoch = 10024
+training_epoch = 1024
 
 
 SAVE_PATH = '/Users/chan/test/trained_model'
@@ -96,7 +96,7 @@ hypothesis = make_model(X, W)
 cost = cost_function(hypothesis, Y)
 optimizer = make_optimizer()
 train = optimizer.minimize(cost)
-predict = tf.round(hypothesis)
+predict = tf.round(tf.sigmoid(hypothesis))
 
 with tf.Session() as sess:
     init = tf.initialize_all_variables()
@@ -109,6 +109,11 @@ with tf.Session() as sess:
         print('Loss of epoch {} : {}'.format(_, sess.run(cost, feed_dict=train_data)), file=f)
     save_model(sess, SAVE_PATH)
     restore_model(sess, SAVE_PATH)
+
+    p = sess.run(predict, feed_dict=train_data)
+    for i in range(len(y_test)):
+        print('{} : {}'.format(y_test[i], p[i]))
+    print('Accuracy : {}'.format(np.mean(y_test == p)))
 
     print(sess.run(W))
 
