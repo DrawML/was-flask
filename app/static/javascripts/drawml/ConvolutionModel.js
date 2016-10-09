@@ -369,7 +369,7 @@ function CNNLayerSet(){
         this.layers[layer-1].setLayerInputY(input);
     }
 
-    this.setLayerInputY = function (layer,input) {
+    this.setLayerInputZ = function (layer,input) {
         this.layers[layer-1].setLayerInputZ(input);
     }
 
