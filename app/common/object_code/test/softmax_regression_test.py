@@ -106,3 +106,15 @@ with tf.Session() as sess:
             sess.run(train, feed_dict={X: x_train[start:end], Y: y_train[start:end]})
         print(i, np.mean(np.argmax(y_test, axis=1) ==
                          sess.run(predict, feed_dict={X: x_test, Y: y_test})))
+
+    restore_model(sess, '/Users/chan/test/sm')
+
+    train_data = {X: x_train, Y: y_train}
+    p = sess.run(predict, feed_dict=train_data)
+    y = np.argmax(y_test, axis=1)
+    for i in range(len(y)):
+        print('{} : {}'.format(y[i], p[i]))
+    print('Accuracy : {}'.format(np.mean(y == p)))
+
+    # print(y_train)
+    # print(sess.run(predict, feed_dict={X: x_train, Y: y_train}))
