@@ -126,6 +126,8 @@ function InputModel(id,fileName,fileID,pointLeft, pointTop){
 
     this.changeOptionMenu =function () {
         makeDataShapeOption();
+        $('#change-datashape-x-input').val(currentSelectedModel.ShapeX);
+        $('#change-datashape-y-input').val(currentSelectedModel.ShapeY);
         clearDefaultOptions();
         clearLayerOption();
     }
@@ -166,7 +168,5 @@ function makeDataShapeOption(){
     $('#datashape-btn').show();
     $('#datashape-btn').addClass('collapsed');
 
-    $('#change-datashape-x-input').val(currentSelectedModel.ShapeX);
-    $('#change-datashape-y-input').val(currentSelectedModel.ShapeY);
 }
 
