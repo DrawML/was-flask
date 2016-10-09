@@ -51,8 +51,14 @@ function update_exp(jsonInfo, callback) {
         statusCode : {
             200: function (data, textStatus) {
                 console.log(data);
-                printResultMsg("Saved");
+                printResultMsg("Successfully request to saved!");
                 !callback || callback();
+            },
+            500: function () {
+                printResultMsg("Fail to update... Please check your model.");
+            },
+            400: function() {
+                printResultMsg("Fail to update... Please check your model.");
             }
         }
     });
@@ -75,6 +81,16 @@ function run_exp(xml) {
                 get_expStatus();
                 printResultMsg("Successfully request to run!");
                 isProcessing = true;
+            },
+            500: function () {
+                get_expStatus();
+                printResultMsg("Fail to run... Please check your model.");
+                isProcessing = false;
+            },
+            400: function() {
+                get_expStatus();
+                printResultMsg("Fail to run... Please check your model.");
+                isProcessing = false;
             }
         }
     });
@@ -96,6 +112,14 @@ function stop_exp() {
                 $('#footer-Stop-btn').hide();
                 get_expStatus();
                 printResultMsg("Successfully request to stop!");
+            },
+            500: function () {
+                get_expStatus();
+                printResultMsg("Fail to stop... Please contact to admin.");
+            },
+            400: function() {
+                get_expStatus();
+                printResultMsg("Fail to stop... Experiment is not exist.");
             }
         }
     });
@@ -122,10 +146,10 @@ function get_expStatus() {
                 $('#footer-status').html('<span class="label label-warning" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').hide();
             }else if(result == 'running'){
-                $('#footer-status').html('<span class="label label-inverse" style="font-size:14px;">' + result + '</span>');
+                $('#footer-status').html('<span class="label label-primary" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').show();
             }else if(result == 'idle'){
-                $('#footer-status').html('<span class="label label-idle" style="font-size:14px;">' + result + '</span>');
+                $('#footer-status').html('<span class="label" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').hide();
             }else{
                 //Status Error
