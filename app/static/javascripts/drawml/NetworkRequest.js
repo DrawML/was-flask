@@ -100,7 +100,7 @@ function get_expStatus() {
                 $('#footer-Stop-btn').hide();
             }else if(result == 'running'){
                 $('#footer-Stop-btn').show();
-            }else if(result == 'No status'){
+            }else if(result == 'idle'){
                 $('#footer-Stop-btn').hide();
             }else{
                 //Status Error
