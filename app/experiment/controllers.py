@@ -57,9 +57,15 @@ def get_exp_api(exp_id):
 @module_exp.route('/<exp_id>', methods=['GET'], endpoint='get_exp_view')
 @login_required
 def get_exp_view(exp_id):
-    exp = Experiment.query.filter_by(id=exp_id).first()
+    try:
+        experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if experiment is None:
+        return ErrorResponse(400, 'Bad Request, No data')
     return render_template('/experiment/draw.html',
-                           exp_id=exp.id)
+                           exp_id=experiment.id)
 
 
 @module_exp.route('/create', methods=['GET'], endpoint='create_view')
@@ -111,7 +117,14 @@ def exp_update(exp_id):
     if drawing is None or xml is None:
         ErrorResponse(400, 'Invalid Json form')
 
-    exp_data = Experiment.query.filter_by(id=exp_id).first()
+    try:
+        exp_data = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if exp_data is None:
+        return ErrorResponse(400, 'Bad Request, No data')
+
     exp_data.drawing = pickle.dumps(drawing)
     exp_data.xml = pickle.dumps(xml)
     exp_data.date_modified = datetime.now()
@@ -148,6 +161,14 @@ def exp_delete(exp_id):
 @module_exp.route('/<exp_id>/run', methods=['POST'], endpoint='exp_run')
 @login_required
 def exp_run(exp_id):
+    try:
+        experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if experiment is None:
+        return ErrorResponse(400, 'Bad Request, No data')
+
     xml = request.data.decode()
     xml = ''.join(xml.split('\n'))
 
@@ -241,6 +262,14 @@ def exp_run(exp_id):
 @module_exp.route('/<exp_id>/stop', methods=['DELETE'], endpoint='exp_stop')
 @login_required
 def exp_stop(exp_id):
+    try:
+        experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if experiment is None:
+        return ErrorResponse(400, 'Bad Request, No data')
+
     data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_key = RedisKeyMaker.make_key(id=exp_id,
@@ -265,6 +294,14 @@ def exp_stop(exp_id):
 @module_exp.route('/<exp_id>/status', methods=['GET'], endpoint='exp_status')
 @login_required
 def exp_status(exp_id):
+    try:
+        experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if experiment is None:
+        return ErrorResponse(400, 'Bad Request, No data')
+
     data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_key = RedisKeyMaker.make_key(id=exp_id,
@@ -282,6 +319,14 @@ def exp_status(exp_id):
 @module_exp.route('/<exp_id>/clear', methods=['DELETE'], endpoint='exp_clear')
 @login_required
 def exp_clear(exp_id):
+    try:
+        experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if experiment is None:
+        return ErrorResponse(400, 'Bad Request, No data')
+
     data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_key = RedisKeyMaker.make_key(id=exp_id,
