@@ -337,6 +337,10 @@ $(document).ready(function(){
         var exp_xml=makeXML();
         var model_xml=makeModelXML();
 
+         if(XMLValidation==false){
+            alert('Experiment is not Valid!!');
+        }
+        XMLValidation=true;
 
         var exp_data=new Object();
         exp_data.drawing = model_xml;
