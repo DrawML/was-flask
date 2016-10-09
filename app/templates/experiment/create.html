@@ -29,9 +29,10 @@
                 data : JSON.stringify(new_exp),
                 dataType: 'json',
                 async : true,
-                success : function(){
+
+            }).always(function (data) {
+                    console.log(data);
                     window.location.href = "/experiments/";
-                }
             });
         }
         function cancel() {
