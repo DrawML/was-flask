@@ -704,7 +704,6 @@ function restoreModel(exp) {
         console.log(prev);
         for (var prevId in prev) {
             var curID = prev[prevId].trim();
-            console.log("CUR ID : "+ curID);
             var isSeq=false;
             if(curID.length>=4 && curID.substring(0,3)=="seq"){
                 isSeq=true;
@@ -713,7 +712,7 @@ function restoreModel(exp) {
             console.log("CUR ID : "+ curID);
             console.log("isSEQ : " +isSeq)
             for (var idx in models) {
-                if (!isSeq && models[idx] instanceof InputModel && models[idx].fileID == curID) {
+                if (!isSeq && models[idx] instanceof InputModel && models[idx].fileID == curID*1) {
                     console.log("Connect To INPUT");
                     makingModel = true;
                     if(models[idx].nextModel!=null && models[idx].nextModel.length>=1) continue;
@@ -721,7 +720,7 @@ function restoreModel(exp) {
                     modelConnect(l);
                     makingModel = false;
                     break;
-                } else if (isSeq && models[idx] instanceof DataPreprocessingModel && models[idx].seq ==curID) {
+                } else if (isSeq && models[idx] instanceof DataPreprocessingModel && models[idx].seq ==curID*1) {
                     console.log("Connect To DATAPREPRO");
                     makingModel = true;
                     modelConnect(models[idx]);
