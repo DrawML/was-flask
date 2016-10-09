@@ -579,29 +579,29 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
         this.dropOut.changeValue(conv,hidden);
     }
 
-    this.setActivationType = function (layer,type,sv,sh,pad){
+    this.setActivationType = function (layer,type){
         this.layerSet.setActivationType(layer,type);
     }
-    this.setActivationSV = function (layer,type,sv,sh,pad){
+    this.setActivationSV = function (layer,sv){
         this.layerSet.setActivationSV(layer,sv);
     }
-    this.setActivationSH = function (layer,type,sv,sh,pad){
+    this.setActivationSH = function (layer,sh){
         this.layerSet.setActivationSH(layer,sh);
     }
-    this.setActivationPadding = function (layer,type,sv,sh,pad){
+    this.setActivationPadding = function (layer,pad){
         this.layerSet.setActivationPadding(layer,pad);
     }
 
-    this.setPoolingType = function (layer,type,sv,sh,pad){
+    this.setPoolingType = function (layer,type){
         this.layerSet.setPoolingType(layer,type);
     }
-    this.setPoolingSV = function (layer,type,sv,sh,pad){
+    this.setPoolingSV = function (layer,sv){
         this.layerSet.setPoolingSV(layer,sv);
     }
-    this.setPoolingSH = function (layer,type,sv,sh,pad){
+    this.setPoolingSH = function (layer,sh){
         this.layerSet.setPoolingSH(layer,sh);
     }
-    this.setPoolingPadding = function (layer,type,sv,sh,pad){
+    this.setPoolingPadding = function (layer,pad){
         this.layerSet.setPoolingPadding(layer,pad);
     }
 
