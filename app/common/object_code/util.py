@@ -24,7 +24,7 @@ class TestError(Exception):
 class GeneratorType(Enum):
     DATA_PROCESSING = {"GENERATOR": "data_processing", "TAG": "experiment"}
     TRAIN = {"GENERATOR": "train", "TAG": "experiment"}
-    TEST = {"GENERATOR": "test", "TAG": "test"}
+    TEST = {"GENERATOR": "test", "TAG": "experiment"}
 
     def __str__(self):
         return self.value["GENERATOR"]
@@ -126,7 +126,7 @@ class TaskRunner:
         check_train = (self.train_obj_code is not None and self.train_input_file is not None)
         check_test  = (self.test_obj_code is not None and self.test_input_file is not None)
 
-        if not check_data and not check_train:
+        if not check_data and not check_train and not check_test:
             self.valid = False
             return
 
@@ -210,13 +210,19 @@ class TaskRunner:
                 return
 
             if status == 'success':
+                print("[DEBUG] in sucess")
+
                 task_type = key.split('-')[1]
                 id = key.split('-')[0]
                 current_time = datetime.now().isoformat()
 
+                print("[DEBUG] task_type : ", task_type)
+
                 if task_type == str(RedisKeyMaker.DATA_PROCESSING):
+                    print("[DEBUG] DATA_PROCESSING") 
                     file_name = '{}-data-result-{}'.format(id, current_time)
                     file_token = body.get('result_file_token', None)
+                    print("[DEBUG] DATA_PROCESSING file_token: ", file_token) 
                     try:
                         save_obj(Data, dict(name=file_name, user_id=self.user_id,
                                             path=file_token, type='log'))
