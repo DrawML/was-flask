@@ -371,10 +371,13 @@ $(document).ready(function(){
     //Data INPUT EVENT
 
     $('#change-datashape-x-input').on("change paste keyup", function() {
-        currentSelectedModel.changeShapeX($(this).val());
+        for(var x in models){
+            if(models[x] instanceof InputModel)model[x].changeShapeX($(this).val());
+        }
+
     });
     $('#change-datashape-y-input').on("change paste keyup", function() {
-        currentSelectedModel.changeSHapeY($(this).val());
+        if(models[x] instanceof InputModel)model[x].changeSHapeY($(this).val());
     });
 
 
