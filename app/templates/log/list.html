@@ -3,19 +3,28 @@
 {% block body %}
 <div id="main" class="container">
     <h2>Result List</h2>
+    <p class="lead">Check your result log</p>
     <table class="table table-hover">
       <tr>
         <th>#</th>
         <th>Title</th>
         <th>Date</th>
       </tr>
-      {%- for data in data_set %}
-      <tr>
-        <td>{{data.id}}</td>
-        <td> <a href="/log/{{ data.id }}" >{{ data.name }}</a></td>
-        <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
-      </tr>
-      {%- endfor %}
+      {% if data_set is defined and data_set|length > 0 %}
+        {%- for data in data_set %}
+        <tr>
+          <td>{{data.id}}</td>
+          <td> <a href="/log/{{ data.id }}" >{{ data.name }}</a></td>
+          <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {%- endfor %}
+      {% else %}
+          <tr>
+              <td colspan="3" style="text-align: center;" class="text-error">
+                  There is no result logs.
+              </td>
+          </tr>
+      {% endif %}
     </table>
 </div>
 {% endblock %}
