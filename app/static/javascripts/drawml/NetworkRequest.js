@@ -69,6 +69,7 @@ function run_exp(xml) {
 
 // /experiments/<exp_id>stop	DELETE	stop exp
 
+//TODO : 작동이 안되는듯;;
 function stop_exp() {
     $.ajax({
         url : server+'experiments/'+exp_id+'/stop',

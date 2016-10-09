@@ -592,6 +592,7 @@ function restoreModel(exp) {
     if (inputModels.length == 0) return;
 
 
+    //WARNING : 같은 모델 2개일 때 좌표값을 구별 할 수 없음.
     console.log("START  : INPUT MODEL RESTORE");
     for (var x in inputModels) {
         var num = inputModels[x] * 1;
