@@ -55,6 +55,7 @@
             </tr>
           </thead>
           <tbody>
+          {% if datas is defined and datas|length > 0 %}
           {% for data in datas %}
             <tr>
               <td>
@@ -64,6 +65,13 @@
               <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
             </tr>
           {% endfor %}
+          {% else %}
+              <tr>
+                  <td colspan="3" style="text-align: center;" class="text-error">
+                      There is no input data.
+                  </td>
+              </tr>
+          {% endif %}
           </tbody>
         </table>
       </div>

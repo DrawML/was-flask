@@ -47,10 +47,11 @@ function update_exp(jsonInfo) {
             return window.XMLHttpRequest == null || new window.XMLHttpRequest().addEventListener == null
                 ? new window.ActiveXObject("Microsoft.XMLHTTP")
                 : $.ajaxSettings.xhr();
+        },
+        success : function() {
+            console.log(data);
+            printResultMsg("Saved");
         }
-    }).done(function (data) {
-        console.log(data);
-        printResultMsg("Saved");
     });
 }
 
@@ -63,7 +64,9 @@ function run_exp(xml) {
         contentType : 'application/xml',
         data : xml,
         dataType : 'xml',
-        success : function(){
+        success : function(data, textStatus){
+            console.log(data);
+            console.log(textStatus);
              $('#footer-Stop-btn').show();
             get_expStatus();
             printResultMsg("Successfully request to run!");
@@ -82,6 +85,8 @@ function stop_exp() {
         type : 'DELETE',
         async : true,
         success : function(){
+            console.log(data);
+            console.log(textStatus);
             $('#footer-Stop-btn').hide();
             get_expStatus();
             printResultMsg("Successfully request to stop!");

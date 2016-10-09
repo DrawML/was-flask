@@ -9,13 +9,22 @@
         <th>Title</th>
         <th>Date</th>
       </tr>
-      {%- for model in models %}
-      <tr>
-        <td>{{model.id}}</td>
-        <td><a href="/tests/{{ model.id }}">{{ model.name }}</a></td>
-        <td>{{ model.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
-      </tr>
-      {%- endfor %}
+
+        {% if models is defined and models|length > 0 %}
+            {%- for model in models %}
+                <tr>
+                    <td>{{model.id}}</td>
+                    <td><a href="/tests/{{ model.id }}">{{ model.name }}</a></td>
+                    <td>{{ model.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+            {%- endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3" style="text-align: center;" class="text-error">
+                    There are no trained models.
+                </td>
+            </tr>
+        {% endif %}
     </table>
 </div>
 {% endblock %}
