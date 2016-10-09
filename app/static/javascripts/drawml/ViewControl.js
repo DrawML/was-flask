@@ -600,6 +600,7 @@ function restoreModel(exp) {
         console.log(inputModels[x]);
         var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
         console.log(lt);
+
         var l = new InputModel(modelCnt++, getDataNameById(num.toString()), inputModels[x] * 1, lt[0] * 1, lt[1] * 1);
         models.push(l);
         canvas.add(l.fabricModel);
@@ -682,8 +683,8 @@ function restoreModel(exp) {
             }
             //자리 재조정.
             ML.fabricModel.set({
-                left: curXY[1] * 1,
-                top: curXY[2] * 1
+                left: curXY[0] * 1,
+                top: curXY[1] * 1
             });
 
             //레이어 옵션적용
