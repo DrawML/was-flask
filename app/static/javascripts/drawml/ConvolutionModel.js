@@ -218,7 +218,7 @@ function CNNLayer(id,activation,pooling,inputX,inputY,inputZ,output){
     }
 
     this.setPoolingType = function (type) {
-        this.pooling.changeValue(type);
+        this.pooling.changeType(type);
         this.fabricModel.getObjects()[3].setText(type);
         canvas.renderAll();
     }
