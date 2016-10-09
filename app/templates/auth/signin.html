@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
 {% set active_page = "signin" %}
 {% block body %}
+    <h1>Sign in</h1>
+    <p class="lead">Please enter your username and password.</p>
   <form action="" method=post class="form-horizontal">
     <div class="control-group">
+        <label class="control-label" for="user_id">Username</label>
         <div class="controls">
           <input type="text" id="user_id" name="user_id" class="input-xlarge"
             placeholder="Enter Username" required>
@@ -10,6 +13,7 @@
     </div>
 
     <div class="control-group">
+        <label class="control-label" for="pw">Password</label>
         <div class="controls">
           <input type="password" id="pw" name="pw" class="input-xlarge"
             placeholder="Enter Password" required>
@@ -18,7 +22,7 @@
 
     <div class="control-group">
         <div class="controls">
-          <button type="submit" class="btn btn-success">Signin</button>
+          <button type="submit" class="btn btn-success">Sign in</button>
         </div>
     </div>
   </form>
