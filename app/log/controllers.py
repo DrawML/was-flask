@@ -37,10 +37,7 @@ def update(data_id):
         data = Data.query.filter_by(id=data_id).first()
         _, f = CloudDFSConnector(ip=CLOUDDFS_ADDR, port=CLOUDDFS_PORT).\
             get_data_file(data.path)
-        # f = open(data.path, 'r')
-        contents = list()
-        for line in f:
-            contents.append(line)
+        contents = f.split('\n')
         return render_template('/log/detail.html',
                                contents=contents, data=data)
     name = request.form['name']
