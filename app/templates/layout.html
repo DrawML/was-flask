@@ -9,8 +9,9 @@ body {
     padding-bottom: 100px;
 }
 </style>
-<link href="/static/css/bootstrap.css" rel="stylesheet">
-<link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!--<link href="/static/css/bootstrap.css" rel="stylesheet">
+<link href="/static/css/bootstrap-responsive.css" rel="stylesheet">-->
 <link href="/static/css/drawml-was.css" rel="stylesheet">
 <script src="/static/javascripts/jquery.js"></script>
 <script src="/static/javascripts/bootstrap.min.js"></script>
@@ -51,11 +52,11 @@ body {
     </div>
 </div>
 
+<div id="main" class="container">
 {%- for category, message in get_flashed_messages(with_categories=true) %}
-  <p class="flask {{ category }}-flash">{{
+  <p class="flask {{ category }}-flash {%  if category == 'error' %} text-error {%  endif %}">{{
     "Error: " if category == 'error' }}{{ message }}</p>
 {%- endfor %}
-<div id="main" class="container">
     {% block body %}{% endblock %}
     <hr>
     <footer id="footer">
