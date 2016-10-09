@@ -48,9 +48,11 @@ function update_exp(jsonInfo) {
                 ? new window.ActiveXObject("Microsoft.XMLHTTP")
                 : $.ajaxSettings.xhr();
         },
-        success : function() {
-            console.log(data);
-            printResultMsg("Saved");
+        statusCode : {
+            200: function() {
+                console.log(data);
+                printResultMsg("Saved");
+            }
         }
     });
 }
@@ -64,13 +66,15 @@ function run_exp(xml) {
         contentType : 'application/xml',
         data : xml,
         dataType : 'xml',
-        success : function(data, textStatus){
-            console.log(data);
-            console.log(textStatus);
-             $('#footer-Stop-btn').show();
-            get_expStatus();
-            printResultMsg("Successfully request to run!");
-            isProcessing=true;
+        statusCode : {
+            200: function (data, textStatus) {
+                console.log(data);
+                console.log(textStatus);
+                $('#footer-Stop-btn').show();
+                get_expStatus();
+                printResultMsg("Successfully request to run!");
+                isProcessing = true;
+            }
         }
     });
 }
@@ -84,12 +88,14 @@ function stop_exp() {
         url : server+'experiments/'+exp_id+'/stop',
         type : 'DELETE',
         async : true,
-        success : function(){
-            console.log(data);
-            console.log(textStatus);
-            $('#footer-Stop-btn').hide();
-            get_expStatus();
-            printResultMsg("Successfully request to stop!");
+        statusCode : {
+            200: function(){
+                console.log(data);
+                console.log(textStatus);
+                $('#footer-Stop-btn').hide();
+                get_expStatus();
+                printResultMsg("Successfully request to stop!");
+            }
         }
     });
 }
