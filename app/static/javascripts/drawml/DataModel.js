@@ -140,7 +140,7 @@ function InputModel(id,fileName,fileID,pointLeft, pointTop){
         {
             var list = [this.fabricModel.left,this.fabricModel.top];
             XML.BeginNode("InputModel");
-            XML.Attrib("fildId",this.fileID.toString());
+            XML.Attrib("fileId",this.fileID.toString());
             XML.WriteString(makeCommaString(list));
             XML.EndNode();
         }
