@@ -690,7 +690,7 @@ function restoreModel(exp) {
     var processList=[];
     for (var s = 1; s <= processSize; s++) {
         //find seq : s in drawing
-        var cur = $($(drawing).find('DataPreprocessingModel')[s]).text().split(',');
+        var cur = $($(drawing).find('DataPreprocessingModel')[s-1]).text().split(',');
         var l = new DataPreprocessingModel(modelCnt++, cur[0], cur[1] * 1, cur[2] * 1);
         l.seq = s;
         models.push(l);
