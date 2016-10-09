@@ -634,16 +634,18 @@ function restoreModel(exp) {
                 if (models[idx] instanceof InputModel && models[idx].fileID == (prev[prevId] * 1)) {
                     console.log("Connect To INPUT");
                     makingModel = true;
+                    if(models[idx].nextModel!=null && models[idx].nextModel.length>=1) continue;
                     modelConnect(models[idx]);
                     modelConnect(l);
                     makingModel = false;
+                    break;
                 } else if (models[idx] instanceof DataPreprocessingModel && models[idx].seq == (prev[prevId] * 1)) {
                     console.log("Connect To DATAPREPRO");
                     makingModel = true;
                     modelConnect(models[idx]);
                     modelConnect(l);
                     makingModel = false;
-
+                    break;
                 }
             }
         }
