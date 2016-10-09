@@ -10,7 +10,7 @@
         <th>Title</th>
         <th>Date</th>
       </tr>
-      {% if data_set is defined %}
+      {% if data_set is defined and data_set|length > 0 %}
           {%- for data in data_set %}
           <tr>
             <td>{{data.id}}</td>
