@@ -398,12 +398,12 @@ $(document).ready(function(){
 
     $('#change-datashape-x-input').on("change paste keyup", function() {
         for(var x in models){
-            if(models[x] instanceof InputModel)model[x].changeShapeX($(this).val());
+            if(models[x] instanceof InputModel)models[x].changeShapeX($(this).val());
         }
 
     });
     $('#change-datashape-y-input').on("change paste keyup", function() {
-        if(models[x] instanceof InputModel)model[x].changeSHapeY($(this).val());
+        if(models[x] instanceof InputModel)models[x].changeSHapeY($(this).val());
     });
 
 
