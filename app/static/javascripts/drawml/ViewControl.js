@@ -704,11 +704,14 @@ function restoreModel(exp) {
         console.log(prev);
         for (var prevId in prev) {
             var curID = prev[prevId].trim();
+            console.log("CUR ID : "+ curID);
             var isSeq=false;
             if(curID.length>=4 && curID.substring(0,3)=="seq"){
                 isSeq=true;
                 curID=curID.substring(3,curID.length)*1;
             }
+            console.log("CUR ID : "+ curID);
+            console.log("isSEQ : " +isSeq)
             for (var idx in models) {
                 if (!isSeq && models[idx] instanceof InputModel && models[idx].fileID == curID) {
                     console.log("Connect To INPUT");
