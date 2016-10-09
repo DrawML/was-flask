@@ -341,10 +341,10 @@ function CNNLayerSet(){
     this.setActivationSV = function (layer,sv) {
         this.layers[layer-1].setActivationSV(sv);
     }
-    this.setActivationSH = function (layer,type,sv,sh,pad) {
+    this.setActivationSH = function (layer,sh) {
         this.layers[layer-1].setActivationSH(sh);
     }
-    this.setActivationPadding = function (layer,type,sv,sh,pad) {
+    this.setActivationPadding = function (layer,pad) {
         this.layers[layer-1].setActivationPadding(pad);
     }
 
