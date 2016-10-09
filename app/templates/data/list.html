@@ -3,19 +3,31 @@
 {% block body %}
 <div id="main" class="container">
     <h2>Data List</h2>
+    <p class="lead">You can manage the data. For some actions, click it.</p>
     <table class="table table-hover">
       <tr>
         <th>#</th>
         <th>Title</th>
         <th>Date</th>
       </tr>
-      {%- for data in data_set %}
-      <tr>
-        <td>{{data.id}}</td>
-        <td> <a href="/data/{{ data.id }}" >{{ data.name }}</a></td>
-        <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
-      </tr>
-      {%- endfor %}
+      {% if data_set is defined %}
+          {%- for data in data_set %}
+          <tr>
+            <td>{{data.id}}</td>
+            <td> <a href="/data/{{ data.id }}" >{{ data.name }}</a></td>
+            <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+          </tr>
+          {%- endfor %}
+      {% endif %}
+      {% else %}
+        <tr>
+            <td colspan="3" style="text-align: center;" class="text-error">
+                Please upload your data file.
+                Click below <span class="label label-info">Upload</span> button.
+            </td>
+        </tr>
+      {% endif %}
+
     </table>
     <p>
       <a href="{{ url_for('data.upload') }}" class="btn btn-large btn-primary">Upload</a>
