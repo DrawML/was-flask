@@ -650,29 +650,16 @@ function restoreModel(exp){
     //restore MODEL
      var modelType=$(xml).find('model').find('type')[0];
     modelType=$(modelType).text().trim();
+    if(modelType=="") return;
     console.log(modelType);
     var ML;
     if(modelType!=null && modelType!="") {
 
-        if (modelType == "linear_regression") {
-            var curXY = $(drawing).find('linear_regression').text().split(',');
+        if (modelType == "linear_regression" || modelType == "softmax_regression" || modelType == "Polynomial regression") {
+            var curXY = $(drawing).find(modelType).text().split(',');
             ML = new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
             models.push(ML);
             canvas.add(ML.fabricModel);
-
-
-        } else if (modelType == "softmax_regression") {
-            var curXY = $(drawing).find('softmax_regression').text().split(',');
-            ML = new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
-            models.push(ML);
-            canvas.add(ML.fabricModel);
-
-        } else if (modelType == "Polynomial regression") {
-            var curXY = $(drawing).find('Polynomial regression').text().split(',');
-            ML= new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
-            models.push(ML);
-            canvas.add(ML.fabricModel);
-
         } else if (modelType == "neural_network") {
             var curXY = $(drawing).find('NeuralNetworks').text().split(',');
             ML = new NeuralNetworks(modelCnt++, curXY[0] * 1, curXY[1] * 1);
@@ -693,6 +680,29 @@ function restoreModel(exp){
         else {
             console.log("can not match model type");
         }
+
+        //Attach Common Option
+
+        //Initializer
+
+
+        var initializer =$(xml).find('initializer');
+        var type = $(initializer).find('type').text().trim();
+        var initTemp= new Initializer(type);
+        if(type=='random_normal'){
+            var stddev = $(initializer).find('stddev').text()*1;
+            initTemp.val=stddev;
+        }else if(type =='random_uniform'){
+            var init_min = $(initializer).find('min').text()*1;
+            var init_max = $(initializer).find('max').text()*1;
+            initTemp.min=init_min;
+            initTemp.max = init_max;
+        }
+        ML.initializer = initTemp;
+
+        //Optimizer
+        //regularization
+        //training_epoch
 
 
         var modelData=$(xml).find('model').find('data').text().trim();

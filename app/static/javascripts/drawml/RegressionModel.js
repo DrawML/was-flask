@@ -117,7 +117,7 @@ function Initializer(type){
             XML.Node("max",this.max.toString());
         }
         else if(this.type == 'random_normal'){
-            XML.Node("value",this.val.toString());
+            XML.Node("stddev",this.val.toString());
         }
         XML.EndNode();
     }
