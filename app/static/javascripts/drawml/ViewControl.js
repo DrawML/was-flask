@@ -666,6 +666,7 @@ function restoreModel(exp) {
             ML = new NeuralNetworks(modelCnt++, curXY[0] * 1, curXY[1] * 1);
             models.push(ML)
             canvas.add(ML.fabricModel);
+            currentSelectedModel = ML;
             ML.updateFabricModel();
             makeLayerOption(1);
 
@@ -702,6 +703,7 @@ function restoreModel(exp) {
             ML = new ConvolutionNeuralNetworks(modelCnt++, curXY[0] * 1, curXY[1] * 1);
             models.push(ML);
             canvas.add(ML.fabricModel);
+            currentSelectedModel = ML;
             ML.updateFabricModel();
             canvas.renderAll();
             makeCNNLayerOption(1);
