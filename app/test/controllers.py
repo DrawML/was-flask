@@ -124,11 +124,13 @@ def test_run(model_id, data_id):
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
+    model_session_file = model.path
     model_key = RedisKeyMaker.make_key(id=model_id,
                                        type=RedisKeyMaker.MODEL_TESTING)
     valid = TaskRunner(user_id=g.user.id,
                        test_obj_code=model_obj_code,
                        test_input_file=model_input_file,
+                       test_session_file=model_session_file,
                        test_key=model_key).run()
     if valid is False:
         return 'invalid request task is not done'

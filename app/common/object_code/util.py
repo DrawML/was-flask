@@ -102,7 +102,7 @@ class TFConverter:
 
 class TaskRunner:
     def __init__(self, user_id: int,
-                 test_obj_code=None, test_input_file=None, test_key: str=None,
+                 test_obj_code=None, test_input_file=None, test_session_file=None, test_key: str=None,
                  train_obj_code=None, train_input_file=None, train_key: str=None,
                  data_obj_code=None, data_input_files=None, data_key: str=None, xml=None):
         self.user_id            = user_id
@@ -114,8 +114,9 @@ class TaskRunner:
         self.train_input_file   = train_input_file
         self.train_key          = train_key
         self.test_obj_code      = test_obj_code
-        self.test_input_file   = test_input_file
-        self.test_key          = test_key
+        self.test_input_file    = test_input_file
+        self.test_session_file  = test_session_file
+        self.test_key           = test_key
         self.valid              = True
         self.entry_arguments    = None
         self.config()
@@ -157,7 +158,7 @@ class TaskRunner:
         if check_test:
             tensorflow_test_task_job_dict = dict()
             tensorflow_test_task_job_dict['data_file_token'] = self.test_input_file
-            # tensorflow_test_task_job_dict['session_file_token'] = None
+            tensorflow_test_task_job_dict['session_file_token'] = self.test_session_file
             tensorflow_test_task_job_dict['object_code'] = self.test_obj_code
             self.entry_arguments = dict(
                 experiment_id=self.test_key,
