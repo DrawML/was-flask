@@ -91,6 +91,7 @@ function get_expStatus() {
         async : true,
         success : function(result){
             console.log(result);
+            $('#footer-status').text(result);
             if(result == 'success'){
                 $('#footer-Stop-btn').hide();
             }else if(result == 'fail'){
