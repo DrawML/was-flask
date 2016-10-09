@@ -593,20 +593,21 @@ function restoreModel(exp) {
 
 
     //WARNING : 같은 모델 2개일 때 좌표값을 구별 할 수 없음.
+
     console.log("START  : INPUT MODEL RESTORE");
     for (var x in inputModels) {
         var num = inputModels[x] * 1;
         console.log(getDataNameById(num * 1));
         console.log(inputModels[x]);
 
-        var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
+        var lt = $(drawing).find('InputModel').attr('fileId', num.toString())[0].text().split(',');
         console.log(lt);
 
         var l = new InputModel(modelCnt++, getDataNameById(num.toString()), inputModels[x] * 1, lt[0] * 1, lt[1] * 1);
         models.push(l);
         canvas.add(l.fabricModel);
         canvas.renderAll();
-
+        $(drawing).find('InputModel').attr('fileId', num.toString())[0].remove();
     }
 
     console.log("START  : INPUT MODEL END");
