@@ -60,8 +60,8 @@ class DataProcessor:
     def __init__(self, xml):
         self.root = XMLTree(xml, GeneratorType.DATA_PROCESSING).root
         self.processing = self.root.find('data_processing')
-        if int(self.processing.find('size')) == 0:
-            raise AttributeError
+        if int(self.processing.find('size').text) == 0:
+            raise AttributeError()
 
     def generate_object_code(self):
         # have to consider about exception
