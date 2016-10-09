@@ -38,7 +38,7 @@ def load_input():
         if os.path.isfile(file_path) is False:
             print('No such file or directory', file_path)
             sys.exit(2)
-        file = np.genfromtxt(file_path, dtype='float32')
+        file = np.genfromtxt(file_path, dtype='float32', skip_header=1)
         files[file_ids[i]] = file
     global output_file_path
     output_file_path = str(sys.argv[file_count + 2])
