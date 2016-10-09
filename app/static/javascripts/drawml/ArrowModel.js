@@ -175,6 +175,11 @@ function modelConnect(model){
     if(!makingModel) return;
 
     if(selectedModel.length==0){
+        if(selectedModel instanceof Regression ||
+            selectedModel instanceof NeuralNetworks ||
+            selectedModel instanceof ConvolutionNeuralNetworks){
+            alert("Can't start arrow at ML model");
+        }
         selectedModel.push(model);
     }else if(selectedModel.length==1){
         selectedModel.push(model);
@@ -184,7 +189,14 @@ function modelConnect(model){
             selectedModel=[];
             makingModel=false;
             connectComplete();
-            alert("같은 모델을 연결할 수 없습니다.");
+            alert("Can't connect same model");
+            return;
+        }else if(selectedModel[1] instanceof InputModel){
+            //에러
+            selectedModel=[];
+            makingModel=false;
+            connectComplete();
+            alert("Can't connect to Input model");
             return;
         }
         //Make Arrow
