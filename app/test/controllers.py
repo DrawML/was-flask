@@ -108,7 +108,8 @@ def test_run(model_id, data_id):
 
     model_key = RedisKeyMaker.make_key(id=model_id,
                                        type=RedisKeyMaker.MODEL_TESTING)
-    if redis_cache.get(model_key) == redis_cache.RUNNING:
+    model_cache = redis_cache.get(model_key)
+    if not model_cache or model_cache.decode() == redis_cache.RUNNING:
         return ErrorResponse(400, 'Test is running now')
 
     model_obj_code = None

@@ -3,6 +3,7 @@ from datetime import datetime
 
 import pickle
 from flask import Blueprint, request, current_app, render_template, g
+from flask import flash
 from flask_login import login_required
 from jinja2.exceptions import TemplateError
 from sqlalchemy.exc import SQLAlchemyError
@@ -176,8 +177,11 @@ def exp_run(exp_id):
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_key = RedisKeyMaker.make_key(id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
-    if redis_cache.get(data_key) == redis_cache.RUNNING or \
-            redis_cache.get(model_key) == redis_cache.RUNNING:
+    data_cache = redis_cache.get(data_key)
+    model_cache = redis_cache.get(model_key)
+    if data_cache and data_cache.decode() == redis_cache.RUNNING:
+        return ErrorResponse(400, 'Experiment is running now')
+    if model_cache and model_cache.decode() == redis_cache.RUNNING:
         return ErrorResponse(400, 'Experiment is running now')
 
     print()
@@ -266,26 +270,28 @@ def exp_stop(exp_id):
         experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
     except SQLAlchemyError as e:
         current_app.logger.error(e)
+        flash('Internal Database Error')
         return ErrorResponse(500, 'Internal Database Error')
     if experiment is None:
+        flash('Bad Request, No data')
         return ErrorResponse(400, 'Bad Request, No data')
 
     data_key = RedisKeyMaker.make_key(id=exp_id,
                                       type=RedisKeyMaker.DATA_PROCESSING)
     model_key = RedisKeyMaker.make_key(id=exp_id,
                                        type=RedisKeyMaker.MODEL_TRAINING)
-    data_value = redis_cache.get(data_key).decode()
+    data_value = redis_cache.get(data_key)
     if data_value is not None:
-        if data_value == redis_cache.RUNNING:
+        if data_value.decode() == redis_cache.RUNNING:
             Client().request_cancel(data_key)
-            # redis_cache.set(data_key, redis_cache.CANCEL)
+            flash('task was canceled')
             return 'task was canceled'
 
-    model_value = redis_cache.get(model_key).decode()
+    model_value = redis_cache.get(model_key)
     if model_value is not None:
-        if model_value == redis_cache.RUNNING:
+        if model_value.decode() == redis_cache.RUNNING:
             Client().request_cancel(model_key)
-            # redis_cache.set(model_key, redis_cache.CANCEL)
+            flash('task was canceled')
             return 'task was canceled'
 
     return 'Nothing changed'
