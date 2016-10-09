@@ -26,7 +26,7 @@ def register():
         flash('Internal Server Error', 'error')
         return render_template('auth/register.html')
     if len(duplicate) > 0:
-        flash('User id ' + user.user_id + ' is duplicated', 'error')
+        flash('Username "' + user.user_id + '" is duplicated', 'error')
         return render_template('auth/register.html')
     try:
         db.session.add(user)
