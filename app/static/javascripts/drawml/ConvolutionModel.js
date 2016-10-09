@@ -71,7 +71,7 @@ function CNNPooling(type,sv,sh,pad){
     }
 
     this.toXML = function(XML){
-        XML.BeginNode("activation");
+        XML.BeginNode("pooling");
         XML.Node("type",this.type.toString());
         XML.Node("strides_vertical",this.strides_vertical.toString());
         XML.Node("strides_horizontal",this.strides_horizontal.toString());
