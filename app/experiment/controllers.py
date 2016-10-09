@@ -151,6 +151,14 @@ def exp_run(exp_id):
     xml = request.data.decode()
     xml = ''.join(xml.split('\n'))
 
+    data_key = RedisKeyMaker.make_key(id=exp_id,
+                                      type=RedisKeyMaker.DATA_PROCESSING)
+    model_key = RedisKeyMaker.make_key(id=exp_id,
+                                       type=RedisKeyMaker.MODEL_TRAINING)
+    if redis_cache.get(data_key) == redis_cache.RUNNING or \
+            redis_cache.get(model_key) == redis_cache.RUNNING:
+        return ErrorResponse(400, 'Experiment is running now')
+
     print()
     print()
     print()
@@ -187,8 +195,6 @@ def exp_run(exp_id):
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
-    data_key = RedisKeyMaker.make_key(id=exp_id,
-                                      type=RedisKeyMaker.DATA_PROCESSING)
     model_obj_code = None
     if data_obj_code and data_input_files:
         model_input_file = True  # In this case, model file will be filled after data processing
@@ -219,8 +225,6 @@ def exp_run(exp_id):
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
 
-    model_key = RedisKeyMaker.make_key(id=exp_id,
-                                       type=RedisKeyMaker.MODEL_TRAINING)
     valid = TaskRunner(user_id=g.user.id,
                        xml=xml,
                        data_obj_code=data_obj_code,
