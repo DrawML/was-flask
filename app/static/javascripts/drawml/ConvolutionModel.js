@@ -222,13 +222,13 @@ function CNNLayer(id,activation,pooling,inputX,inputY,inputZ,output){
         this.fabricModel.getObjects()[3].setText(type);
         canvas.renderAll();
     }
-    this.setActivationSV = function (sv) {
+    this.setPoolingSV = function (sv) {
         this.pooling.changeSV(sv);
     }
-    this.setActivationSH = function (sh) {
+    this.setPoolingSH = function (sh) {
         this.pooling.changeSH(sh);
     }
-    this.setActivationPadding = function (pad) {
+    this.setPoolingPadding = function (pad) {
         this.pooling.changePadding(pad);
     }
 
