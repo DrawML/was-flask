@@ -3,23 +3,21 @@
 {% block body %}
 <script>
     function clear_cache() {
-        $.ajax({                //Send (docinfo) to server
+        $.ajax({
             url : '/tests/{{ model.id }}/clear',
             type : 'DELETE',
-            async : true,
-            always : function(){
-                window.location.href = "/tests";
-            }
+            async : true
+        }).always(function(){
+            window.location.href = "/tests";
         });
     }
     function stop() {
-        $.ajax({                //Send (docinfo) to server
+        $.ajax({
             url : '/tests/{{ model.id }}/stop',
             type : 'DELETE',
-            async : true,
-            always : function(){
-                window.location.href = "/tests";
-            }
+            async : true
+        }).always(function () {
+            window.location.href = "/tests";
         });
     }
     function run() {
@@ -32,10 +30,9 @@
         $.ajax({
             url : '/tests/{{ model.id }}/' + data_id,
             type : 'POST',
-            async : true,
-            always : function(){
-                window.location.href = "/tests/{{ model.id }}";
-            }
+            async : true
+        }).always(function(){
+            window.location.href = "/tests/{{ model.id }}";
         });
     }
 </script>
