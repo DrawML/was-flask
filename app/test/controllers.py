@@ -105,6 +105,11 @@ def test_run(model_id, data_id):
     model = TrainedModel.query.filter_by(id=int(model_id)).first()
     xml = pickle.loads(model.xml)
 
+    model_key = RedisKeyMaker.make_key(id=model_id,
+                                       type=RedisKeyMaker.MODEL_TESTING)
+    if redis_cache.get(model_key) == redis_cache.RUNNING:
+        return ErrorResponse(400, 'Test is running now')
+
     model_obj_code = None
     try:
         tf_converter = TFConverter(xml, TFConverter.TYPE.TEST)
@@ -123,10 +128,7 @@ def test_run(model_id, data_id):
     except Exception as e:
         current_app.logger.error(e)
         return ErrorResponse(500, 'Unexpected Error')
-
     model_session_file = model.path
-    model_key = RedisKeyMaker.make_key(id=model_id,
-                                       type=RedisKeyMaker.MODEL_TESTING)
     valid = TaskRunner(user_id=g.user.id,
                        test_obj_code=model_obj_code,
                        test_input_file=model_input_file,
