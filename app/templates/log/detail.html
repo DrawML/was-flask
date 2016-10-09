@@ -3,17 +3,13 @@
 {% block body %}
 <div id="main" class="container">
     <h2>{{ data.name }} </h2>
-    <p>
-    {% for content in contents %}
-    {{ content }} <br>
-    {% endfor %}
-    </p>
 
     <form action="" method=post class="form-horizontal">
     <div class="control-group">
+        <label class="control-label" for="name">Result Log Name</label>
         <div class="controls">
           <input type="text" id="name" name="name" class="input-xlarge"
-            placeholder="Enter Data Name" value="{{ request.form.name }}"
+            placeholder="Enter Result Log Name" value="{{ request.form.name }}"
             required>
         </div>
     </div>
@@ -21,10 +17,16 @@
     <div class="control-group">
         <div class="controls">
           <button type="submit" class="btn btn-success">Rename</button>
+          <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_data()">DELETE</button>
         </div>
     </div>
     </form>
-    <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_data()">DELETE</button>
+    <h3>Log output</h3>
+    <div class="well">
+        {% for content in contents %}
+            {{ content }} <br>
+        {% endfor %}
+    </div>
     <script type=text/javascript>
         function delete_data() {
             $.ajax({                //Send (docinfo) to server
