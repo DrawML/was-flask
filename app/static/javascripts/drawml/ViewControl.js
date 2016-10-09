@@ -550,6 +550,7 @@ function topologicalSort(visit){
 
         if(curModel.prevModel==null || curModel.prevModel.length==0) {
             alert("not fully connected!!");
+            XMLValidation=false;
             return null;
         }
       //  console.log(stack.length);
