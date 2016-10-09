@@ -109,9 +109,11 @@ function stop_exp() {
             200: function (data, textStatus) {
                 console.log(data);
                 console.log(textStatus);
+                $('#footer-toxml-btn').hide();
                 $('#footer-Stop-btn').hide();
-                get_expStatus();
-                printResultMsg("Successfully request to stop!");
+                $('#footer-status').html('<span class="label label-warning" style="font-size:14px;">canceling</span>');
+                setTimeout(get_expStatus, 5000);
+                printResultMsg("Requesting to stop...");
             },
             500: function () {
                 get_expStatus();
@@ -138,18 +140,23 @@ function get_expStatus() {
 
             if(result == 'success'){
                 $('#footer-status').html('<span class="label label-success" style="font-size:14px;">' + result + '</span>');
+                $('#footer-toxml-btn').show();
                 $('#footer-Stop-btn').hide();
             }else if(result == 'fail'){
                 $('#footer-status').html('<span class="label label-important" style="font-size:14px;">' + result + '</span>');
+                $('#footer-toxml-btn').show();
                 $('#footer-Stop-btn').hide();
             }else if(result == 'cancel'){
                 $('#footer-status').html('<span class="label label-warning" style="font-size:14px;">' + result + '</span>');
+                $('#footer-toxml-btn').show();
                 $('#footer-Stop-btn').hide();
             }else if(result == 'running'){
                 $('#footer-status').html('<span class="label label-primary" style="font-size:14px;">' + result + '</span>');
+                $('#footer-toxml-btn').hide();
                 $('#footer-Stop-btn').show();
             }else if(result == 'idle'){
                 $('#footer-status').html('<span class="label" style="font-size:14px;">' + result + '</span>');
+                $('#footer-toxml-btn').show();
                 $('#footer-Stop-btn').hide();
             }else{
                 //Status Error
