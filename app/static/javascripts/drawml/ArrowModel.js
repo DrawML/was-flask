@@ -180,6 +180,9 @@ function modelConnect(model){
             selectedModel[0] instanceof NeuralNetworks ||
             selectedModel[0] instanceof ConvolutionNeuralNetworks){
             alert("Can't start arrow at ML model");
+            selectedModel=[];
+            makingModel=false;
+            connectComplete();
         }
     }else if(selectedModel.length==1){
         selectedModel.push(model);
