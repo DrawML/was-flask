@@ -27,11 +27,11 @@
     <script type=text/javascript>
         function delete_data() {
             $.ajax({                //Send (docinfo) to server
-                url : 'http://210.118.74.55:5000/log/{{ data.id }}',
+                url : '/log/{{ data.id }}',
                 type : 'DELETE',
                 async : true,
                 success : function(){
-                    window.location.href = "http://210.118.74.55:5000/log";
+                    window.location.href = "/log";
                 }
             });
         }

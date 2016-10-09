@@ -3,19 +3,40 @@
   <form action="" method=post class="form-horizontal">
     <div class="control-group">
         <div class="controls">
-          <input type="password" id="name" name="name" class="input-xlarge"
+          <input type="text" id="name" name="name" class="input-xlarge"
             placeholder="Enter Experiment name"
             required>
         </div>
     </div>
- 
-    <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn btn-success">Create</button>
-        </div>
-        <div class="controls">
-            <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_model()">Cancel</button>
-        </div>
-    </div>
+    <p>
+        <button type="button" class="btn btn-primary" onclick="create()">Create</button>
+        <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
+    </p>
+    <script>
+        function create() {
+            const new_exp = {
+                exp_data: {
+                    "name": $('#name')[0].value,
+                    "user_id": {{ g.user.id }},
+                    "drawing":"<position></position>",
+                    "xml": "<experiment></experiment>"
+                }
+            };
+            $.ajax({                //Send (docinfo) to server
+                url : '/experiments/',
+                type : 'POST',
+                contentType : 'application/json',
+                data : JSON.stringify(new_exp),
+                dataType: 'json',
+                async : true,
+                success : function(){
+                    window.location.href = "/experiments/";
+                }
+            });
+        }
+        function cancel() {
+            window.location.href = '/experiments/';
+        }
+    </script>
   </form>
 {% endblock %}

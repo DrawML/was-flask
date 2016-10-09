@@ -22,11 +22,11 @@
     <script type=text/javascript>
         function delete_data() {
             $.ajax({                //Send (docinfo) to server
-                url : 'http://210.118.74.55:5000/data/{{ data.id }}',
+                url : '/data/{{ data.id }}',
                 type : 'DELETE',
                 async : true,
                 success : function(){
-                    window.location.href = "http://210.118.74.55:5000/data";
+                    window.location.href = "/data";
                 }
             });
         }

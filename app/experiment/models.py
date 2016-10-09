@@ -182,8 +182,7 @@ class Refiner(json.JSONEncoder):
             user_id=exp.user_id,
             name=exp.name,
             xml=pickle.loads(exp.xml),
-            drawing=pickle.loads(exp.drawing),
-            input=exp.input
+            drawing=pickle.loads(exp.drawing)
         )
         return exp_dict
 
@@ -196,8 +195,7 @@ class JsonParser:
             exp_data = Experiment(exp_json['name'],
                                   user_id,
                                   pickle.dumps(exp_json['xml']),
-                                  pickle.dumps(exp_json['drawing']),
-                                  exp_json['input'])
+                                  pickle.dumps(exp_json['drawing']))
         except KeyError as e:
             return e
         return exp_data

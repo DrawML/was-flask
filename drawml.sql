@@ -16,7 +16,6 @@ CREATE TABLE `drawml`.`experiment` (
   `user_id` INTEGER NOT NULL,
   `xml` BLOB NULL,
   `drawing` BLOB NULL,
-  `input` INT NULL,
   PRIMARY KEY (`user_id`, `name`),
   FOREIGN KEY user(user_id) REFERENCES user(id) ON DELETE CASCADE,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),

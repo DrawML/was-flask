@@ -49,15 +49,13 @@ class Experiment(Base):
     user_id         = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     xml             = db.Column(db.BLOB)
     drawing         = db.Column(db.BLOB)
-    input           = db.Column(db.Integer)
 
-    def __init__(self, name, user_id, xml, drawing, input):
+    def __init__(self, name, user_id, xml, drawing):
         super()
         self.name       = name
         self.user_id    = user_id
         self.xml        = xml
         self.drawing    = drawing
-        self.input      = input
 
     def __repr__(self):
         return '<Experiment %r %r>' % (self.user.user_id, self.name)
@@ -70,8 +68,7 @@ class Experiment(Base):
             Experiment.name:          self.name,
             Experiment.user_id:       self.user_id,
             Experiment.xml:           self.xml,
-            Experiment.drawing:       self.drawing,
-            Experiment.input:         self.input
+            Experiment.drawing:       self.drawing
         }
 
 
