@@ -40,9 +40,9 @@ def get_model(model_id):
     if model_value is not None:
         status = model_value.decode()
     print(status)
-    return render_template('/test/data-list.html',
+    return render_template('/test/detail.html',
                            datas=Data.query.
-                           filter_by(user_id=g.user.id).order_by(Data.date_modified.desc()).all(),
+                           filter_by(user_id=g.user.id, type='input').order_by(Data.date_modified.desc()).all(),
                            model=TrainedModel.query.filter_by(id=model_id).first(),
                            status=status)
 

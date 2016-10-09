@@ -276,7 +276,7 @@ def exp_status(exp_id):
         return model_value.decode()
     elif data_value is not None:
         return data_value.decode()
-    return 'No status'
+    return redis_cache.IDLE
 
 
 @module_exp.route('/<exp_id>/clear', methods=['DELETE'], endpoint='exp_clear')
