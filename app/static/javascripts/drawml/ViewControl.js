@@ -404,8 +404,9 @@ $(document).ready(function(){
 
     });
     $('#change-datashape-y-input').on("change paste keyup", function() {
-        if(models[x] instanceof InputModel) {
-            models[x].changeSHapeY($(this).val());
+        for(var x in models){
+            if(models[x] instanceof InputModel)
+                models[x].changeSHapeY($(this).val());
         }
     });
 
@@ -747,7 +748,6 @@ function restoreModel(exp) {
     console.log(modelType);
     var ML;
     if (modelType != null && modelType != "") {
-
         if (modelType == "linear_regression" || modelType == "softmax_regression" || modelType == "Polynomial regression") {
             var curXY = $(drawing).find(modelType).text().split(',');
             ML = new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
@@ -914,17 +914,16 @@ function restoreModel(exp) {
         if (modelData.length >= 4 && modelData.substring(0, 3) == "seq") {
             //PreProcessing과 연결
             modelData = modelData.substring(3, modelData.length) * 1;
-
         }
         console.log("Model DATA  : " + modelData);
         for (var idx in models) {
-            if (models[idx] instanceof InputModel && models[idx].fileID == modelData) {
+            if (models[idx] instanceof InputModel && models[idx].fileID == modelData*1) {
                 console.log("Connect To INPUT");
                 makingModel = true;
                 modelConnect(models[idx]);
                 modelConnect(ML);
                 makingModel = false;
-            } else if (models[idx] instanceof DataPreprocessingModel && models[idx].seq == modelData) {
+            } else if (models[idx] instanceof DataPreprocessingModel && models[idx].seq == modelData*1) {
                 console.log("Connect To DATAPREPRO");
                 makingModel = true;
                 modelConnect(models[idx]);
