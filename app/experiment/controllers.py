@@ -166,7 +166,10 @@ def exp_run(exp_id):
         data_obj_code, file_ids = data_processor.generate_object_code()
         data_input_files = []
         for file_id in file_ids:
-            data_input_files.append(Data.query.filter_by(id=int(file_id)).first().path)
+            fetched = Data.query.filter_by(id=int(file_id)).first()
+            if not fetched:
+                raise SQLAlchemyError('No data in database')
+            data_input_files.append(fetched.path)
         current_app.logger.info('Code was generated')
         # data_processor.run_obj_code(data_obj_code)
     except ExperimentError:
@@ -175,6 +178,9 @@ def exp_run(exp_id):
     except TemplateError as e:
         current_app.logger.error(e)
         return ErrorResponse(500, 'Internal Server Error, Template Error')
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Database Error')
     except AttributeError:
         current_app.logger.info('No data processing in XML')
     except Exception as e:
@@ -192,7 +198,10 @@ def exp_run(exp_id):
         tf_train_converter = TFConverter(xml, TFConverter.TYPE.TRAIN)
         model_obj_code, file_id = tf_train_converter.generate_object_code()
         if not model_input_file:
-            model_input_file = Data.query.filter_by(id=int(file_id)).first().path
+            fetched = Data.query.filter_by(id=int(file_id)).first()
+            if not fetched:
+                raise SQLAlchemyError('No data in database')
+            model_input_file = fetched.path
         current_app.logger.info('Code was generated')
         # tf_converter.run_obj_code(model_obj_code)
     except ExperimentError:
@@ -201,6 +210,9 @@ def exp_run(exp_id):
     except TemplateError as e:
         current_app.logger.error(e)
         return ErrorResponse(500, 'Internal Server Error, Template Error')
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Database Error')
     except AttributeError:
         current_app.logger.info('No model in XML')
     except Exception as e:
