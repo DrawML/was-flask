@@ -100,3 +100,7 @@ canvas{
     width : 100%;
     margin-top : 5px;
 }
+
+#footer-toxml-btn, #footer-Save-btn{
+    width : 100px;
+}
