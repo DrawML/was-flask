@@ -353,7 +353,7 @@ $(document).ready(function(){
 
         update_exp(jsonInfo);
         run_exp(exp_xml);
-
+        get_expStatus();
     });
 
     $('#footer-Stop-btn').click(function () {
