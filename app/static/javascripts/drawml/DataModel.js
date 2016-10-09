@@ -165,5 +165,8 @@ function clearDataShapeOption(){
 function makeDataShapeOption(){
     $('#datashape-btn').show();
     $('#datashape-btn').addClass('collapsed');
+
+    $('#change-datashape-x-input').val(currentSelectedModel.ShapeX);
+    $('#change-datashape-y-input').val(currentSelectedModel.ShapeY);
 }
 

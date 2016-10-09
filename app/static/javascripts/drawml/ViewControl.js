@@ -353,6 +353,7 @@ $(document).ready(function(){
 
         update_exp(jsonInfo);
         run_exp(exp_xml);
+
         get_expStatus();
     });
 
@@ -613,6 +614,10 @@ function restoreModel(exp) {
     console.log(xml);
     console.log(drawing);
 
+    var shp = $(xml).find('shape').text().split(',');
+    var shp_x = shp[0].trim().substring(1,shp[0].length-1);
+    var shp_y = shp[1].trim().substring(1,shp[1].length-1);
+
     if ($(xml).text() == "") return;
 
     //restore INPUT
@@ -634,6 +639,8 @@ function restoreModel(exp) {
         console.log(lt);
 
         var l = new InputModel(modelCnt++, getDataNameById(num.toString()), inputModels[x] * 1, lt[0] * 1, lt[1] * 1);
+        l.ShapeX = shp_x;
+        l.ShapeY = shp_y;
         models.push(l);
         canvas.add(l.fabricModel);
         canvas.renderAll();
