@@ -60,7 +60,7 @@ function printResultMsg(msg) {
     $('#footer-result-msg').show();
     $('#footer-result-msg').text(msg);
 
-    setTimeout($('#footer-result-msg').hide, 5000);
+    setTimeout(function () {$('#footer-result-msg').hide();}, 5000);
 }
 
 function handleDropEvent( event, ui ) {

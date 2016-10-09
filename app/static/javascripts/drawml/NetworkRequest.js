@@ -49,7 +49,7 @@ function update_exp(jsonInfo, callback) {
                 : $.ajaxSettings.xhr();
         },
         statusCode : {
-            200: function(data) {
+            200: function (data, textStatus) {
                 console.log(data);
                 printResultMsg("Saved");
                 !callback || callback();
@@ -90,7 +90,7 @@ function stop_exp() {
         type : 'DELETE',
         async : true,
         statusCode : {
-            200: function(data){
+            200: function (data, textStatus) {
                 console.log(data);
                 console.log(textStatus);
                 $('#footer-Stop-btn').hide();
@@ -111,16 +111,21 @@ function get_expStatus() {
         async : true,
         success : function(result){
             console.log(result);
-            $('#footer-status').text(result);
+
             if(result == 'success'){
+                $('#footer-status').html('<span class="label label-success" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').hide();
             }else if(result == 'fail'){
+                $('#footer-status').html('<span class="label label-important" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').hide();
             }else if(result == 'cancel'){
+                $('#footer-status').html('<span class="label label-warning" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').hide();
             }else if(result == 'running'){
+                $('#footer-status').html('<span class="label label-inverse" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').show();
             }else if(result == 'idle'){
+                $('#footer-status').html('<span class="label label-idle" style="font-size:14px;">' + result + '</span>');
                 $('#footer-Stop-btn').hide();
             }else{
                 //Status Error
