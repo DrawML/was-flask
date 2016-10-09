@@ -577,10 +577,36 @@ function makeModelXML(){
 
     var XML = new XMLWriter();
     XML.BeginNode("model");
+
+    //Input...
     for(var x  in models){
-        console.log(models[x]);
+        if(models[x] instanceof InputModel) {
+            models[x].toModelXML(XML);
+        }
+    }
+
+    //data preprocessing
+    var processCnt =0;
+
+    for(var x  in models){
+        if(models[x] instanceof DataPreprocessingModel) {
+            processCnt+=1;
+        }
+    }
+    for(var seq=1; seq<=processCnt;seq++) {
+        for (var x  in models) {
+            if (models[x] instanceof DataPreprocessingModel && models[x].seq==seq) {
+                models[x].toModelXML(XML);
+            }
+        }
+    }
+
+    //model
+    for(var x  in models){
+        if(models[x] instanceof InputModel || models[x] instanceof DataPreprocessingModel) continue;
         models[x].toModelXML(XML);
     }
+
     XML.Close();
     console.log(XML.ToString().replace(/</g, "\n<"));
     return XML.ToString().replace(/</g, "\n<");
@@ -634,8 +660,6 @@ function restoreModel(exp) {
     if (inputModels.length == 0) return;
 
 
-    //WARNING : 같은 모델 2개일 때 좌표값을 구별 할 수 없음.
-
     console.log("START  : INPUT MODEL RESTORE");
     for (var x in inputModels) {
         var num = inputModels[x] * 1;
@@ -664,14 +688,17 @@ function restoreModel(exp) {
     console.log("pre size : " + processSize);
     for (var s = 1; s <= processSize; s++) {
         //find seq : s in drawing
-        var cur = $(drawing).find('DataPreprocessingModel').attr("seq", s.toString()).text().split(',');
+        var cur = $(drawing).find('DataPreprocessingModel')[s].text().split(',');
         var l = new DataPreprocessingModel(modelCnt++, cur[0], cur[1] * 1, cur[2] * 1);
         l.seq = s;
         models.push(l);
         canvas.add(l.fabricModel);
 
         //connect model
-        var prev = $(xml).find(l.type.toString()).attr("seq", s.toString()).find('data').text().split(',');
+        var dp=$(xml).find('data_processing').children();
+        dp=$(dp)[s];
+
+        var prev = $(dp).find('data').text().split(',');
         console.log(prev);
         for (var prevId in prev) {
             for (var idx in models) {
