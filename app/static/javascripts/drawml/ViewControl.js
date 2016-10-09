@@ -687,21 +687,33 @@ function restoreModel(exp){
 
 
         var initializer =$(xml).find('initializer');
-        var type = $(initializer).find('type').text().trim();
-        var initTemp= new Initializer(type);
-        if(type=='random_normal'){
+        var init_type = $(initializer).find('type').text().trim();
+        var initTemp= ML.initializer;
+        ML.changeInitializer(init_type);
+        if(init_type=='random_normal'){
             var stddev = $(initializer).find('stddev').text()*1;
             initTemp.val=stddev;
-        }else if(type =='random_uniform'){
+        }else if(init_type =='random_uniform'){
             var init_min = $(initializer).find('min').text()*1;
             var init_max = $(initializer).find('max').text()*1;
             initTemp.min=init_min;
             initTemp.max = init_max;
         }
-        ML.initializer = initTemp;
 
         //Optimizer
+
+        var opti_xml = $(xml).find('optimizer');
+        var opti_type = $(opti_xml).find('type').text().trim();
+        var opti_rate = $(opti_xml).find('learning_rate').text()*1;
+
+        ML.changeOptimizer(opti_type);
+        ML.optimizer.changeLearningRate(opti_rate);
+
+
         //regularization
+
+
+
         //training_epoch
 
 
@@ -726,9 +738,11 @@ function restoreModel(exp){
                     modelConnect(models[idx]);
                     modelConnect(ML);
                     makingModel=false;
-
                 }
             }
+
+        currentSelectedModel=ML;
+        ML.changeOptionMenu();
          console.log("START  : ML MODEL END");
     }
 
