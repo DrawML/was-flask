@@ -57,10 +57,9 @@ function handleDragStop(event,ui){
 }
 
 function printResultMsg(msg) {
-    $('#footer-result-msg').show();
     $('#footer-result-msg').text(msg);
 
-    setTimeout(function () {$('#footer-result-msg').text();}, 5000);
+    setTimeout(function () {$('#footer-result-msg').text('');}, 5000);
 }
 
 function handleDropEvent( event, ui ) {
