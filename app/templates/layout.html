@@ -53,8 +53,8 @@ body {
 
 <div id="main" class="container">
 {%- for category, message in get_flashed_messages(with_categories=true) %}
-  <p class="flask {{ category }}-flash {%  if category == 'error' %} text-error {%  endif %}">{{
-    "Error: " if category == 'error' }}{{ message }}</p>
+  <div class="alert {%  if category == 'error' %} alert-error {% endif %} flask {{ category }}-flash">{{
+    "Error: " if category == 'error' }}{{ message }}</div>
 {%- endfor %}
     {% block body %}{% endblock %}
     <hr>
