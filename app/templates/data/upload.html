@@ -24,9 +24,7 @@
         maxChunkSize: 4 * 1024 * 1024, // 4 MB
         method:'POST'
     })
-        .on('fileuploadstart', function (e, data) {
-            console.log(data);
-            $("#file_name").text(data.files[0].name);
+        .on('fileuploadstart', function (e) {
             $("#progressBox").show();
         })
         .on('fileuploaddone', function (e, data) {
@@ -34,6 +32,9 @@
             $('#message').html('<div class="alert alert-success">Uploading Complete!</div>');
             // alert('Uploading Complete');
             console.log(data);
+        })
+        .on('fileuploadsend', function (e, data) {
+            $("#file_name").text(data.files[0].name);
         })
         .on('fileuploadfail', function (e, data) {
             $.ajax({
