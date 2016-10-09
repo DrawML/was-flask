@@ -109,9 +109,9 @@ function Layer(id,activation,input,output){
         canvas.renderAll();
     }
 
-    this.toXML = function(XML,num){
+    this.toXML = function(XML,layerNtoXML){
         XML.BeginNode("layer");
-        XML.Attrib("id",this.num.toString());
+        XML.Attrib("id",layerNtoXML.toString());
         XML.Node("type","none");
         XML.Node("activation",this.activation);
         XML.Node("input",this.input.toString());
