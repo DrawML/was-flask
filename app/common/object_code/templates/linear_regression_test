@@ -6,5 +6,17 @@ with tf.Session(config=config) as sess:
     init = tf.initialize_all_variables()
     sess.run(init)
     restore_model(sess, sess_path)
-    # run test....
+
+    test_data = load_test_data()
+    f = open(output_file_path, 'a')
+    print('features : original predict', file=f)
+    p = sess.run(hypothesis, feed_dict=test_data)
+    for i in range(len(x_test)):
+        log = ''
+        for j in range(len(x_test[i])):
+            log += str(x_test[i][j]) + ' '
+        log += ': '  + str(y_test[i]) + ' ' + str(p[i])
+        print(log, file=f)
+    print('Model Weights', file=f)
+    print(sess.run(W), file=f)
 

@@ -106,6 +106,16 @@ with tf.Session() as sess:
 
     save_model(sess, SAVE_PATH)
     restore_model(sess, SAVE_PATH)
+
+    print('features : original predict')
+    p = sess.run(hypothesis, feed_dict=train_data)
+    for i in range(len(x_test)):
+        log = ''
+        for j in range(len(x_test[i])):
+            log += str(x_test[i][j]) + ' '
+        log += ': '  + str(y_test[i]) + ' ' + str(p[i])
+        print(log)
+    print('Model Weights')
     print(sess.run(W))
 
 

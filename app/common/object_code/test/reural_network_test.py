@@ -12,7 +12,7 @@ import numpy as np
 import sys
 import os
 
-training_epoch = 1024
+training_epoch = 50
 
 SAVE_PATH = '/Users/chan/test/trained_model'
 
@@ -136,6 +136,7 @@ hypothesis = make_model(X, W, B)
 cost = cost_function(hypothesis, Y)
 optimizer = make_optimizer()
 train = optimizer.minimize(cost)
+predict = tf.argmax(hypothesis, 1)
 
 with tf.Session() as sess:
     init = tf.initialize_all_variables()
@@ -154,6 +155,13 @@ with tf.Session() as sess:
         # display logs per epoch step
         if epoch % 10 == 0:
             print("Epoch : "," %04d" % (epoch+1), "Accuracy = ", "{:.9f}".format(1 - avg_cost))
+
+    restore_model(sess, '/Users/chan/test/nn')
+    p = sess.run(predict, feed_dict=train_data)
+    y = np.argmax(y_test, axis=1)
+    for i in range(len(y)):
+        print('{} : {}'.format(y[i], p[i]))
+    print('Accuracy : {}'.format(np.mean(y == p)))
 
     print(" Optimization Finished" )
 

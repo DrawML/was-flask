@@ -45,3 +45,10 @@ def restore_model(sess, path):
 def load_train_data():
     data = {X: x_train, Y: y_train}
     return data
+
+
+def load_test_data():
+    data = {X: x_test, Y: y_test}
+    return data
+
+
