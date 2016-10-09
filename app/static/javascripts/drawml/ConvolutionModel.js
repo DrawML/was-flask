@@ -423,7 +423,7 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
     this.layerSet=new CNNLayerSet();
     this.dropOut = new CNNDropOut();
     this.initializer = new Initializer('random_uniform');
-    this.optimizer = new Optimizer('gradient descent');
+    this.optimizer = new Optimizer('gradient_descent');
     this.regularization = new Regularization();
     this.training_epoch = 1024;
     this.container=null;
