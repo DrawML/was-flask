@@ -35,7 +35,7 @@ function get_exp() {
 }
 
 // /experiments/<exp_id>	PATCH	update exp
-function update_exp(jsonInfo) {
+function update_exp(jsonInfo, callback) {
     $.ajax({
         url : server+'experiments/'+exp_id,
         type : 'PATCH',
@@ -49,9 +49,10 @@ function update_exp(jsonInfo) {
                 : $.ajaxSettings.xhr();
         },
         statusCode : {
-            200: function() {
+            200: function(data) {
                 console.log(data);
                 printResultMsg("Saved");
+                !callback || callback();
             }
         }
     });
@@ -89,7 +90,7 @@ function stop_exp() {
         type : 'DELETE',
         async : true,
         statusCode : {
-            200: function(){
+            200: function(data){
                 console.log(data);
                 console.log(textStatus);
                 $('#footer-Stop-btn').hide();

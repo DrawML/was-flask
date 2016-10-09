@@ -357,8 +357,11 @@ $(document).ready(function(){
 
         console.log(jsonInfo);
 
-        update_exp(jsonInfo);
-        run_exp(exp_xml);
+        var callback = function () {
+            run_exp(exp_xml);
+        };
+
+        update_exp(jsonInfo, callback);
     });
 
     $('#footer-Stop-btn').click(function () {
