@@ -599,6 +599,7 @@ function restoreModel(exp) {
         console.log(getDataNameById(num * 1));
         console.log(inputModels[x]);
         var lt = $(drawing).find('InputModel').attr('fileId', num.toString()).text().split(',');
+        console.log(lt);
         var l = new InputModel(modelCnt++, getDataNameById(num.toString()), inputModels[x] * 1, lt[0] * 1, lt[1] * 1);
         models.push(l);
         canvas.add(l.fabricModel);
