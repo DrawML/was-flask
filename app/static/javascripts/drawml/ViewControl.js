@@ -147,7 +147,9 @@ function handleDropEvent( event, ui ) {
         makeDataShapeOption();
         clearDefaultOptions();
         var fileName = ui.draggable.text();
-        var l = new InputModel(modelCnt++,fileName,getDataIDByName(fileName),canvasX-wi-150,canvasY-ContainerTop);
+        var filteredFileName = fileName;
+        if(filteredFileName.length >=16) filteredFileName=filteredFileName.substring(0,16);
+        var l = new InputModel(modelCnt++,filteredFileName,getDataIDByName(fileName),canvasX-wi-150,canvasY-ContainerTop);
         models.push(l);
         currentSelectedModel=l;
         canvas.add(l.fabricModel);
@@ -712,8 +714,43 @@ function restoreModel(exp) {
             makeCNNLayerOption(1);
 
 
-            makeCNNLayerOption(currentSelectedModel.getLayerLength() + 1);
-            currentSelectedModel.addLayerBackOf(currentSelectedModel.getLayerLength() - 1);
+            //Connect Layer , Layer Option
+            currentSelectedModel = ML;
+
+            //레이어 갯수 맞추기
+            var layerN = $(xml).find('layer_set').find('size').text() * 1;
+            for (var x = 0; x < layerN - 1; x++) {
+                makeCNNLayerOption(ML.getLayerLength() + 1);
+                ML.addLayerBackOf(ML.getLayerLength() - 1);
+            }
+            //자리 재조정.
+            ML.fabricModel.set({
+                left: curXY[0] * 1,
+                top: curXY[1] * 1
+            });
+
+            //레이어 옵션적용
+            var dp_conv = $(xml).find('dropout_conv').text()*1;
+            var dp_hidden = $(xml).find('dropout_hidden').text()*1;
+
+            ML.dropOut.conv=dp_conv;
+            ML.dropOut.hidden=dp_hidden;
+
+            var layer_xml = $(xml).find('layer');
+            for (var x = 0; x < layerN; x++) {
+                var layer_acti = $(layer_xml[x]).find('activation').text().trim();
+                var layer_input = $(layer_xml[x]).find('input').text().trim() * 1;
+                var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
+
+
+                ML.setActivation(x+1, layer_acti);
+                ML.setLayerInput(x+1, layer_input);
+                ML.setLayerOutput(x+1, layer_output);
+            }
+            ML.updateFabricModel();
+
+
+
         }
         else {
             console.log("can not match model type");
