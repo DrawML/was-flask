@@ -5,9 +5,9 @@
 with tf.Session(config=config) as sess:
     init = tf.initialize_all_variables()
     sess.run(init)
-    train_data = load_train_data()
-    train_data[p_keep_conv] = dropout_conv
-    train_data[p_keep_hidden] = dropout_hidden
+    train_data = {X: x_train, Y: y_train, p_keep_conv: dropout_conv, p_keep_hidden: dropout_hidden}
+    # train_data[p_keep_conv] = dropout_conv
+    # train_data[p_keep_hidden] = dropout_hidden
     f = open(output_file_path, 'a')
     for _ in range(training_epoch):
         sess.run(train, feed_dict=train_data)
