@@ -12,6 +12,18 @@
         <script type="text/javascript" src="/static/javascripts/drawml/XMLWriter.js"></script>
         <script type="text/javascript">
             var exp_id = {{ exp_id }};
+            function del_exp() {
+                const approve = confirm('Do you want to remove it?');
+                if (!approve) return;
+                $.ajax({                //Send (docinfo) to server
+                    url : '/experiments/{{ exp_id }}',
+                    type : 'DELETE',
+                    async : true,
+                    success : function(){
+                        window.location.href = "/experiments";
+                    }
+                });
+            }
         </script>
         <link rel="stylesheet" type="text/css" href="/static/css/draw.css">
     </head>
@@ -29,6 +41,7 @@
                   <li><a href="/log">Log</a></li>
                   <li><a href="/auth/signout">Signout</a></li>
                 </ul>
+                <a class="navbar-text pull-right" onclick="del_exp()">Remove</a>
             </div>
         </nav>
     </header>
