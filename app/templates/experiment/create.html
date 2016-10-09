@@ -1,17 +1,22 @@
 {% extends "layout.html" %}
 {% block body %}
-  <form action="" method=post class="form-horizontal">
+    <h1>Create Experiment</h1>
+    <p class="lead">Please enter your experiment name.</p>
+  <form action="" method=post class="form-horizontal main-form">
     <div class="control-group">
+        <label class="control-label" for="name">Name</label>
         <div class="controls">
           <input type="text" id="name" name="name" class="input-xlarge"
             placeholder="Enter Experiment name"
             required>
         </div>
     </div>
-    <p>
-        <button type="button" class="btn btn-primary" onclick="create()">Create</button>
-        <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
-    </p>
+      <div class="control-group">
+          <div class="controls">
+              <button type="button" class="btn btn-primary" onclick="create()">Create</button>
+              <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
+          </div>
+      </div>
     <script>
         function create() {
             const name = $('#name')[0].value;
