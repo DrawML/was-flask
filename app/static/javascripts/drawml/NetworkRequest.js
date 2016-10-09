@@ -28,6 +28,7 @@ function get_exp() {
         type : 'GET',
         async : true,
         success : function(exp){
+            console.log(exp);
             restoreModel(exp);
         }
     });
