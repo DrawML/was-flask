@@ -207,6 +207,23 @@ function modelConnect(model){
             alert("Can't connect to Input model");
             return;
         }
+        else if(selectedModel[1].type =="concat"){
+            if(selectedModel[1].prevModel!=null && selectedModel[1].prevModel.length>=2){
+                selectedModel=[];
+                makingModel=false;
+                connectComplete();
+                alert("Can't make three arrow to Concat");
+                return;
+            }
+        }else if(selectedModel[1].type !="concat"){
+            if(selectedModel[1].prevModel!=null && selectedModel[1].prevModel.length>=1){
+                selectedModel=[];
+                makingModel=false;
+                connectComplete();
+                alert("Can't make two arrow to model");
+                return;
+            }
+        }
         //Make Arrow
         var prevModel = selectedModel[0];
         var nextModel = selectedModel[1];
