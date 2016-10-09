@@ -8,9 +8,9 @@ class Base(db.Model):
     __abstract__  = True
 
     id            = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    date_created  = db.Column(db.DateTime, default=datetime.datetime.now())
-    date_modified = db.Column(db.DateTime, default=datetime.datetime.now(),
-                              onupdate=datetime.datetime.now())
+    date_created  = db.Column(db.DateTime, default=datetime.datetime.now)
+    date_modified = db.Column(db.DateTime, default=datetime.datetime.now,
+                              onupdate=datetime.datetime.now)
 
 
 class User(Base):
