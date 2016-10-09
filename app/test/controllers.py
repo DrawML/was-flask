@@ -102,6 +102,7 @@ def model_delete(model_id):
 @module_test.route('/<model_id>/<data_id>', methods=['POST'], endpoint='test_run')
 @login_required
 def test_run(model_id, data_id):
+    print('sasdfa')
     model = TrainedModel.query.filter_by(id=int(model_id)).first()
     xml = pickle.loads(model.xml)
 
@@ -144,13 +145,17 @@ def test_run(model_id, data_id):
 def test_stop(model_id):
     model_key = RedisKeyMaker.make_key(id=model_id,
                                        type=RedisKeyMaker.MODEL_TESTING)
-    model_value = redis_cache.get(model_key).decode()
+    model_value = redis_cache.get(model_key)
+    if not model_value:
+        flash('Error, No cache status')
+        return redirect(url_for('test.get_all_model'))
+    model_value = model_value.decode()
     if model_value is not None:
         if model_value == redis_cache.RUNNING:
             Client().request_cancel(model_key)
             # redis_cache.set(model_key, redis_cache.CANCEL)
-            return 'task was canceled'
-    return 'Nothing changed'
+            flash('task was canceled')
+    return redirect(url_for('test.get_model', model_id=model_id))
 
 
 @module_test.route('/<model_id>/status', methods=['GET'], endpoint='test_status')
@@ -173,5 +178,7 @@ def model_clear(model_id):
         redis_cache.delete(model_key)
     except Exception as e:
         current_app.logger.error(e)
-        return ErrorResponse(500, 'Internal Server Error')
-    return 'clear'
+        flash('Internal Server Error')
+        return redirect(url_for('test.get_all_model'))
+    flash('Cache cleared')
+    return redirect(url_for('test.get_all_model'))

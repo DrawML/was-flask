@@ -2,7 +2,8 @@
 {% set active_page = "test" %}
 {% block body %}
 <div id="main" class="container">
-    <h2>{{ model.name }} </h2>
+    <h1>Edit Trained Model</h1>
+    <p class="lead">{{ model.name }} </p>
 
     <form action="" method=post class="form-horizontal">
     <div class="control-group">
@@ -15,19 +16,19 @@
 
     <div class="control-group">
         <div class="controls">
-          <button type="submit" class="btn btn-success">Rename</button>
+            <button type="submit" class="btn btn-success">Rename</button>
+            <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_model()">Remove</button>
         </div>
     </div>
     </form>
-    <button type="button" id="delete_btn" class="btn btn-danger" onclick="delete_model()">DELETE</button>
     <script type=text/javascript>
         function delete_model() {
             $.ajax({                //Send (docinfo) to server
-                url : 'http://210.118.74.55:5000/tests/{{ model.id }}',
+                url : '/tests/{{ model.id }}',
                 type : 'DELETE',
                 async : true,
                 success : function(){
-                    window.location.href = "http://210.118.74.55:5000/tests";
+                    window.location.href = "/tests";
                 }
             });
         }

@@ -1,58 +1,81 @@
 {% extends "layout.html" %}
 {% set active_page = "test" %}
 {% block body %}
+<script>
+    function clear_cache() {
+        $.ajax({                //Send (docinfo) to server
+            url : '/tests/{{ model.id }}/clear/',
+            type : 'DELETE',
+            async : true,
+            success : function(){
+                window.location.href = "/tests";
+            }
+        });
+    }
+    function stop() {
+        $.ajax({                //Send (docinfo) to server
+            url : '/tests/{{ model.id }}/stop/',
+            type : 'DELETE',
+            async : true,
+            success : function(){
+                window.location.href = "/tests";
+            }
+        });
+    }
+    function run() {
+        const tag = $('#datalist input:radio:checked')[0];
+        if (!tag) {
+            alert('Please choose input data');
+            return;
+        }
+        const data_id = $('#datalist input:radio:checked')[0].id;
+        $.ajax({
+            url : '/tests/{{ model.id }}/' + data_id,
+            type : 'POST',
+            async : true,
+            success : function(){
+                window.location.href = "/tests/{{ model.id }}";
+            }
+        });
+    }
+</script>
 <div id="main" class="container">
     <p>
       <h2>{{ model.name }}</h2>
-      <a href="{{ url_for('test.update_model', model_id=model.id) }}" class="btn btn-primary pull-right">Edit name</a>
+      <a href="{{ url_for('test.update_model', model_id=model.id) }}" class="btn btn-warning pull-right">Edit name</a>
     {% if status == 'idle' %}
     <h3>Select test input data</h3>
-    <table class="table table-hover">
-      <tr>
-        <th>#</th>
-        <th>Title</th>
-        <th>Date</th>
-      </tr>
-      {%- for data in datas %}
-      <tr>
-        <td>{{data.id}}</td>
-        <td><a href="/data/{{ data.id }}">{{ data.name }}</a></td>
-        <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
-      </tr>
-      {%- endfor %}
-    </table>
+      <div class="table-responsive">
+        <table id="datalist" class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for data in datas %}
+            <tr>
+              <td>
+                <input type="radio" name="radios" id="{{ data.id }}" />
+              </td>
+              <td>{{ data.name }}</td>
+              <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    <button type="button" class="btn btn-primary pull-right" onclick="run()">Run</button>
     {% endif %}
     {% if status != 'idle' %}
       <h3>Status : {{ status }}</h3>
         {% if status == 'fail' or status == 'success' or status == 'cancel' %}
-            <button type="button" id="clear_btn" class="btn btn-info" onclick="clear()">Clear status</button>
-            <script>
-                function clear() {
-                    $.ajax({                //Send (docinfo) to server
-                        url : '/tests/{{ model.id }}',
-                        type : 'DELETE',
-                        async : true,
-                        success : function(){
-                            window.location.href = "/tests";
-                        }
-                    });
-                }
-            </script>
+            <button type="button" id="clear_btn" class="btn btn-info" onclick="clear_cache()">Clear status</button>
         {% endif %}
         {% if status == 'running' %}
             <button type="button" id="stop_btn" class="btn btn-danger" onclick="stop()">Stop</button>
-            <script>
-                function stop() {
-                    $.ajax({                //Send (docinfo) to server
-                        url : '/tests/{{ model.id }}/stop',
-                        type : 'DELETE',
-                        async : true,
-                        success : function(){
-                            window.location.href = "/tests";
-                        }
-                    });
-                }
-            </script>
         {% endif %}
     {% endif %}
 </div>
