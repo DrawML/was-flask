@@ -354,7 +354,7 @@ function CNNLayerSet(){
     this.setPoolingSV = function (layer,sv) {
         this.layers[layer-1].setPoolingSV(sv);
     }
-    this.setPoolingSH = function (layer,type,sv,sh,pad) {
+    this.setPoolingSH = function (layer,sh) {
         this.layers[layer-1].setPoolingSH(sh);
     }
     this.setPoolingPadding = function (layer,pad) {
