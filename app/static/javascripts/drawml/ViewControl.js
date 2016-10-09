@@ -688,17 +688,18 @@ function restoreModel(exp) {
             });
 
             //레이어 옵션적용
-            for (var x = 1; x <= layerN; x++) {
-                var layer_xml = $(xml).find('layer').attr('id', x.toString());
+            var layer_xml = $(xml).find('layer');
+            for (var x = 0; x < layerN; x++) {
                 //var layer_type = $(layer_xml).find('type').text().trim();
-                var layer_acti = $(layer_xml).find('activation').text().trim();
-                var layer_input = $(layer_xml).find('input').text().trim() * 1;
-                var layer_output = $(layer_xml).find('ouput').text().trim() * 1;
+                var layer_acti = $(layer_xml[x]).find('activation').text().trim();
+                var layer_input = $(layer_xml[x]).find('input').text().trim() * 1;
+                var layer_output = $(layer_xml[x]).find('ouput').text().trim() * 1;
 
                 ML.setActivation(x, layer_acti);
                 ML.setLayerInput(x, layer_input);
                 ML.setLayerOutput(x, layer_output);
             }
+            ML.updateFabricModel();
 
         } else if (modelType == "convolution_neural_network") {
             var curXY = $(drawing).find('ConvolutionNeuralNetworks').text().split(',');
