@@ -15,7 +15,7 @@
             function del_exp() {
                 const approve = confirm('Do you want to remove it?');
                 if (!approve) return;
-                $.ajax({                //Send (docinfo) to server
+                $.ajax({
                     url : '/experiments/{{ exp_id }}',
                     type : 'DELETE',
                     async : true,

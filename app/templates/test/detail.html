@@ -2,11 +2,11 @@
 {% set active_page = "test" %}
 {% block body %}
 <div id="main" class="container">
-    <h2>{{ model.name }}</h2>
-    {% if status == 'idle' %}
-    <h3>Select data</h3>
     <p>
-      <a href="{{ url_for('test.update_model', model_id=model.id) }}" class="btn btn-large btn-primary">Edit</a>
+      <h2>{{ model.name }}</h2>
+      <a href="{{ url_for('test.update_model', model_id=model.id) }}" class="btn btn-primary pull-right">Edit name</a>
+    {% if status == 'idle' %}
+    <h3>Select test input data</h3>
     <table class="table table-hover">
       <tr>
         <th>#</th>
@@ -14,13 +14,11 @@
         <th>Date</th>
       </tr>
       {%- for data in datas %}
-          {% if data.type == 'input' %}
       <tr>
         <td>{{data.id}}</td>
         <td><a href="/data/{{ data.id }}">{{ data.name }}</a></td>
         <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
       </tr>
-          {% endif %}
       {%- endfor %}
     </table>
     {% endif %}
@@ -31,11 +29,11 @@
             <script>
                 function clear() {
                     $.ajax({                //Send (docinfo) to server
-                        url : 'http://210.118.74.55:5000/tests/{{ model.id }}',
+                        url : '/tests/{{ model.id }}',
                         type : 'DELETE',
                         async : true,
                         success : function(){
-                            window.location.href = "http://210.118.74.55:5000/tests";
+                            window.location.href = "/tests";
                         }
                     });
                 }
@@ -46,35 +44,16 @@
             <script>
                 function stop() {
                     $.ajax({                //Send (docinfo) to server
-                        url : 'http://210.118.74.55:5000/tests/{{ model.id }}/stop',
+                        url : '/tests/{{ model.id }}/stop',
                         type : 'DELETE',
                         async : true,
                         success : function(){
-                            window.location.href = "http://210.118.74.55:5000/tests";
+                            window.location.href = "/tests";
                         }
                     });
                 }
             </script>
         {% endif %}
-
-
-        <table class="table table-hover">
-      <tr>
-        <th>#</th>
-        <th>Title</th>
-        <th>Date</th>
-      </tr>
-      {%- for data in datas %}
-          {% if data.type == 'log' %}
-      <tr>
-        <td>{{data.id}}</td>
-        <td><a href="/data/{{ data.id }}">{{ data.name }}</a></td>
-        <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
-      </tr>
-          {% endif %}
-      {%- endfor %}
-    </table>
     {% endif %}
-
 </div>
 {% endblock %}
