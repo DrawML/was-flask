@@ -4,7 +4,7 @@
 <script>
     function clear_cache() {
         $.ajax({                //Send (docinfo) to server
-            url : '/tests/{{ model.id }}/clear/',
+            url : '/tests/{{ model.id }}/clear',
             type : 'DELETE',
             async : true,
             success : function(){
@@ -14,7 +14,7 @@
     }
     function stop() {
         $.ajax({                //Send (docinfo) to server
-            url : '/tests/{{ model.id }}/stop/',
+            url : '/tests/{{ model.id }}/stop',
             type : 'DELETE',
             async : true,
             success : function(){
