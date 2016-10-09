@@ -695,9 +695,9 @@ function restoreModel(exp) {
                 var layer_input = $(layer_xml[x]).find('input').text().trim() * 1;
                 var layer_output = $(layer_xml[x]).find('ouput').text().trim() * 1;
 
-                ML.setActivation(x, layer_acti);
-                ML.setLayerInput(x, layer_input);
-                ML.setLayerOutput(x, layer_output);
+                ML.setActivation(x+1, layer_acti);
+                ML.setLayerInput(x+1, layer_input);
+                ML.setLayerOutput(x+1, layer_output);
             }
             ML.updateFabricModel();
 
