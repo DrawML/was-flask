@@ -309,6 +309,27 @@ $(document).ready(function(){
 
     var isProcessing = false;
 
+    $('#footer-Save-btn').click(function () {
+
+        var exp_xml=makeXML();
+        var model_xml=makeModelXML();
+
+        if(XMLValidation==false){
+            alert('Experiment is not Valid!!');
+        }
+        XMLValidation=true;
+
+        var exp_data=new Object();
+        exp_data.drawing = model_xml;
+        exp_data.xml = exp_xml;
+        var x = new Object();
+        x.exp_data=exp_data;
+        var jsonInfo = JSON.stringify(x);
+
+        console.log(jsonInfo);
+        update_exp(jsonInfo);
+    });
+
     //Models To XML
     $('#footer-toxml-btn').click(function () {
         if(isProcessing) return;
@@ -418,6 +439,7 @@ function connectComplete(){
 /////////////////////////////////////////////
 
 
+var XMLValidation =true;
 //INPUT XML
 //DATA_PROCESSING XML
 function makeXML() {
@@ -437,6 +459,7 @@ function makeXML() {
     }
     if(inputList.length ==0) {
         alert("No input Data");
+        XMLValidation=false;
         return ;
     }
     var x_input = inputList[0].ShapeX;
@@ -561,7 +584,6 @@ function makeCommaString(list){
             if (x != list.length - 1)str += list[x] + ",";
             else str += list[x];
         }
-
     return str;
 }
 

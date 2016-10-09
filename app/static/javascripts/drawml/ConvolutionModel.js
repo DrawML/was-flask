@@ -649,6 +649,7 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }
@@ -661,6 +662,7 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }

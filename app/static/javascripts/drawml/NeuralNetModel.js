@@ -426,6 +426,7 @@ function NeuralNetworks(id,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }
@@ -439,6 +440,7 @@ function NeuralNetworks(id,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }

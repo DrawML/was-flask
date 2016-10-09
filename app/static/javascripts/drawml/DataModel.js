@@ -75,6 +75,7 @@ function DataPreprocessingModel(id,type,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }
@@ -91,6 +92,7 @@ function DataPreprocessingModel(id,type,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }
@@ -148,6 +150,7 @@ function InputModel(id,fileName,fileID,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }

@@ -309,6 +309,7 @@ function Regression(id,type,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }
@@ -322,6 +323,7 @@ function Regression(id,type,pointLeft, pointTop){
         catch(Err)
         {
             alert("Error: " + Err.description);
+            XMLValidation=false;
         }
         return true;
     }
