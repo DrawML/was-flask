@@ -693,7 +693,7 @@ function restoreModel(exp) {
                 //var layer_type = $(layer_xml).find('type').text().trim();
                 var layer_acti = $(layer_xml[x]).find('activation').text().trim();
                 var layer_input = $(layer_xml[x]).find('input').text().trim() * 1;
-                var layer_output = $(layer_xml[x]).find('ouput').text().trim() * 1;
+                var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
 
                 ML.setActivation(x+1, layer_acti);
                 ML.setLayerInput(x+1, layer_input);
