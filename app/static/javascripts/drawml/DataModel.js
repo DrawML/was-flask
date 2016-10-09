@@ -102,7 +102,7 @@ function InputModel(id,fileName,fileID,pointLeft, pointTop){
     this.ShapeY=1;
     this.fileID =fileID;
     this.fileName=fileName;
-    if(fileName.length >=16) fileName=fileName.substring(0,16)+'...';
+    if(this.fileName.length >=16) this.fileName=this.fileName.substring(0,16)+'...';
 
     this.fabricModel=getDataContainer(this.fileName);
     this.fabricModel.set({
