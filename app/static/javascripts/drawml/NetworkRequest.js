@@ -143,7 +143,7 @@ function get_expStatus() {
                 $('#footer-toxml-btn').show();
                 $('#footer-Stop-btn').hide();
             }else if(result == 'fail'){
-                $('#footer-status').html('<span class="label label-important" style="font-size:14px;">' + result + '</span>');
+                $('#footer-status').html('<span class="label label-danger" style="font-size:14px;">' + result + '</span>');
                 $('#footer-toxml-btn').show();
                 $('#footer-Stop-btn').hide();
             }else if(result == 'cancel'){
