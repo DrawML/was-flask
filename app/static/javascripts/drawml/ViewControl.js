@@ -328,13 +328,15 @@ $(document).ready(function(){
 
     var isProcessing = false;
 
-    $('#footer-Save-btn').click(function () {
+    $('#footer-Save-btn').click(function (e) {
 
         var exp_xml=makeXML();
         var model_xml=makeModelXML();
 
         if(XMLValidation==false){
             alert('Experiment is not Valid!!');
+            e.preventDefault();
+            return;
         }
         XMLValidation=true;
 
@@ -350,7 +352,7 @@ $(document).ready(function(){
     });
 
     //Models To XML
-    $('#footer-toxml-btn').click(function () {
+    $('#footer-toxml-btn').click(function (e) {
         if(isProcessing) return;
 
         var exp_xml=makeXML();
@@ -358,6 +360,8 @@ $(document).ready(function(){
 
          if(XMLValidation==false){
             alert('Experiment is not Valid!!');
+             e.preventDefault();
+             return;
         }
         XMLValidation=true;
 
