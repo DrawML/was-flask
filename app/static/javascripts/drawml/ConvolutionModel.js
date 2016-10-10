@@ -390,17 +390,17 @@ function CNNLayerSet(){
         XML.BeginNode("layer");
         XML.Attrib("id",(this.layers.length+1).toString());
         XML.Node("type","none");
-        XML.Node("activation",this.activation);
-        XML.Node("input",this.input.toString());
-        XML.Node("output",this.output.toString());
+        XML.Node("activation",this.mergeLayer.activation);
+        XML.Node("input",this.mergeLayer.input.toString());
+        XML.Node("output",this.mergeLayer.output.toString());
         XML.EndNode();
 
         XML.BeginNode("layer");
         XML.Attrib("id",(this.layers.length+2).toString());
         XML.Node("type","out");
-        XML.Node("activation",this.activation);
-        XML.Node("input",this.input.toString());
-        XML.Node("output",this.output.toString());
+        XML.Node("activation",this.outLayer.activation);
+        XML.Node("input",this.outLayer.input.toString());
+        XML.Node("output",this.outLayer.output.toString());
         XML.EndNode();
 
         XML.EndNode();
