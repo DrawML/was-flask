@@ -474,7 +474,10 @@ function connectComplete(){
 
 var XMLValidation =true;
 //INPUT XML
-//DATA_PROCESSING XML
+//DATA_PROCESSING
+
+var stModel;
+
 function makeXML() {
     var XML = new XMLWriter();
     XML.BeginNode("experiment");
@@ -505,9 +508,14 @@ function makeXML() {
     //console.log(visit);
     var modelList = topologicalSort(visit);
 
+
+    var data_processingSize= modelList.length-1;
+    if(stModel instanceof DataPreprocessingModel){
+        data_processingSize+=1;
+    }
     //data_processing
     XML.BeginNode("data_processing");
-    XML.Node("size",(modelList.length-1).toString());
+    XML.Node("size",(data_processingSize).toString());
     var seq=1;
     for(var x in modelList){
         if(modelList[x] instanceof DataPreprocessingModel){
@@ -561,6 +569,7 @@ function topologicalSort(visit){
         }else{
             if(models[x].nextModel==null || models[x].nextModel.length==0)
             startModel=models[x];
+            stModel=models[x];
             break;
         }
     }

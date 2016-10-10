@@ -450,7 +450,6 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
     this.ID=id;
 
 
-
     this.getContainer= function(){
         this.container = new CNNContainer(this.layerSet.layers.length);
         return this.container;
