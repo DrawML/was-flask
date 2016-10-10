@@ -92,7 +92,21 @@ function handleDropEvent( event, ui ) {
         currentSelectedModel=l;
         canvas.add(l.fabricModel);
         canvas.renderAll();
-    }else if(ui.draggable.attr('id')=="SoftMaxRegression"){
+    }else if(ui.draggable.attr('id')=="LogisticRegression"){
+        if(!canMLmodel()) {
+            alert("Already have ML model...!");
+            return;
+        }
+        clearDataShapeOption();
+        clearLayerOption();
+        makeDefaultOptions()
+        var l = new Regression(modelCnt++,'logistic_regression',canvasX-wi-150,canvasY-ContainerTop);
+        models.push(l);
+        currentSelectedModel=l;
+        canvas.add(l.fabricModel);
+        canvas.renderAll();
+    }
+    else if(ui.draggable.attr('id')=="SoftMaxRegression"){
         if(!canMLmodel()) {
             alert("Already have ML model...!");
             return;
