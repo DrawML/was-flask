@@ -829,7 +829,7 @@ function restoreModel(exp) {
 
             //레이어 갯수 맞추기
             var layerN = $(xml).find('layer_set').find('size').text() * 1;
-            for (var x = 0; x < layerN - 1; x++) {
+            for (var x = 0; x < layerN - 3; x++) {
                 makeCNNLayerOption(ML.getLayerLength() + 1);
                 ML.addLayerBackOf(ML.getLayerLength() - 1);
             }
