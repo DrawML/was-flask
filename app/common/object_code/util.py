@@ -231,7 +231,8 @@ class TaskRunner:
                     except SQLAlchemyError as e:
                         fail(file_token)
                     # update file token
-                    next_arguments['task_job_dict']['data_file_token'] = file_token
+                    if next_arguments is not None:
+                        next_arguments['task_job_dict']['data_file_token'] = file_token
                 elif task_type == str(RedisKeyMaker.MODEL_TRAINING):
                     file_name = '{}-train-session-{}'.format(id, current_time)
                     file_token = body.get('session_file_token', None)
