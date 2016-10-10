@@ -270,9 +270,8 @@ class TaskRunner:
             elif status == 'error':
                 redis_cache.set(key, redis_cache.FAIL)
                 print("[%s] callback is called with 'fail'" % key)
+                print('Error code : ' + body)
 
-                if body is not None:
-                    print(body)
             elif status == 'cancel':
                 # Client().request_cancel(key)
                 redis_cache.set(key, redis_cache.CANCEL)
