@@ -304,6 +304,9 @@ function CNNLayerSet(){
         this.layers[position] =  newL;
     }
 
+    this.mergeLayer = new Layer(0,'relu','1','1');
+    this.outLayer = new Layer(0,'relu','1','1');
+
     this.addLayerBackOf = function (position) {
         this.addLayerFrontOf(position+1);
     }
@@ -379,10 +382,27 @@ function CNNLayerSet(){
 
     this.toXML = function(XML){
         XML.BeginNode("layer_set");
-        XML.Node("size",this.layers.length.toString());
+        XML.Node("size",(this.layers.length+2).toString());
         for(var x=0; x<this.layers.length;x++){
             this.layers[x].toXML(XML);
         }
+
+        XML.BeginNode("layer");
+        XML.Attrib("id",(this.layers.length+1).toString());
+        XML.Node("type","none");
+        XML.Node("activation",this.activation);
+        XML.Node("input",this.input.toString());
+        XML.Node("output",this.output.toString());
+        XML.EndNode();
+
+        XML.BeginNode("layer");
+        XML.Attrib("id",(this.layers.length+2).toString());
+        XML.Node("type","out");
+        XML.Node("activation",this.activation);
+        XML.Node("input",this.input.toString());
+        XML.Node("output",this.output.toString());
+        XML.EndNode();
+
         XML.EndNode();
     }
 }
@@ -428,6 +448,8 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
     this.training_epoch = 1024;
     this.container=null;
     this.ID=id;
+
+
 
     this.getContainer= function(){
         this.container = new CNNContainer(this.layerSet.layers.length);
@@ -523,6 +545,11 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
         clearLayerOption();
         $('#model-addlayer-btn').show();
         for(var x =0; x<this.layerSet.layers.length;x++) makeCNNLayerOption(x+1);
+
+        makeCNNmergeOption(10000);
+        makeCNNoutOption(10001);
+
+
     }
 
 
@@ -807,4 +834,85 @@ function makeCNNLayerOption(LayerNumber){
     }
 
 
+}
+
+
+function makeCNNoutOption(LayerNumber){
+    var option = $('#btn-dummy').clone(true);
+    var optionLayer = $('#dummyLayer').clone(true);
+    option.attr('id','btn-layer'+LayerNumber.toString()).show();
+    option.html('OutLayer'.toString());
+    option.attr('data-target','#layer'+LayerNumber.toString());
+    optionLayer.attr('id','layer'+LayerNumber.toString());
+    optionLayer.addClass('collapse');
+    $('#model-addlayer-btn').before(option);
+    $('#model-addlayer-btn').before(optionLayer);
+
+    //Event Handling
+    var btngroup= optionLayer.children().eq(0);
+    btngroup.find('a').click(function(){
+        btngroup.find('button').text($(this).text());
+
+        currentSelectedModel.layerSet.outLayer.activation=$(this).text();
+    });
+
+    var inputDiv =optionLayer.children().eq(1).find('input');
+    inputDiv.on("change paste keyup", function() {
+        currentSelectedModel.layerSet.outLayer.input=$(this).val();
+    });
+
+    var outputDiv =optionLayer.children().eq(2).find('input');
+    outputDiv.on("change paste keyup", function() {
+
+        currentSelectedModel.layerSet.outLayer.output=$(this).val();
+    });
+
+    var delBtn =optionLayer.children().eq(3);
+    $(delBtn).hide();
+
+    //Read data
+
+    btngroup.find('button').text(currentSelectedModel.layerSet.outLayer.activation);
+    inputDiv.val(currentSelectedModel.layerSet.outLayer.input);
+    outputDiv.val(currentSelectedModel.layerSet.outLayer.output);
+}
+
+function makeCNNmergeOption(LayerNumber){
+    var option = $('#btn-dummy').clone(true);
+    var optionLayer = $('#dummyLayer').clone(true);
+    option.attr('id','btn-layer'+LayerNumber.toString()).show();
+    option.html('MergeLayer');
+    option.attr('data-target','#layer'+LayerNumber.toString());
+    optionLayer.attr('id','layer'+LayerNumber.toString());
+    optionLayer.addClass('collapse');
+    $('#model-addlayer-btn').before(option);
+    $('#model-addlayer-btn').before(optionLayer);
+
+    //Event Handling
+    var btngroup= optionLayer.children().eq(0);
+    btngroup.find('a').click(function(){
+        btngroup.find('button').text($(this).text());
+
+        currentSelectedModel.layerSet.mergeLayer.activation=$(this).text();
+    });
+
+    var inputDiv =optionLayer.children().eq(1).find('input');
+    inputDiv.on("change paste keyup", function() {
+        currentSelectedModel.layerSet.mergeLayer.input=$(this).val();
+    });
+
+    var outputDiv =optionLayer.children().eq(2).find('input');
+    outputDiv.on("change paste keyup", function() {
+
+        currentSelectedModel.layerSet.mergeLayer.output=$(this).val();
+    });
+
+    var delBtn =optionLayer.children().eq(3);
+    $(delBtn).hide();
+
+    //Read data
+
+    btngroup.find('button').text(currentSelectedModel.layerSet.mergeLayer.activation);
+    inputDiv.val(currentSelectedModel.layerSet.mergeLayer.input);
+    outputDiv.val(currentSelectedModel.layerSet.mergeLayer.output);
 }

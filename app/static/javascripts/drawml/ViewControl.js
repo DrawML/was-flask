@@ -834,39 +834,59 @@ function restoreModel(exp) {
 
             var layer_xml = $(xml).find('layer');
             for (var x = 0; x < layerN; x++) {
+                var layer_type = $($(layer_xml[x]).find('type')[0]).text().trim();
+                if(layer_type == "convolution") {
+                    var layer_acti = $(layer_xml[x]).find('activation');
+                    var layer_acti_type = $(layer_acti).find('type').text().trim();
+                    var layer_acti_sv = $(layer_acti).find('strides_vertical').text() * 1;
+                    var layer_acti_sh = $(layer_acti).find('strides_horizontal').text() * 1;
+                    var layer_acti_pad = $(layer_acti).find('padding').text().trim();
 
-                var layer_acti = $(layer_xml[x]).find('activation');
-                var layer_acti_type = $(layer_acti).find('type').text().trim();
-                var layer_acti_sv = $(layer_acti).find('strides_vertical').text()*1;
-                var layer_acti_sh = $(layer_acti).find('strides_horizontal').text()*1;
-                var layer_acti_pad = $(layer_acti).find('padding').text().trim();
+                    var layer_pooling = $(layer_xml[x]).find('pooling');
+                    var layer_pooling_type = $(layer_pooling).find('type').text().trim();
+                    var layer_pooling_sv = $(layer_pooling).find('strides_vertical').text() * 1;
+                    var layer_pooling_sh = $(layer_pooling).find('strides_horizontal').text() * 1;
+                    var layer_pooling_pad = $(layer_pooling).find('padding').text().trim();
 
-                var layer_pooling = $(layer_xml[x]).find('pooling');
-                var layer_pooling_type = $(layer_pooling).find('type').text().trim();
-                var layer_pooling_sv = $(layer_pooling).find('strides_vertical').text()*1;
-                var layer_pooling_sh = $(layer_pooling).find('strides_horizontal').text()*1;
-                var layer_pooling_pad = $(layer_pooling).find('padding').text().trim();
-
-                var layer_input_x = $(layer_xml[x]).find('input_x').text().trim() * 1;
-                var layer_input_y = $(layer_xml[x]).find('input_y').text().trim() * 1;
-                var layer_input_z = $(layer_xml[x]).find('input_z').text().trim() * 1;
-                var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
+                    var layer_input_x = $(layer_xml[x]).find('input_x').text().trim() * 1;
+                    var layer_input_y = $(layer_xml[x]).find('input_y').text().trim() * 1;
+                    var layer_input_z = $(layer_xml[x]).find('input_z').text().trim() * 1;
+                    var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
 
 
-                ML.setActivationType(x+1, layer_acti_type);
-                ML.setActivationSV(x+1,layer_acti_sv);
-                ML.setActivationSH(x+1,layer_acti_sh);
-                ML.setActivationPadding(x+1,layer_acti_pad);
+                    ML.setActivationType(x + 1, layer_acti_type);
+                    ML.setActivationSV(x + 1, layer_acti_sv);
+                    ML.setActivationSH(x + 1, layer_acti_sh);
+                    ML.setActivationPadding(x + 1, layer_acti_pad);
 
-                ML.setPoolingType(x+1,layer_pooling_type);
-                ML.setPoolingSV(x+1,layer_pooling_sv);
-                ML.setPoolingSH(x+1,layer_pooling_sh);
-                ML.setPoolingPadding(x+1,layer_pooling_pad);
+                    ML.setPoolingType(x + 1, layer_pooling_type);
+                    ML.setPoolingSV(x + 1, layer_pooling_sv);
+                    ML.setPoolingSH(x + 1, layer_pooling_sh);
+                    ML.setPoolingPadding(x + 1, layer_pooling_pad);
 
-                ML.setLayerInputX(x+1, layer_input_x);
-                ML.setLayerInputY(x+1, layer_input_y);
-                ML.setLayerInputZ(x+1, layer_input_z);
-                ML.setLayerOutput(x+1, layer_output);
+                    ML.setLayerInputX(x + 1, layer_input_x);
+                    ML.setLayerInputY(x + 1, layer_input_y);
+                    ML.setLayerInputZ(x + 1, layer_input_z);
+                    ML.setLayerOutput(x + 1, layer_output);
+                }else if(layer_type == "none"){
+
+                    var layer_acti = $(layer_xml[x]).find('activation').text().trim();
+                    var layer_input = $(layer_xml[x]).find('input').text().trim() * 1;
+                    var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
+
+                    ML.layerSet.mergeLayer.activation=layer_acti;
+                    ML.layerSet.mergeLayer.input=layer_input;
+                    ML.layerSet.mergeLayer.output=layer_output;
+
+                }else if(layer_type == "out"){
+                    var layer_acti = $(layer_xml[x]).find('activation').text().trim();
+                    var layer_input = $(layer_xml[x]).find('input').text().trim() * 1;
+                    var layer_output = $(layer_xml[x]).find('output').text().trim() * 1;
+
+                    ML.layerSet.outLayer.activation=layer_acti;
+                    ML.layerSet.outLayer.input=layer_input;
+                    ML.layerSet.outLayer.output=layer_output;
+                }
             }
             ML.updateFabricModel();
         }

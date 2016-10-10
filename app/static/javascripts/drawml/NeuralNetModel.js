@@ -485,7 +485,6 @@ function makeLayerOption(LayerNumber){
         }
     });
 
-
     //Read data
     if(currentSelectedModel.layerSet.layers.length >=LayerNumber) {
         btngroup.find('button').text(currentSelectedModel.layerSet.layers[LayerNumber - 1].getActivation());
