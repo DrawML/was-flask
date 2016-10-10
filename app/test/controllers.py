@@ -149,14 +149,14 @@ def test_stop(model_id):
     model_value = redis_cache.get(model_key)
     if not model_value:
         flash('Error, No cache status')
-        return redirect(url_for('test.get_all_model'))
+        return 'No cash status'
     model_value = model_value.decode()
     if model_value is not None:
         if model_value == redis_cache.RUNNING:
             Client().request_cancel(model_key)
             # redis_cache.set(model_key, redis_cache.CANCEL)
             flash('task was canceled')
-    return redirect(url_for('test.get_model', model_id=model_id))
+    return 'task was canceled'
 
 
 @module_test.route('/<model_id>/status', methods=['GET'], endpoint='test_status')
