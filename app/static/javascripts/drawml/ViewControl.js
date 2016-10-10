@@ -559,7 +559,7 @@ function topologicalSort(visit){
         if(models[x] instanceof InputModel){
             continue;
         }else{
-            if(models[x].nextModel!=null || models[x].nextModel.length==0)
+            if(models[x].nextModel==null || models[x].nextModel.length==0)
             startModel=models[x];
             break;
         }

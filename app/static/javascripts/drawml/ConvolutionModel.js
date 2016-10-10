@@ -488,6 +488,7 @@ function ConvolutionNeuralNetworks(id,pointLeft, pointTop){
         });
         canvas.add(this.fabricModel);
         trackingModel(currentSelectedModel);
+        this.changeOptionMenu();
         canvas.renderAll();
     }
 
