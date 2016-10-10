@@ -14,12 +14,12 @@
     </div>
       <div class="control-group">
           <div class="controls">
-              <button type="button" class="btn btn-primary" onclick="create()">Create</button>
+              <button type="button" class="btn btn-primary" onclick="create(true)" onsubmit="return create(false)">Create</button>
               <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
           </div>
       </div>
     <script>
-        function create() {
+        function create(isClicked) {
             const name = $('#name')[0].value;
             if(!name || /^\s*$/.test(name)){
                 alert('Please insert name');
@@ -46,6 +46,8 @@
                     console.log(data);
                     window.location.href = "/experiments/";
             });
+
+            return isClicked;
         }
         function cancel() {
             window.location.href = '/experiments/';
