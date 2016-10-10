@@ -556,9 +556,10 @@ function topologicalSort(visit){
     //find ML model
     var startModel;
     for(var x=0; x<models.length;x++){
-        if(models[x] instanceof InputModel || models[x] instanceof DataPreprocessingModel){
+        if(models[x] instanceof InputModel){
             continue;
         }else{
+            if(models[x].nextModel!=null || models[x].nextModel.length==0)
             startModel=models[x];
             break;
         }
@@ -774,7 +775,7 @@ function restoreModel(exp) {
     console.log(modelType);
     var ML;
     if (modelType != null && modelType != "") {
-        if (modelType == "linear_regression" || modelType == "softmax_regression" || modelType == "Polynomial regression") {
+        if (modelType == "linear_regression" || modelType == "softmax_regression" || modelType == "Polynomial regression" || modelType=="logistic_regression") {
             var curXY = $(drawing).find(modelType).text().split(',');
             ML = new Regression(modelCnt++, curXY[0], curXY[1] * 1, curXY[2] * 1);
             models.push(ML);
