@@ -51,7 +51,7 @@ function update_exp(jsonInfo, callback) {
         statusCode : {
             200: function (data, textStatus) {
                 console.log(data);
-                printResultMsg("Successfully request to saved!");
+                printResultMsg("Experiment is saved successfully!");
                 !callback || callback();
             },
             500: function () {
@@ -155,7 +155,7 @@ function get_expStatus() {
                 $('#footer-toxml-btn').hide();
                 $('#footer-Stop-btn').show();
             }else if(result == 'idle'){
-                $('#footer-status').html('<span class="label" style="font-size:14px;">' + result + '</span>');
+                $('#footer-status').html('<span class="label label-info" style="font-size:14px;">' + result + '</span>');
                 $('#footer-toxml-btn').show();
                 $('#footer-Stop-btn').hide();
             }else{
