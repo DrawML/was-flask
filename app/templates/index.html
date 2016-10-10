@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% set active_page = "signin" %}
+{% block body %}
+    <style type="text/css">
+    <!--
+    .tab { margin-left: 40px; }
+    .well { margin-left: 40px; }
+    -->
+    </style>
+    <h1>DrawML</h1>
+    <h2>1. Data</h2>
+        <p class="tab">You can upload data file in Data tab<p/>
+        <p class="tab">Data input file name should be only English<p/>
+        <p class="tab">Data input file content should be only Number<p/>
+        <p class="tab">Data input file format should be only txt file<p/>
+        <p class="tab">Data content format should follow form below<p/>
+    <div class="well">
+        num_of_feature_x num_of_feature_y<br />
+        contents....<br />
+    </div>
+        <p class="lead">Example</p>
+    <div class="well">
+        3 1<br />
+        1 1 1 0<br />
+        2 2 1 1<br />
+        2 1 2 4<br />
+        5 1 2 3<br />
+        10 7 8 9<br />
+    </div>
+
+    <h2>2. Experiment</h2>
+        <p class="tab">You can make and run experiemnt in Experiment tab<p/>
+        <p class="tab">Experiment shape should be acceptable, if not task will fail while running<p/>
+        <p class="tab">Experiment input data should be acceptable, if not task will fail while running<p/>
+        <p class="tab">You must click <span class="label label-info" style="font-size:14px;">Save</span> button or <span class="label label-info" style="font-size:14px;">Run</span> button<p/>
+        <p class="tab">You can see state of experiment on footer-bar<p/>
+
+    <h2>3. Test</h2>
+        <p class="tab">You can run Trained Model in Test tab<p/>
+        <p class="tab">Trained model state will be shown at the detail page<p/>
+        <p class="tab">Input data of trained Model should be acceptable, if not task will fail while running<p/>
+        <p class="tab">You must click <span class="label label-info" style="font-size:14px;">Clear status</span> button after test was ended<p/>
+
+    <h2>4. Log</h2>
+        <p class="tab">Trained and tested result are here Log tab<p/>
+        <p class="tab">You can see the result log and edit file name in detail page<p/>
+        <p class="lead">Train log example<p/>
+
+    <div class="well">
+        Loss of epoch 0 : 90.5862045288086 <br />
+        Loss of epoch 1 : 61.46393585205078 <br />
+        Loss of epoch 2 : 58.13508224487305 <br />
+        Loss of epoch 3 : 49.88349914550781 <br />
+        Loss of epoch 4 : 39.15123748779297 <br />
+        ........ <br />
+    </div>
+
+        <p class="lead">Test log example<p/>
+
+    <div class="well">
+    original : predict<br />
+7 : 6<br />
+3 : 3<br />
+4 : 4<br />
+6 : 6<br />
+1 : 1<br />
+......<br />
+        1 : 6 <br />
+7 : 9 <br />
+Accuracy : 0.5654 <br />
+    </div>
+
+
+
+{% endblock %}
