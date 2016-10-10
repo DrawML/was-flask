@@ -685,7 +685,7 @@ function restoreModel(exp) {
     if(xml=="" || xml==null) return;
     if($(drawing).find('position').length !=0) return;
 
-    var shp = $(xml).find('shape').text().split('][');
+    var shp = $(xml).find('shape').text().split('],[');
     var shp_x = shp[0].trim().substring(1,shp[0].length);
     var shp_y = shp[1].trim().substring(0,shp[1].length-2);
 
