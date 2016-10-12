@@ -374,29 +374,61 @@ def exp_export(exp_id):
 
     xml = pickle.loads(experiment.xml)
     xml = ''.join(xml.split('\n'))
-    try:
-        tf_train_converter = TFConverter(xml, code_type)
-        obj_code, _ = tf_train_converter.generate_object_code()
-        current_app.logger.info('Code was generated')
-    except ExperimentError:
-        current_app.logger.error('Invalid XML form')
-        return ErrorResponse(400, 'Invalid XML form')
-    except TemplateError as e:
-        current_app.logger.error(e)
-        return ErrorResponse(500, 'Internal Server Error, Template Error')
-    except SQLAlchemyError as e:
-        current_app.logger.error(e)
-        return ErrorResponse(500, 'Database Error')
-    except AttributeError:
-        current_app.logger.info('No model in XML')
-    except Exception as e:
-        current_app.logger.error(e)
-        return ErrorResponse(500, 'Unexpected Error')
+
+    obj_code = None
+
+    if code_type == TFConverter.TYPE.DATA_PROCESSING:
+        try:
+            data_processor = DataProcessor(xml)
+            obj_code, file_ids = data_processor.generate_object_code()
+            data_input_files = []
+            for file_id in file_ids:
+                fetched = Data.query.filter_by(id=int(file_id)).first()
+                if not fetched:
+                    raise SQLAlchemyError('No data in database')
+                data_input_files.append(fetched.name)
+            current_app.logger.info('Code was generated')
+            # data_processor.run_obj_code(data_obj_code)
+        except ExperimentError:
+            current_app.logger.error('Invalid XML form')
+            return ErrorResponse(400, 'Invalid XML form')
+        except TemplateError as e:
+            current_app.logger.error(e)
+            return ErrorResponse(500, 'Internal Server Error, Template Error')
+        except SQLAlchemyError as e:
+            current_app.logger.error(e)
+            return ErrorResponse(500, 'Database Error')
+        except AttributeError:
+            current_app.logger.info('No data processing in XML')
+        except Exception as e:
+            current_app.logger.error(e)
+            return ErrorResponse(500, 'Unexpected Error')
+    elif code_type == TFConverter.TYPE.TRAIN or code_type == TFConverter.TYPE.TEST:
+        try:
+            tf_train_converter = TFConverter(xml, code_type)
+            obj_code, _ = tf_train_converter.generate_object_code()
+            current_app.logger.info('Code was generated')
+        except ExperimentError:
+            current_app.logger.error('Invalid XML form')
+            return ErrorResponse(400, 'Invalid XML form')
+        except TemplateError as e:
+            current_app.logger.error(e)
+            return ErrorResponse(500, 'Internal Server Error, Template Error')
+        except SQLAlchemyError as e:
+            current_app.logger.error(e)
+            return ErrorResponse(500, 'Database Error')
+        except AttributeError:
+            current_app.logger.info('No model in XML')
+        except Exception as e:
+            current_app.logger.error(e)
+            return ErrorResponse(500, 'Unexpected Error')
+    else:
+        return ErrorResponse(400, 'Wrong type argument')
 
     # Fill config in model_obj_code
-    tensorflow_code = link(obj_code, RunConfig())
+    exported_code = link(obj_code, RunConfig())
 
-    bytesIO = BytesIO(tensorflow_code.encode('utf-8'))
+    bytesIO = BytesIO(exported_code.encode('utf-8'))
     now_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     ext = '.py'
     filename = str(exp_id) + '-' + str(code_type) + '-' + now_datetime + ext
