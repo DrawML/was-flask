@@ -393,8 +393,8 @@ def exp_export(exp_id):
         return ErrorResponse(500, 'Unexpected Error')
 
     # Fill config in model_obj_code
-    from master.virtualizer.config import RunConfig
-    from master.virtualizer.linker import link
+    from app.dist_task.src.dist_system.master.virtualizer.config import RunConfig
+    from app.dist_task.src.dist_system.master.virtualizer.linker import link
     tensorflow_code = link(obj_code, RunConfig())
 
     strIO = StringIO.StringIO()
