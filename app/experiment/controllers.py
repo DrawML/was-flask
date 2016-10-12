@@ -1,11 +1,9 @@
 import json
-import os
 from datetime import datetime
 
 import pickle
-from uuid import uuid4
 
-from io import StringIO
+from io import BytesIO
 from flask import Blueprint, request, current_app, render_template, g
 from flask import flash
 from flask import send_file
@@ -16,6 +14,8 @@ from sqlalchemy import update
 
 from app.common.object_code.util import ExperimentError, DataProcessor, TaskRunner, TFConverter
 from app.dist_task.src.dist_system.client import Client
+from app.dist_task.src.dist_system.master.virtualizer.config import RunConfig
+from app.dist_task.src.dist_system.master.virtualizer.linker import link
 from app.experiment.models import Refiner, JsonParser
 from app.mysql import DrawMLRepository
 from app.mysql_models import Experiment, Data
@@ -394,14 +394,13 @@ def exp_export(exp_id):
         return ErrorResponse(500, 'Unexpected Error')
 
     # Fill config in model_obj_code
-    from app.dist_task.src.dist_system.master.virtualizer.config import RunConfig
-    from app.dist_task.src.dist_system.master.virtualizer.linker import link
     tensorflow_code = link(obj_code, RunConfig())
 
-    strIO = StringIO()
-    strIO.write(tensorflow_code)
-    strIO.seek(0)
-    filename = str(exp_id) + '-' + str(code_type) + '-' + str(datetime.now())
-    return send_file(strIO,
+    bytesIO = BytesIO(tensorflow_code.encode('utf-8'))
+    now_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    ext = '.py'
+    filename = str(exp_id) + '-' + str(code_type) + '-' + now_datetime + ext
+    return send_file(bytesIO,
+                     as_attachment=True,
                      attachment_filename=filename)
 
