@@ -16,7 +16,7 @@
                     <td>{{model.id}}</td>
                     <td><a href="/tests/{{ model.id }}">{{ model.name }}</a></td>
                     <td>{{ model.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td><button class='bt_download' data-name="{{ model.name }}" data-token="{{ model.path }}">Download</button></td>
+                    <td><button class='bt_download btn btn-success' data-name="{{ model.name }}" data-token="{{ model.path }}">Download</button></td>
                 </tr>
             {%- endfor %}
         {% else %}
