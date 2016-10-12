@@ -16,6 +16,7 @@
             <td>{{data.id}}</td>
             <td> <a href="/data/{{ data.id }}" >{{ data.name }}</a></td>
             <td>{{ data.date_modified.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td><button class='bt_download' data-name="{{ data.name }}" data-token="{{ data.path }}">Download</button></td>
           </tr>
           {%- endfor %}
       {% else %}
@@ -31,4 +32,54 @@
     <p>
       <a href="{{ url_for('data.upload') }}" class="btn btn-large btn-primary">Upload</a>
 </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/static/javascripts/vendor/jquery.ui.widget.js"></script>
+<script src="/static/javascripts/jquery.iframe-transport.js"></script>
+<script src="/static/javascripts/jquery.fileupload.js"></script>
+<script>
+    save = function(filename, data) {
+        var blob = new Blob([data], {type: 'text/csv'});
+        if(window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveBlob(blob, filename);
+        }
+        else{
+            var elem = window.document.createElement('a');
+            elem.href = window.URL.createObjectURL(blob);
+            elem.download = filename;
+            document.body.appendChild(elem);
+            elem.click();
+            document.body.removeChild(elem);
+        }
+    };
+
+    $('.bt_download').click(function () {
+        var data_name = $(this).attr('data-name');
+        var data_token = $(this).attr('data-token');
+        var cloud_dfs_domain = '{{ cloud_dfs_domain }}';
+        var url = 'http://' + cloud_dfs_domain + '/data/'+data_token;
+
+        $.ajax({
+            crossDomain: true,
+            url : url,
+            type : 'GET',
+            async : true,
+
+            statusCode : {
+                200: function (d) {
+                    save(data_name, d.data);
+                },
+                404: function () {
+                    alert("A data doesn't exist.")
+                },
+                500: function () {
+                    alert("Fail to update... Please check your model.");
+                },
+                400: function() {
+                    alert("Fail to update... Please check your model.");
+                }
+            }
+
+        });
+    });
+</script>
 {% endblock %}

@@ -25,9 +25,11 @@ db = DrawMLRepository().db
 @module_test.route('/', methods=['GET'], endpoint='get_all_model')
 @login_required
 def get_all_model():
+    from config.app_config import CLOUDDFS_DOMAIN
     return render_template('/test/list.html',
                            models=TrainedModel.query.
-                           filter_by(user_id=g.user.id).order_by(TrainedModel.date_modified.desc()).all())
+                           filter_by(user_id=g.user.id).order_by(TrainedModel.date_modified.desc()).all(),
+                           cloud_dfs_domain=CLOUDDFS_DOMAIN)
 
 
 @module_test.route('/<model_id>', methods=['GET'], endpoint='get_model')

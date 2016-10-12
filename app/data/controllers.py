@@ -45,10 +45,12 @@ def upload():
 @module_data.route('/', methods=['GET'], endpoint='get_all')
 @login_required
 def get_all():
+    from config.app_config import CLOUDDFS_DOMAIN
     return render_template('/data/list.html',
                            data_set=Data.query.
                            filter_by(user_id=g.user.id, type='input')
-                           .order_by(Data.date_modified.desc()).all())
+                           .order_by(Data.date_modified.desc()).all(),
+                           cloud_dfs_domain=CLOUDDFS_DOMAIN)
 
 
 @module_data.route('/', methods=['POST'], endpoint='create')
