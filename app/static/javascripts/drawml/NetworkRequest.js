@@ -162,6 +162,8 @@ function get_expStatus() {
                 //Status Error
                 alert('Can not Match Status');
             }
+
+            setTimeout(get_expStatus, 1000);
         }
     });
 }
