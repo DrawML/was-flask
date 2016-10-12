@@ -102,3 +102,5 @@ dump.rdb
 
 # tempfiles
 temp_files
+
+config/app_config.py
