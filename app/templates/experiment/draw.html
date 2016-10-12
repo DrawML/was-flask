@@ -191,33 +191,10 @@
                 <div class="dropdown" style="display: inline">
                     <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">Export<span class="caret"></span></button>
                     <ul class="dropdown-menu">
-                        <li><a onclick="export_train()">Train</a></li>
-                        <li><a onclick="export_test()">Test</a></li>
-                        <li><a onclick="export_processing()">Data-processing</a></li>
+                        <li><a href="/experiments/{{ exp_id }}/export?type=train">Train</a></li>
+                        <li><a href="/experiments/{{ exp_id }}/export?type=test">Test</a></li>
+                        <li><a href="/experiments/{{ exp_id }}/export?type=dataprocessing">Data-processing</a></li>
                     </ul>
-                    <script>
-                        function export_request(url=null) {
-                            if (!url) return;
-                            $.ajax({
-                                url : url,
-                                type : 'GET',
-                                async : true,
-                                error : function(err){
-                                    const message = err.responseText ? err.responseText : "Bad request, Please save experiment before export";
-                                    alert(message);
-                                }
-                            });
-                        }
-                        function export_train() {
-                            export_request('/experiments/' + exp_id + '/export?type=train');
-                        }
-                        function export_test() {
-                            export_request('/experiments/' + exp_id + '/export?type=test');
-                        }
-                        function export_processing() {
-                            export_request('/experiments/' + exp_id + '/export?type=dataprocessing');
-                        }
-                    </script>
                 </div>
                 <button id="footer-Stop-btn" type="button" class="btn btn-danger navbar-btn">Stop Processing......</button>
                 <span id="footer-result-msg" class="label label-info" style="margin-left: 40px; font-size:14px;"></span>
