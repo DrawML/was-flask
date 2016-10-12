@@ -373,6 +373,7 @@ def exp_export(exp_id):
         return ErrorResponse(400, 'Bad Request, No data')
 
     xml = pickle.loads(experiment.xml)
+    xml = ''.join(xml.split('\n'))
     try:
         tf_train_converter = TFConverter(xml, code_type)
         obj_code, _ = tf_train_converter.generate_object_code()
