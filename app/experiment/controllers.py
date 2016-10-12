@@ -354,6 +354,7 @@ def exp_clear(exp_id):
 @module_exp.route('/<exp_id>/export', methods=['GET'], endpoint='exp_export')
 @login_required
 def exp_export(exp_id):
+    convert_module = TFConverter
     code_type = request.args.get('type')
     if code_type == 'train':
         code_type = TFConverter.TYPE.TRAIN
@@ -361,6 +362,7 @@ def exp_export(exp_id):
         code_type = TFConverter.TYPE.TEST
     elif code_type == 'dataprocessing':
         code_type = TFConverter.TYPE.DATA_PROCESSING
+        convert_module = DataProcessor
     else:
         return ErrorResponse(400, 'Wrong type argument')
 
@@ -375,56 +377,25 @@ def exp_export(exp_id):
     xml = pickle.loads(experiment.xml)
     xml = ''.join(xml.split('\n'))
 
-    obj_code = None
-
-    if code_type == TFConverter.TYPE.DATA_PROCESSING:
-        try:
-            data_processor = DataProcessor(xml)
-            obj_code, file_ids = data_processor.generate_object_code()
-            data_input_files = []
-            for file_id in file_ids:
-                fetched = Data.query.filter_by(id=int(file_id)).first()
-                if not fetched:
-                    raise SQLAlchemyError('No data in database')
-                data_input_files.append(fetched.name)
-            current_app.logger.info('Code was generated')
-            # data_processor.run_obj_code(data_obj_code)
-        except ExperimentError:
-            current_app.logger.error('Invalid XML form')
-            return ErrorResponse(400, 'Invalid XML form')
-        except TemplateError as e:
-            current_app.logger.error(e)
-            return ErrorResponse(500, 'Internal Server Error, Template Error')
-        except SQLAlchemyError as e:
-            current_app.logger.error(e)
-            return ErrorResponse(500, 'Database Error')
-        except AttributeError:
-            current_app.logger.info('No data processing in XML')
-        except Exception as e:
-            current_app.logger.error(e)
-            return ErrorResponse(500, 'Unexpected Error')
-    elif code_type == TFConverter.TYPE.TRAIN or code_type == TFConverter.TYPE.TEST:
-        try:
-            tf_train_converter = TFConverter(xml, code_type)
-            obj_code, _ = tf_train_converter.generate_object_code()
-            current_app.logger.info('Code was generated')
-        except ExperimentError:
-            current_app.logger.error('Invalid XML form')
-            return ErrorResponse(400, 'Invalid XML form')
-        except TemplateError as e:
-            current_app.logger.error(e)
-            return ErrorResponse(500, 'Internal Server Error, Template Error')
-        except SQLAlchemyError as e:
-            current_app.logger.error(e)
-            return ErrorResponse(500, 'Database Error')
-        except AttributeError:
-            current_app.logger.info('No model in XML')
-        except Exception as e:
-            current_app.logger.error(e)
-            return ErrorResponse(500, 'Unexpected Error')
-    else:
-        return ErrorResponse(400, 'Wrong type argument')
-
+    try:
+        converter = convert_module(xml, code_type)
+        obj_code, _ = converter.generate_object_code()
+        current_app.logger.info('Export code was generated')
+    except ExperimentError:
+        current_app.logger.error('Invalid XML form')
+        return ErrorResponse(400, 'Invalid XML form')
+    except TemplateError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Server Error, Template Error')
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Database Error')
+    except AttributeError:
+        current_app.logger.info('No model in XML')
+        return ErrorResponse(500, 'No model in XML')
+    except Exception as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Unexpected Error')
     # Fill config in model_obj_code
     if obj_code is None:
         return ErrorResponse(400, "There is no translation code for " + str(code_type))
@@ -438,4 +409,3 @@ def exp_export(exp_id):
     return send_file(bytesIO,
                      as_attachment=True,
                      attachment_filename=filename)
-

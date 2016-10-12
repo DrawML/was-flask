@@ -60,8 +60,8 @@ class XMLTree:
 
 
 class DataProcessor:
-    def __init__(self, xml):
-        self.root = XMLTree(xml, GeneratorType.DATA_PROCESSING).root
+    def __init__(self, xml, converter_type=GeneratorType.DATA_PROCESSING):
+        self.root = XMLTree(xml, converter_type).root
         self.processing = self.root.find('data_processing')
         if int(self.processing.find('size').text) == 0:
             raise AttributeError()
