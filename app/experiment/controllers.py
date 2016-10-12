@@ -5,12 +5,12 @@ from datetime import datetime
 import pickle
 from uuid import uuid4
 
+from io import StringIO
 from flask import Blueprint, request, current_app, render_template, g
 from flask import flash
 from flask import send_file
 from flask_login import login_required
 from jinja2.exceptions import TemplateError
-from six import StringIO
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import update
 
@@ -398,7 +398,7 @@ def exp_export(exp_id):
     from app.dist_task.src.dist_system.master.virtualizer.linker import link
     tensorflow_code = link(obj_code, RunConfig())
 
-    strIO = StringIO.StringIO()
+    strIO = StringIO()
     strIO.write(tensorflow_code)
     strIO.seek(0)
     filename = str(exp_id) + '-' + code_type + '-' + str(datetime.now())
