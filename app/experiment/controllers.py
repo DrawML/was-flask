@@ -426,6 +426,9 @@ def exp_export(exp_id):
         return ErrorResponse(400, 'Wrong type argument')
 
     # Fill config in model_obj_code
+    if obj_code is None:
+        return ErrorResponse(400, "There is no translation code for " + str(code_type))
+
     exported_code = link(obj_code, RunConfig())
 
     bytesIO = BytesIO(exported_code.encode('utf-8'))
