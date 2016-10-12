@@ -41,11 +41,11 @@ PERMANENT_SESSION_LIFETIME = timedelta(31)
 UPLOAD_FOLDER = '/data'
 
 # Setup configure for distribution module
-MASTER_ADDR = 'tcp://*.*.*.*:16000'
+MASTER_ADDR = 'tcp://210.118.74.56:16000'
 RESULT_ROUTER_PROTOCOL = 'tcp'
-RESULT_ROUTER_ADDR = '*.*.*.*'
+RESULT_ROUTER_ADDR = '210.118.74.142'
 RESULT_ROUTER_PORT = '15000'
 
 # Cloud distribute file system configuration
-CLOUDDFS_ADDR = '*.*.*.*'
-CLOUDDFS_PORT = 10000
+CLOUDDFS_ADDR = '210.118.74.67'
+CLOUDDFS_PORT = 9602

@@ -13,10 +13,10 @@ module_index = Blueprint('index',
 @module_index.route('/', methods=['GET'], endpoint='root')
 @login_required
 def root():
-    return redirect(url_for('experiment.get_all_exp'))
+    return redirect(url_for('index.index'))
 
 
 @module_index.route('index', methods=['GET'], endpoint='index')
 @login_required
 def index():
-    return "index"
+    return render_template("index.html")

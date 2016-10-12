@@ -14,11 +14,17 @@
     </div>
       <div class="control-group">
           <div class="controls">
-              <button type="button" class="btn btn-primary" onclick="create(true)" onsubmit="return create(false)">Create</button>
+              <button type="button" class="btn btn-primary" onclick="create(true)" onkeydown="return captureReturnKey(event)">Create</button>
               <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
           </div>
       </div>
     <script>
+        function captureReturnKey(e) {
+            if(e.keyCode==13) {
+                create(true);
+                return false;
+            }
+        }
         function create(isClicked) {
             const name = $('#name')[0].value;
             if(!name || /^\s*$/.test(name)){
