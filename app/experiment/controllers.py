@@ -1,11 +1,16 @@
 import json
+import os
 from datetime import datetime
 
 import pickle
+from uuid import uuid4
+
 from flask import Blueprint, request, current_app, render_template, g
 from flask import flash
+from flask import send_file
 from flask_login import login_required
 from jinja2.exceptions import TemplateError
+from six import StringIO
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import update
 
@@ -344,3 +349,55 @@ def exp_clear(exp_id):
         current_app.logger.error(e)
         return ErrorResponse(500, 'Internal Server Error')
     return 'clear'
+
+
+@module_exp.route('/<exp_id>/export', methods=['GET'], endpoint='exp_export')
+@login_required
+def exp_export(exp_id):
+    code_type = request.args.get('type')
+    if code_type == 'train':
+        code_type = TFConverter.TYPE.TRAIN
+    elif code_type == 'test':
+        code_type = TFConverter.TYPE.TEST
+    elif code_type == 'dataprocessing':
+        code_type = TFConverter.TYPE.DATA_PROCESSING
+    else:
+        return ErrorResponse(400, 'Wrong type argument')
+
+    try:
+        experiment = db.session.query(Experiment).filter(Experiment.id == exp_id).first()
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Database Error')
+    if experiment is None:
+        return ErrorResponse(400, 'Bad Request, No data')
+
+    xml = pickle.loads(experiment.xml)
+    try:
+        tf_train_converter = TFConverter(xml, code_type)
+        obj_code, _ = tf_train_converter.generate_object_code()
+        current_app.logger.info('Code was generated')
+    except ExperimentError:
+        current_app.logger.error('Invalid XML form')
+        return ErrorResponse(400, 'Invalid XML form')
+    except TemplateError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Internal Server Error, Template Error')
+    except SQLAlchemyError as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Database Error')
+    except AttributeError:
+        current_app.logger.info('No model in XML')
+    except Exception as e:
+        current_app.logger.error(e)
+        return ErrorResponse(500, 'Unexpected Error')
+
+    # Fill config in model_obj_code
+
+    strIO = StringIO.StringIO()
+    strIO.write(obj_code)
+    strIO.seek(0)
+    filename = str(exp_id) + '-' + code_type + '-' + str(datetime.now())
+    return send_file(strIO,
+                     attachment_filename=filename)
+
