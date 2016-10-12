@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Create Experiment</h1>
     <p class="lead">Please enter your experiment name.</p>
-  <form action="" method=post class="form-horizontal main-form">
+  <form action="" method=post class="form-horizontal main-form" onkeydown="return captureReturnKey(event)">
     <div class="control-group">
         <label class="control-label" for="name">Name</label>
         <div class="controls">
@@ -14,7 +14,7 @@
     </div>
       <div class="control-group">
           <div class="controls">
-              <button type="button" class="btn btn-primary" onclick="create(true)" onkeydown="return captureReturnKey(event)">Create</button>
+              <button type="button" class="btn btn-primary" onclick="create(true)">Create</button>
               <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
           </div>
       </div>
