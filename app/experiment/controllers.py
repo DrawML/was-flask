@@ -401,7 +401,7 @@ def exp_export(exp_id):
     strIO = StringIO()
     strIO.write(tensorflow_code)
     strIO.seek(0)
-    filename = str(exp_id) + '-' + code_type + '-' + str(datetime.now())
+    filename = str(exp_id) + '-' + str(code_type) + '-' + str(datetime.now())
     return send_file(strIO,
                      attachment_filename=filename)
 

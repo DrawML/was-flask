@@ -29,6 +29,9 @@ class GeneratorType(Enum):
     def __str__(self):
         return self.value["GENERATOR"]
 
+    def __repr__(self):
+        return self.value["GENERATOR"]
+
     def get_tag_name(self):
         return self.value["TAG"]
 
