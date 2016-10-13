@@ -2,6 +2,27 @@
 {% set active_page = "test" %}
 {% block body %}
 <script>
+    function change_status(stat) {
+        if(stat == 'success' || stat == 'fail' || stat == 'cancel') {
+            $('#model-status').text(stat);
+            $('#clear_btn').show();
+            $('#stop_btn').hide();
+        } else if(stat == 'running') {
+            $('#model-status').text(stat);
+            $('#clear_btn').hide();
+            $('#stop_btn').show();
+        } else if(stat == 'idle') {
+            $('#clear_btn').hide();
+            $('#stop_btn').hide();
+        } else{
+            //Status Error
+            alert('Can not Match Status');
+        }
+        if(stat != 'idle') {
+            setTimeout(get_status, 1000);
+        }
+    }
+
     function clear_cache() {
         $.ajax({
             url : '/tests/{{ model.id }}/clear',
@@ -35,6 +56,23 @@
             window.location.href = "/tests/{{ model.id }}";
         });
     }
+
+    function get_status() {
+        $.ajax({
+            url : '/tests/{{ model.id }}/status',
+            type : 'GET',
+            async : true,
+            success : function(result){
+                console.log(result);
+
+                change_status(result)
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        change_status('{{ status }}');
+    });
 </script>
 <div id="main" class="container">
     <p>
@@ -75,13 +113,9 @@
     <button type="button" class="btn btn-primary pull-right" onclick="run()">Run</button>
     {% endif %}
     {% if status != 'idle' %}
-      <h3>Status : {{ status }}</h3>
-        {% if status == 'fail' or status == 'success' or status == 'cancel' %}
-            <button type="button" id="clear_btn" class="btn btn-info" onclick="clear_cache()">Clear status</button>
-        {% endif %}
-        {% if status == 'running' %}
-            <button type="button" id="stop_btn" class="btn btn-danger" onclick="stop()">Stop</button>
-        {% endif %}
+      <h3>Status : <span id="model-status">{{ status }}</span></h3>
+        <button type="button" id="clear_btn" class="btn btn-info" onclick="clear_cache()">Clear status</button>
+        <button type="button" id="stop_btn" class="btn btn-danger" onclick="stop()">Stop</button>
     {% endif %}
 </div>
 {% endblock %}
