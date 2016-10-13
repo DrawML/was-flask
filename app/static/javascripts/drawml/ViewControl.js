@@ -566,8 +566,7 @@ function topologicalSort(visit){
     for(var x=0; x<models.length;x++){
         if(models[x] instanceof InputModel){
             continue;
-        }else{
-            if(models[x].nextModel==null || models[x].nextModel.length==0)
+        }else if(models[x].nextModel==null || models[x].nextModel.length==0){
             startModel=models[x];
             stModel=models[x];
             break;
