@@ -8,14 +8,18 @@ with tf.Session(config=config) as sess:
     sess.run(init)
 
     f = open(output_file_path, 'a')
+    #print('x_data : {}, y_data : {}'.format(x_train, y_train), file=f)
     for _ in range(training_epoch):
         avg_cost = 0
+        #print('len : {}, {}'.format(len(x_train), len(y_train)), file=f)
         for start in range(0, len(y_train), BATCH_SIZE):
             end = min(start + BATCH_SIZE, len(y_train))
-            x_batch = x_train[start:end]
-            y_batch = y_train[start:end]
+            x_batch = x_train[start:end,:]
+            y_batch = y_train[start:end,:]
             train_data = {X: x_batch, Y: y_batch, p_keep_conv: dropout_conv, p_keep_hidden: dropout_hidden}
+            #print('train_data :', train_data, file=f)
             sess.run(train, feed_dict=train_data)
-            avg_cost += sess.run(cost, feed_dict=train_data) * len(x_batch) / len(y_train)
-        print('Loss of epoch{} : {}'.format(_, sess.run(cost, feed_dict=train_data)), file=f)
+            avg_cost += sess.run(cost, feed_dict=train_data) * len(y_batch) / len(y_train)
+            #print('batch cost :', avg_cost, file=f)
+        print('Loss of epoch{} : {}'.format(_, avg_cost), file=f)
     save_model(sess, sess_path)
